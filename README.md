@@ -4,6 +4,13 @@ Pivotal is useful. But it has a weird and complex layout so it is hard to use fo
 
 It organises things by status, displays simple information about each story, who is working on it, and how long it has been in that state.
 
+**UPDATES for this fork**
+Pivotal also doesn't handle multiple teams at all. This fork has been designed to handle each team as a project
+All searches are across multiple projects and transparently aggregated
+It also focussed on providing stats across projects to make it easier to generate reports
+
+Next steps are to project team based dashboards of current stories (as per the original design)
+
 ##Installation
 
 Clone this repo
@@ -41,6 +48,8 @@ applications:
     USE_AUTH: true
     USERNAME: sensible username goes here
     PASSWORD: sensible long password goes here
+    DEFAULT_PROJECTS: comma separated list of project ids that are searched
+    DEFAULT_LABELS: The labels that you are really interested in (Pivotal creates lots)
 ```
 
 ### Some Opinions inflicted on you
