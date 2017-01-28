@@ -15,7 +15,7 @@ router.get('/', function (req, res, next) {
 });
 
 router.get("/:labelName", function (req, res, next) {
-  storyFetcher.getLabelSummary(res, req.params[ "labelName" ]);
+  storyFetcher.getLabelSummary(res, req.params[ "labelName" ] , res.app.get('defaultProjects').split(','));
 });
 
 module.exports = router;

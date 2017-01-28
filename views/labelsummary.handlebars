@@ -11,19 +11,28 @@
 </div>
 
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-12 center-block">
         <table class="table">
             <thead>
             <tr>
                 <th>Name</th>
                 <th>Estimate</th>
+                <th>Status</th>
+                <th>Labels</th>
             </tr>
             </thead>
             <tbody>
     {{#each stories}}
             <tr>
-                <td>{{this.name}}</td>
+                <td><a href="{{this.url}}" target="_blank">{{this.name}}</a></td>
                 <td>{{this.estimate}}</td>
+                <td>{{this.current_state}}</td>
+                <td>
+                {{#each this.labels}}
+                    <a href="/labels/{{this.name}}">{{this.name}}</a>
+                    {{#unless @last}},{{/unless}}
+                {{/each}}
+                </td>
             </tr>
     {{/each}}
             </tbody>

@@ -11,6 +11,8 @@ var utils = require('./lib/utils.js')
 
 var routes = require('./routes/index');
 var labels = require('./routes/labels');
+var projects = require('./routes/projects');
+var epics = require('./routes/epics');
 
 var app = express();
 app.engine('handlebars',
@@ -35,7 +37,6 @@ app.set('layoutsDir', path.join(__dirname, 'views/layouts'));
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 
-
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
@@ -47,10 +48,12 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
-app.use('/labels' , labels);
+app.use('/labels', labels);
+app.use('/projects', projects);
+app.use('/epics', epics);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;
   next(err);
@@ -61,7 +64,7 @@ app.use(function(req, res, next) {
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
-  app.use(function(err, req, res, next) {
+  app.use(function (err, req, res, next) {
     res.status(err.status || 500);
     res.render('error', {
       message: err.message,
@@ -72,7 +75,7 @@ if (app.get('env') === 'development') {
 
 // production error handler
 // no stacktraces leaked to user
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render('error', {
     message: err.message,
@@ -97,5 +100,8 @@ app.set('signOffSlotsLimit', signOffSlotsLimit);
 
 var defaultLabels = process.env.DEFAULT_LABELS || "";
 app.set('defaultLabels', defaultLabels);
+
+var defaultProjects = process.env.DEFAULT_PROJECTS || "";
+app.set('defaultProjects', defaultProjects);
 
 module.exports = app;
