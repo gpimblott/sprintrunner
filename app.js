@@ -1,13 +1,27 @@
 var express = require('express');
+var exphbs = require('express-handlebars');
+var hdf = require('handlebars-dateformat');
+
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var utils = require('./lib/utils.js')
+
 var routes = require('./routes/index');
+var labels = require('./routes/labels');
 
 var app = express();
+app.engine('handlebars',
+  exphbs({
+    helpers: {
+      dateFormat: hdf
+    },
+    defaultLayout: 'main'
+  }));
+
+app.set('view engine', 'handlebars');
 
 var useAuth = process.env.USE_AUTH || 'false'
 if (useAuth === 'true') {
@@ -17,8 +31,10 @@ if (useAuth === 'true') {
 }
 
 // view engine setup
+app.set('layoutsDir', path.join(__dirname, 'views/layouts'));
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
+app.use(express.static(path.join(__dirname, 'public')));
+
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -31,6 +47,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
+app.use('/labels' , labels);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -77,5 +94,8 @@ app.set('reviewSlotsLimit', reviewSlotsLimit);
 
 var signOffSlotsLimit = process.env.REVIEW_SLOTS_LIMIT || 5;
 app.set('signOffSlotsLimit', signOffSlotsLimit);
+
+var defaultLabels = process.env.DEFAULT_LABELS || "";
+app.set('defaultLabels', defaultLabels);
 
 module.exports = app;

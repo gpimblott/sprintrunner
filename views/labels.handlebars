@@ -1,0 +1,26 @@
+<div class="page-header">
+    <h1>Interesting Labels</h1>
+</div>
+<div class="row">
+    {{#each defaultLabels}}
+        <ul>
+            <li><a href="/labels/{{this}}">{{this}}</a></li>
+        </ul>
+    {{else}}
+        <br>
+        <p>No matching labels found :(</p>
+    {{/each}}
+</div>
+<div class="page-header">
+    <h1>All Labels</h1>
+</div>
+<div class="row">
+    {{#each labels}}
+        <ul>
+            <li><a href="/labels/{{this}}">{{this}}</a></li>
+        </ul>
+    {{else}}
+        <br>
+        <p>No matching labels found :(</p>
+    {{/each}}
+</div>

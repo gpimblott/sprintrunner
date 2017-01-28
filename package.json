@@ -16,6 +16,8 @@
     "cfenv": "1.0.3",
     "request": "2.76.0",
     "async": "2.1.2",
-    "find-business-days-in-range":"1.0.2"
+    "find-business-days-in-range":"1.0.2",
+    "express-handlebars":"latest",
+    "handlebars-dateformat":"latest"
   }
 }

@@ -1,0 +1,34 @@
+<div>
+    <div class="panel panel-default">
+        <div class="panel-heading">Summary for {{label}}</div>
+        <div class="panel-body">
+            <p>Number of Stories : {{stories.length}}</p>
+            <p>Total points : {{totalPoints}}</p>
+            <p>Not Estimated : {{notEstimated}}</p>
+        </div>
+    </div>
+
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Estimate</th>
+            </tr>
+            </thead>
+            <tbody>
+    {{#each stories}}
+            <tr>
+                <td>{{this.name}}</td>
+                <td>{{this.estimate}}</td>
+            </tr>
+    {{/each}}
+            </tbody>
+        </table>
+    </div>
+
+
+</div>
