@@ -1,9 +1,9 @@
-<div>
+<div class="row">
     <div class="panel panel-default">
-        <div class="panel-heading">Summary for label <b>'{{label}}'</b></div>
+        <div class="panel-heading">All Stories</div>
         <div class="panel-body">
             <p>Number of Stories : {{stories.length}}, Total points : {{totalPoints}},
-            Not Estimated : {{notEstimated}}</p>
+                Not Estimated : {{notEstimated}}</p>
         </div>
         <table class="table">
             <tr>
@@ -22,10 +22,9 @@
     </div>
 
 </div>
-
 <div class="row">
     <div class="col-md-12 center-block">
-        <table id="labelTable" class="table display">
+        <table id="storyTable" class="table display">
             <thead>
             <tr>
                 <th>Name</th>
@@ -35,19 +34,19 @@
             </tr>
             </thead>
             <tbody>
-    {{#each stories}}
-            <tr>
-                <td><a href="{{this.url}}" target="_blank">{{this.name}}</a></td>
-                <td>{{this.estimate}}</td>
-                <td><a href="/stories/{{this.current_state}}">{{this.current_state}}</a></td>
-                <td>
-                {{#each this.labels}}
-                    <a href="/labels/{{this.name}}">{{this.name}}</a>
-                    {{#unless @last}},{{/unless}}
-                {{/each}}
-                </td>
-            </tr>
-    {{/each}}
+            {{#each stories}}
+                <tr>
+                    <td><a href="{{this.url}}" target="_blank">{{this.name}}</a></td>
+                    <td>{{this.estimate}}</td>
+                    <td><a href="/stories/{{this.current_state}}">{{this.current_state}}</a></td>
+                    <td>
+                        {{#each this.labels}}
+                            <a href="/labels/{{this.name}}">{{this.name}}</a>
+                            {{#unless @last}},{{/unless}}
+                        {{/each}}
+                    </td>
+                </tr>
+            {{/each}}
             </tbody>
         </table>
     </div>
@@ -60,6 +59,7 @@
 
 <script>
     $(document).ready(function() {
-        $('#labelTable').DataTable();
+        $('#storyTable').DataTable();
     } );
 </script>
+

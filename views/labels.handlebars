@@ -12,15 +12,34 @@
     {{/each}}
 </div>
 <div class="page-header">
-    <h1>All Labels</h1>
+<h2>All Labels</h2>
 </div>
-<div class="row">
-    {{#each labels}}
-        <ul>
-            <li><a href="/labels/{{this}}">{{this}}</a></li>
-        </ul>
-    {{else}}
-        <br>
-        <p>No matching labels found :(</p>
-    {{/each}}
+<div class="row center-block">
+    <div class="col-md-6">
+        <table id="labelTable" class="table display">
+            <thead>
+            <tr>
+                <th>Label</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{#each labels}}
+                <tr>
+                    <td><a href="/labels/{{this}}">{{this}}</a></td>
+                </tr>
+            {{/each}}
+            </tbody>
+        </table>
+    </div>
 </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.13/js/dataTables.bootstrap.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#labelTable').DataTable();
+    });
+</script>
+

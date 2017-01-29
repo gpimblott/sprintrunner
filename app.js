@@ -13,17 +13,25 @@ var routes = require('./routes/index');
 var labels = require('./routes/labels');
 var projects = require('./routes/projects');
 var epics = require('./routes/epics');
+var stories = require('./routes/stories');
 
 var app = express();
-app.engine('handlebars',
-  exphbs({
-    helpers: {
-      dateFormat: hdf
-    },
-    defaultLayout: 'main'
-  }));
+
+var hbs = exphbs.create({
+  // Specify helpers which are only registered on this instance.
+  helpers: {
+    dateFormat: hdf,
+    nl2br: function (text, isXhtml) {
+        var breakTag = (isXhtml || typeof isXhtml === 'undefined') ? '<br />' : '<br>';
+        return (text + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + breakTag + '$2');
+      }
+  }, defaultLayout: 'main'
+});
+
+app.engine('handlebars', hbs.engine);
 
 app.set('view engine', 'handlebars');
+
 
 var useAuth = process.env.USE_AUTH || 'false'
 if (useAuth === 'true') {
@@ -51,6 +59,7 @@ app.use('/', routes);
 app.use('/labels', labels);
 app.use('/projects', projects);
 app.use('/epics', epics);
+app.use('/stories', stories);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -99,9 +108,9 @@ var signOffSlotsLimit = process.env.REVIEW_SLOTS_LIMIT || 5;
 app.set('signOffSlotsLimit', signOffSlotsLimit);
 
 var defaultLabels = process.env.DEFAULT_LABELS || "";
-app.set('defaultLabels', defaultLabels);
+app.set('defaultLabels', defaultLabels.split(','));
 
 var defaultProjects = process.env.DEFAULT_PROJECTS || "";
-app.set('defaultProjects', defaultProjects);
+app.set('defaultProjects', defaultProjects.split(','));
 
 module.exports = app;
