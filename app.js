@@ -1,5 +1,6 @@
 var express = require('express');
 var exphbs = require('express-handlebars');
+var Handlebars = require('handlebars');
 var hdf = require('handlebars-dateformat');
 
 var path = require('path');
@@ -14,6 +15,7 @@ var labels = require('./routes/labels');
 var projects = require('./routes/projects');
 var epics = require('./routes/epics');
 var stories = require('./routes/stories');
+var roadmap = require('./routes/roadmap');
 
 var app = express();
 
@@ -22,16 +24,26 @@ var hbs = exphbs.create({
   helpers: {
     dateFormat: hdf,
     nl2br: function (text, isXhtml) {
-        var breakTag = (isXhtml || typeof isXhtml === 'undefined') ? '<br />' : '<br>';
-        return (text + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + breakTag + '$2');
+      var breakTag = (isXhtml || typeof isXhtml === 'undefined') ? '<br />' : '<br>';
+      return (text + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + breakTag + '$2');
+    },
+    truncate: function (str, len) {
+      if (str && str.length > len && str.length > 0) {
+        var new_str = str + " ";
+        new_str = str.substr(0, len);
+        new_str = str.substr(0, new_str.lastIndexOf(" "));
+        new_str = (new_str.length > 0) ? new_str : str.substr(0, len);
+
+        return new Handlebars.SafeString(new_str + '...');
       }
-  }, defaultLayout: 'main'
-});
+      return str;
+    }},
+    defaultLayout: 'main'
+  });
 
 app.engine('handlebars', hbs.engine);
 
 app.set('view engine', 'handlebars');
-
 
 var useAuth = process.env.USE_AUTH || 'false'
 if (useAuth === 'true') {
@@ -60,6 +72,7 @@ app.use('/labels', labels);
 app.use('/projects', projects);
 app.use('/epics', epics);
 app.use('/stories', stories);
+app.use('/roadmap', roadmap);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

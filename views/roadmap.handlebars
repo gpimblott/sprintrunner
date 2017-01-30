@@ -1,0 +1,56 @@
+<!-- Jumbotron Header -->
+<header class="jumbotron hero-spacer">
+    <h1>LLC Roadmap</h1>
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsa, ipsam, eligendi, in quo sunt possimus non
+        incidunt odit vero aliquid similique quaerat nam nobis illo aspernatur vitae fugiat numquam repellat.</p>
+    <p><a class="btn btn-primary btn-large">Add Stream</a>
+    </p>
+</header>
+
+<hr>
+
+
+<!-- Page Features -->
+{{#each data}}
+<div class="row text-center well">
+
+    <div class="col-md-12 text-left" onclick="javascript:toggler('toggler_{{@index}}');" style="cursor: pointer;">
+        <h4 class=" dropdown-toggle" type="button" id="dropdownMenu_{{@index}}"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {{this.title}}
+            <span class="caret"></span>
+        </h4>
+    </div>
+
+    <div class="row" id="toggler_{{@index}}">
+
+        {{#each this.stories}}
+        <div class="col-md-4 col-sm-6 hero-feature">
+            <div class="thumbnail">
+                <!--<img src="http://placehold.it/800x500" alt="">-->
+                <div class="caption">
+                    <h4>{{this.name}}</h4>
+                    <p>{{{truncate this.description 50}}}</p>
+                    <p>
+                        <a href="#" class="btn btn-primary">View Stage</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+        {{/each}}
+
+    </div>
+</div>
+
+{{/each}}
+
+
+
+<script>
+
+    function toggler (divId) {
+        console.log("Toggle");
+        $("#" + divId).toggle();
+    }
+
+</script>

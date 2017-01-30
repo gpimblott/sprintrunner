@@ -56,8 +56,9 @@ router.get("/:labelName", function (req, res, next) {
         }
       }
 
-      res.render('labelsummary', {
-        label: label,
+
+      res.render('stories', {
+        title: 'Stories for label: ' + label,
         totalPoints: total,
         notEstimated: notEstimated,
         stories: stories,
