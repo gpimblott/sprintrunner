@@ -5,7 +5,7 @@ var pivotalApi = require('../lib/pivotalApi')
 
 router.get('/', function (req, res, next) {
 
-  pivotalApi.getLabelsForProject(res, function (labels) {
+  pivotalApi.getLabelsForAllProjects(res, function (labels) {
 
     res.render('labels', {
       projectId: res.app.get('pivotalProjectId'),

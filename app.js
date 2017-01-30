@@ -95,7 +95,6 @@ projectFetcher.buildProjectCache( app.get('pivotalApiKey') , app.get('defaultPro
 
 app.use(function(req, res, next){
   res.locals.projects = projectFetcher.getProjectSummary();
-  console.log(res.locals.projects);
   next();
 });
 
