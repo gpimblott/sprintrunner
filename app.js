@@ -16,8 +16,32 @@ var projects = require('./routes/projects');
 var epics = require('./routes/epics');
 var stories = require('./routes/stories');
 var roadmap = require('./routes/roadmap');
+var kanban = require('./routes/kanban');
+
+var projectFetcher = require('./lib/projectFetcher');
 
 var app = express();
+
+/**
+ * Set API Key based on Environment variable
+ **/
+var pivotalApiKey = process.env.PIVOTAL_API_KEY || 'You need to set a key';
+app.set('pivotalApiKey', pivotalApiKey);
+
+var pivotalProjectId = process.env.PIVOTAL_PROJECT_ID || 'You need to set a project Id';
+app.set('pivotalProjectId', pivotalProjectId);
+
+var reviewSlotsLimit = process.env.REVIEW_SLOTS_LIMIT || 4;
+app.set('reviewSlotsLimit', reviewSlotsLimit);
+
+var signOffSlotsLimit = process.env.REVIEW_SLOTS_LIMIT || 5;
+app.set('signOffSlotsLimit', signOffSlotsLimit);
+
+var defaultLabels = process.env.DEFAULT_LABELS || "";
+app.set('defaultLabels', defaultLabels.split(','));
+
+var defaultProjects = process.env.DEFAULT_PROJECTS || "";
+app.set('defaultProjects', defaultProjects.split(','));
 
 var hbs = exphbs.create({
   // Specify helpers which are only registered on this instance.
@@ -67,12 +91,23 @@ app.use(bodyParser.urlencoded({
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+projectFetcher.buildProjectCache( app.get('pivotalApiKey') , app.get('defaultProjects'));
+
+app.use(function(req, res, next){
+  res.locals.projects = projectFetcher.getProjectSummary();
+  console.log(res.locals.projects);
+  next();
+});
+
 app.use('/', routes);
 app.use('/labels', labels);
 app.use('/projects', projects);
 app.use('/epics', epics);
 app.use('/stories', stories);
 app.use('/roadmap', roadmap);
+app.use('/kanban', kanban);
+
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -105,25 +140,8 @@ app.use(function (err, req, res, next) {
   });
 });
 
-/**
- * Set API Key based on Environment variable
- **/
-var pivotalApiKey = process.env.PIVOTAL_API_KEY || 'You need to set a key';
-app.set('pivotalApiKey', pivotalApiKey);
 
-var pivotalProjectId = process.env.PIVOTAL_PROJECT_ID || 'You need to set a project Id';
-app.set('pivotalProjectId', pivotalProjectId);
 
-var reviewSlotsLimit = process.env.REVIEW_SLOTS_LIMIT || 4;
-app.set('reviewSlotsLimit', reviewSlotsLimit);
 
-var signOffSlotsLimit = process.env.REVIEW_SLOTS_LIMIT || 5;
-app.set('signOffSlotsLimit', signOffSlotsLimit);
-
-var defaultLabels = process.env.DEFAULT_LABELS || "";
-app.set('defaultLabels', defaultLabels.split(','));
-
-var defaultProjects = process.env.DEFAULT_PROJECTS || "";
-app.set('defaultProjects', defaultProjects.split(','));
 
 module.exports = app;

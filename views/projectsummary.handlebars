@@ -10,7 +10,7 @@
             <tbody>
             {{#each projects}}
                 <tr>
-                    <td>{{this.name}}</td>
+                    <td><a href="/kanban/{{this.id}}">{{this.name}}</a></td>
                     <td>{{this.description}}</td>
                 </tr>
             {{/each}}

@@ -19,7 +19,7 @@ router.get('/', function (req, res, next) {
 router.get("/:labelName", function (req, res, next) {
   var label = req.params[ "labelName" ];
 
-  storyFetcher.getStoriesWithLabel(res, label, res.app.get('defaultProjects'), function (error, stories) {
+  storyFetcher.getAllStoriesWithLabel(res, label, res.app.get('defaultProjects'), function (error, stories) {
 
     if (error) {
 

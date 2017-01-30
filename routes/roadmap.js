@@ -3,7 +3,7 @@ var router = express.Router();
 var storyFetcher = require('../lib/storyFetcher');
 
 router.get('/', function (req, res, next) {
-  storyFetcher.getStoriesWithLabel(res, 'mvp nov17', res.app.get('defaultProjects'), function (error, stories) {
+  storyFetcher.getAllStoriesWithLabel(res, 'mvp nov17', res.app.get('defaultProjects'), function (error, stories) {
 
     if (error) {
 
