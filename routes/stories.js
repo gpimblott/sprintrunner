@@ -16,15 +16,21 @@ internals.renderStories = function (res, stories, title) {
     // Count the stories for each state
     if (story.current_state in stateMap) {
       stateMap[ story.current_state ].count += 1;
-      if (typeof story.estimate == "number") {
+      if (typeof story.estimate !== 'undefined' && typeof story.estimate === "number") {
         stateMap[ story.current_state ].points += story.estimate;
+        console.log("etimate yy:" + story.estimate + ":");
+        console.log("total yy:" + story.estimate + ":");
       }
     } else {
-      stateMap[ story.current_state ] = { count: 1, points: story.estimate };
+      if (typeof story.estimate === 'undefined') {
+        stateMap[ story.current_state ] = { count: 1, points: 0 };
+      } else {
+        stateMap[ story.current_state ] = { count: 1, points: story.estimate };
+      }
     }
 
     // Could just add all point point up
-    if (typeof story.estimate != "number") {
+    if (typeof story.estimate === "undefined" || typeof story.estimate !== "number") {
       notEstimated++;
     } else {
       total += story.estimate;
