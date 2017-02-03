@@ -18,8 +18,6 @@ internals.renderStories = function (res, stories, title) {
       stateMap[ story.current_state ].count += 1;
       if (typeof story.estimate !== 'undefined' && typeof story.estimate === "number") {
         stateMap[ story.current_state ].points += story.estimate;
-        console.log("etimate yy:" + story.estimate + ":");
-        console.log("total yy:" + story.estimate + ":");
       }
     } else {
       if (typeof story.estimate === 'undefined') {
