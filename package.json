@@ -18,6 +18,7 @@
     "async": "2.1.2",
     "find-business-days-in-range": "1.0.2",
     "express-handlebars": "latest",
+    "handlebars":"latest",
     "handlebars-dateformat": "latest"
   },
   "main": "./bin/www"
