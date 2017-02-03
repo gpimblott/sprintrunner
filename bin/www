@@ -11,7 +11,7 @@ var http = require('http');
 /**
  * Get port from environment and store in Express.
  */
-var server_port = normalizePort(process.env.PORT || '3000');
+var server_port = normalizePort(process.env.OPENSHIFT_RUBBERNECKER_PORT || '3000');
 var server_ip_address = process.env.OPENSHIFT_NODE4_IP || '127.0.0.1'
 
 
