@@ -104,4 +104,4 @@ Temporary Items
 
 # Cloud Foundry Specific Things
 manifest.yml
-.openshift
+.op
