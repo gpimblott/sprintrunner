@@ -20,4 +20,5 @@
     "express-handlebars": "latest",
     "handlebars-dateformat": "latest"
   }
+  "main": "./bin/wwws.js"
 }
