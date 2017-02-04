@@ -1,56 +1,65 @@
 var express = require('express');
 var router = express.Router();
-var storyFetcher = require('../lib/storyFetcher');
 var projectFetcher = require('../lib/projectFetcher');
+var pivotalApi = require('../lib/pivotalApi');
 
 var internals = {};
 
 internals.renderKanban = function (res, projects, title) {
-  storyFetcher.getAllStoriesWithStatus(res, 'started', projects, function (error, startedStories) {
+  var statuses = [ 'unstarted', 'started', 'finished' ];
+  var queries = [];
+
+  statuses.forEach(function (status) {
+    projects.forEach(function (projectId) {
+      var fullQuery =
+        "/services/v5/projects/"
+        + projectId
+        + '/stories?date_format=millis&with_state='
+        + encodeURIComponent(status)
+        + '&fields=url,project_id,current_state,estimate,name,description,labels(name)';
+      queries.push(fullQuery);
+    });
+  })
+
+  var query = queries.length === 0 ? "[]" : "[\"" + queries.join("\",\"") + "\"]";
+
+  pivotalApi.aggregateQuery(res, query, function (error, results) {
 
     if (error) {
-      res.render('damn', {
-        message: '┬──┬◡ﾉ(° -°ﾉ)',
-        status: error,
-        reason: "(╯°□°）╯︵ ┻━┻"
-      });
+      callback(error, null);
       return;
     }
 
-    storyFetcher.getAllStoriesWithStatus(res, 'finished', projects, function (error, finishedStories) {
+    var statusMap = {};
 
-      if (error) {
-        res.render('damn', {
-          message: '┬──┬◡ﾉ(° -°ﾉ)',
-          status: error,
-          reason: "(╯°□°）╯︵ ┻━┻"
-        });
-        return;
-      }
+    for (var queryResult in results) {
+      var storyArray = results[ queryResult ];
 
+      for (var i = 0; i < storyArray.length; i++) {
+        var story = storyArray[i];
 
-      storyFetcher.getAllStoriesWithStatus(res, 'unstarted', projects, function (error, notStarted) {
-
-
-        if (error) {
-          res.render('damn', {
-            message: '┬──┬◡ﾉ(° -°ﾉ)',
-            status: error,
-            reason: "(╯°□°）╯︵ ┻━┻"
-          });
-          return;
+        if (!(story.current_state in statusMap)) {
+          statusMap [ story.current_state ] = { stories: [] };
         }
 
-        res.render("kanban", {
-            notStarted: notStarted,
-            started: startedStories,
-            finished: finishedStories,
-            title: title
-          });
+        statusMap [ story.current_state ].stories.push(story);
+      }
+    }
 
-      });
+    var notStarted = (statusMap [ 'unstarted' ]===undefined?[] : statusMap['unstarted'].stories);
+    var started = (statusMap [ 'started' ]===undefined?[] : statusMap['started'].stories);
+    var finished = (statusMap [ 'finished' ]===undefined?[] : statusMap['finished'].stories);
+
+    res.render("kanban", {
+      notStarted: notStarted,
+      started: started,
+      finished: finished,
+      title: title
     });
+
   });
+
+
 }
 
 router.get('/', function (req, res, next) {
