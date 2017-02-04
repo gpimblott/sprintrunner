@@ -61,9 +61,21 @@ var hbs = exphbs.create({
         return new Handlebars.SafeString(new_str + '...');
       }
       return str;
-    }},
-    defaultLayout: 'main'
-  });
+    },
+    projectid2name: function (id) {
+      return new Handlebars.SafeString(projectFetcher.lookupProject(id));
+    },
+    calculatePoints: function (stories) {
+      var points = 0;
+      stories.forEach( function(story) {
+        points += story.estimate;
+      });
+
+      return points;
+    }
+  },
+  defaultLayout: 'main'
+});
 
 app.engine('handlebars', hbs.engine);
 
@@ -91,9 +103,9 @@ app.use(bodyParser.urlencoded({
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-projectFetcher.buildProjectCache( app.get('pivotalApiKey') , app.get('defaultProjects'));
+projectFetcher.buildProjectCache(app.get('pivotalApiKey'), app.get('defaultProjects'));
 
-app.use(function(req, res, next){
+app.use(function (req, res, next) {
   res.locals.projects = projectFetcher.getProjectSummary();
   next();
 });
@@ -105,8 +117,6 @@ app.use('/epics', epics);
 app.use('/stories', stories);
 app.use('/roadmap', roadmap);
 app.use('/kanban', kanban);
-
-
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -138,9 +148,5 @@ app.use(function (err, req, res, next) {
     error: {}
   });
 });
-
-
-
-
 
 module.exports = app;

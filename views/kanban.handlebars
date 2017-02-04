@@ -6,10 +6,43 @@
 <!-- Page Features -->
 <div class="row text-center well">
 
+    <div class="col-md-12 text-left" onclick="javascript:toggler('notStarted');" style="cursor: pointer;">
+        <h4 class=" dropdown-toggle" type="button" id="dropdownMenu1"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Not Started (Stories:{{notStarted.length}} , Points:{{calculatePoints notStarted}})
+            <span class="caret"></span>
+        </h4>
+    </div>
+
+    <div class="row" id="notStarted">
+        {{#each notStarted}}
+            <div class="col-md-4 col-sm-6 hero-feature">
+                <div class="thumbnail">
+                    <!--<img src="http://placehold.it/800x500" alt="">-->
+                    <div class="caption">
+                        <h4><a href="{{this.url}}" target="_blank">{{this.name}}</a></h4>
+                        <p>{{{truncate this.description 50}}}</p>
+                        <p>
+                            {{#each this.labels}}
+                                <a href="/labels/{{this.name}}">{{this.name}}</a>
+                                {{#unless @last}},{{/unless}}
+                            {{/each}}</p>
+                        <p>{{this.estimate}} points</p>
+                    </div>
+                </div>
+            </div>
+        {{/each}}
+
+    </div>
+</div>
+
+<!-- Page Features -->
+<div class="row text-center well">
+
     <div class="col-md-12 text-left" onclick="javascript:toggler('started');" style="cursor: pointer;">
         <h4 class=" dropdown-toggle" type="button" id="dropdownMenu1"
             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Started ({{started.length}})
+            Started (Stories:{{started.length}} , Points:{{calculatePoints started}})
             <span class="caret"></span>
         </h4>
     </div>
@@ -43,7 +76,7 @@
     <div class="col-md-12 text-left" onclick="javascript:toggler('finished');" style="cursor: pointer;">
         <h4 class=" dropdown-toggle" type="button" id="dropdownMenu1"
             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Finished ({{finished.length}})
+            Finished (Stories:{{finished.length}} , Points:{{calculatePoints finished}})
             <span class="caret"></span>
         </h4>
     </div>

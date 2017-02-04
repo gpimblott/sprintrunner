@@ -31,6 +31,7 @@
                 <th>Estimate</th>
                 <th>Status</th>
                 <th>Labels</th>
+                <th>Project</th>
             </tr>
             </thead>
             <tbody>
@@ -44,6 +45,9 @@
                             <a href="/labels/{{this.name}}">{{this.name}}</a>
                             {{#unless @last}},{{/unless}}
                         {{/each}}
+                    </td>
+                    <td>
+                        <a href="/kanban/{{this.project_id}}">{{projectid2name this.project_id}}</a>
                     </td>
                 </tr>
             {{/each}}

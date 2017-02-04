@@ -5,7 +5,7 @@ var projectFetcher = require('../lib/projectFetcher');
 
 var internals = {};
 
-internals.renderKanban = function ( res, projects, title ) {
+internals.renderKanban = function (res, projects, title) {
   storyFetcher.getAllStoriesWithStatus(res, 'started', projects, function (error, startedStories) {
 
     if (error) {
@@ -25,28 +25,42 @@ internals.renderKanban = function ( res, projects, title ) {
           status: error,
           reason: "(╯°□°）╯︵ ┻━┻"
         });
-
-      } else {
-        res.render("kanban", {
-          started: startedStories,
-          finished: finishedStories,
-          title: title
-        });
+        return;
       }
-    });
 
+
+      storyFetcher.getAllStoriesWithStatus(res, 'unstarted', projects, function (error, notStarted) {
+
+
+        if (error) {
+          res.render('damn', {
+            message: '┬──┬◡ﾉ(° -°ﾉ)',
+            status: error,
+            reason: "(╯°□°）╯︵ ┻━┻"
+          });
+          return;
+        }
+
+        res.render("kanban", {
+            notStarted: notStarted,
+            started: startedStories,
+            finished: finishedStories,
+            title: title
+          });
+
+      });
+    });
   });
 }
 
 router.get('/', function (req, res, next) {
-  internals.renderKanban( res , res.app.get('defaultProjects') , 'All projects');
+  internals.renderKanban(res, res.app.get('defaultProjects'), 'All projects');
 });
 
 router.get('/:projectId', function (req, res, next) {
   var projectId = req.params[ "projectId" ];
-  internals.renderKanban( res , [ projectId ] , projectFetcher.lookupProject(projectId))
+  internals.renderKanban(res, [ projectId ], projectFetcher.lookupProject(projectId))
 });
-
 
 module.exports = router;
 
