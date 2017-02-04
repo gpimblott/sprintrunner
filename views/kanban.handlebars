@@ -14,7 +14,7 @@
         </h4>
     </div>
 
-    <div class="row" id="notStarted">
+    <div class="row" id="notStarted" style="display:none;">
         {{#each notStarted}}
             <div class="col-md-4 col-sm-6 hero-feature">
                 <div class="thumbnail">
@@ -81,7 +81,7 @@
         </h4>
     </div>
 
-    <div class="row" id="finished">
+    <div class="row" id="finished" style="display:none;">
         {{#each finished}}
             <div class="col-md-4 col-sm-6 hero-feature">
                 <div class="thumbnail">
@@ -110,7 +110,6 @@
 <script>
 
     function toggler (divId) {
-        console.log("Toggle");
         $("#" + divId).toggle();
     }
 
