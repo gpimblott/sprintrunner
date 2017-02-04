@@ -4,7 +4,7 @@ var epicFetcher = require('../lib/epicFetcher');
 
 router.get('/', function (req, res, next) {
 
-  epicFetcher.getEpicSummary(res, res.app.get('defaultProjects'), function (error, epics) {
+  epicFetcher.getAllEpic(res, res.app.get('defaultProjects'), function (error, epics) {
 
     if (error) {
       res.render('damn', {
