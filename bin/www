@@ -3,7 +3,6 @@
 /**
  * Module dependencies.
  */
-
 var app = require('../app');
 var debug = require('debug')('rubbernecker:server');
 var http = require('http');
@@ -13,8 +12,6 @@ var http = require('http');
  */
 var server_port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8090;
 var server_ip_address = process.env.OPENSHIFT_NODEJS_IP;
-
-
 
 /**
  * Get port from environment and store in Express.
@@ -27,28 +24,21 @@ app.set('port', server_port);
 
 var server = http.createServer(app);
 
-//  Start the app on the specific interface (if specified) and port.
-if( server_ip_address===undefined) {
-  server.listen( server_port, function () {
+/**
+ * Start the app on the specific interface (if specified) and port.
+ */
+if (server_ip_address === undefined) {
+  server.listen(server_port, server_ip_address , function () {
     console.log('%s: Node server started on %s:%d ...',
-      Date(Date.now()), server_port);
+      Date(Date.now()), server_ip_address ,server_port);
   });
 } else {
-  server.listen( server_port, server_ip_address, function () {
+  server.listen(server_port, server_ip_address, function () {
     console.log('%s: Node server started on %s:%d ...',
       Date(Date.now()), server_ip_address, server_port);
   });
 }
 
-
-
-/**
- * Listen on provided port, on all network interfaces.
- */
-
-//server.listen(server_port, server_ip_address);
-
-//server.listen(server_port, server_ip_address );
 server.on('error', onError);
 server.on('listening', onListening);
 
@@ -56,7 +46,7 @@ server.on('listening', onListening);
  * Normalize a port into a number, string, or false.
  */
 
-function normalizePort(val) {
+function normalizePort (val) {
   var port = parseInt(val, 10);
 
   if (isNaN(port)) {
@@ -76,7 +66,7 @@ function normalizePort(val) {
  * Event listener for HTTP server "error" event.
  */
 
-function onError(error) {
+function onError (error) {
   if (error.syscall !== 'listen') {
     throw error;
   }
@@ -104,7 +94,7 @@ function onError(error) {
  * Event listener for HTTP server "listening" event.
  */
 
-function onListening() {
+function onListening () {
   var addr = server.address();
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
