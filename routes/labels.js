@@ -8,7 +8,6 @@ router.get('/', function (req, res, next) {
   pivotalApi.getLabelsForAllProjects(res, function (labels) {
 
     res.render('labels', {
-      projectId: res.app.get('pivotalProjectId'),
       defaultLabels: res.app.get('defaultLabels'),
       labels: labels
     });
