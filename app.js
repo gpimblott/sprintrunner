@@ -67,11 +67,54 @@ var hbs = exphbs.create({
     },
     calculatePoints: function (stories) {
       var points = 0;
-      stories.forEach( function(story) {
-        points += story.estimate;
+      if (stories === undefined) {
+        return 0;
+      }
+
+      stories.forEach(function (story) {
+        if (!(story.estimate === undefined)) {
+          points += story.estimate;
+        }
       });
 
       return points;
+    },
+    is_finished: function (stories, options) {
+      for(var i=0;i<stories.length;i++) {
+        if( stories[i].current_state!='finished') {
+          return options.inverse(this);
+        }
+      }
+      return options.fn(this);
+    },
+    is_started: function (stories, options) {
+      for (var i = 0; i < stories.length; i++) {
+        if (stories[ i ].current_state === 'started') {
+          return options.fn(this);
+        }
+      }
+      return options.inverse(this);
+    },
+    story_summary: function (stories) {
+      var started=0;
+      var unstarted=0;
+      var unscheduled=0;
+      var finished=0;
+      for (var i = 0; i < stories.length; i++) {
+        var story = stories[i];
+        if( story.current_state==='started') {
+          started++;
+        } else if (story.current_state==='finished') {
+          finished++;
+        } else if (story.current_state==='unstarted') {
+          unstarted++;
+        } else if (story.current_state==='unscheduled') {
+          unscheduled++;
+        }
+      }
+
+      var text = "Started: " + started + " Finished:" + finished + " Not Started:" + unstarted + " Unscheduled:" + unscheduled;
+      return text;
     }
   },
   defaultLayout: 'main'

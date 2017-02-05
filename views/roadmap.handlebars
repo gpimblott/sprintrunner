@@ -1,52 +1,62 @@
 <!-- Jumbotron Header -->
 <div class="page-header">
     <h1>LLC Roadmap</h1>
-    <p>This is WIP - Just showing stories against milestone labels at the moment - I want this to show Epics against milestones</p>
+    <p>Shows Epics assigned to each milestone</p>
     </p>
 </div>
 
 
 <!-- Page Features -->
-{{#each data}}
-<div class="row text-center well">
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
 
-    <div class="col-md-12 text-left" onclick="javascript:toggler('toggler_{{@index}}');" style="cursor: pointer;">
-        <h4 class=" dropdown-toggle" type="button" id="dropdownMenu_{{@index}}"
-            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            {{this.title}}
-            <span class="caret"></span>
-        </h4>
-    </div>
+            {{#each milestones}}
+                <div class="col-md-4" style="border: #cdcdcd medium dashed">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-10 col-md-offset-1">
+                                <h4 class="caption text-center">
+                                    <b>{{this.title}}</b>
+                                </h4>
+                            </div>
+                        </div>
 
-    <div class="row" id="toggler_{{@index}}">
 
-        {{#each this.stories}}
-        <div class="col-md-4 col-sm-6 hero-feature">
-            <div class="thumbnail">
-                <!--<img src="http://placehold.it/800x500" alt="">-->
-                <div class="caption">
-                    <h4>{{this.name}}</h4>
-                    <p>{{{truncate this.description 50}}}</p>
-                    <p>
-                        <a href="#" class="btn-sm btn-primary">Details</a>
-                    </p>
+                        <div class="row">
+                            <div class="col-md-12">
+
+                                {{#each this.data}}
+                                    {{#is_finished this.stories}}
+                                    <div class="panel panel-success">
+                                    {{else is_started this.stories}}
+                                    <div class="panel panel-warning">
+                                    {{else}}
+                                    <div class="panel panel-default">
+                                    {{/is_finished}}
+                                        <div class="panel-heading">
+                                            <h3 class="panel-title text-center">
+                                            <a href="/labels/{{this.epic.label.name}}">{{this.epic.name}}</a>
+                                            </h3>
+                                        </div>
+                                        <div class="panel-body">
+                                            <small>{{this.stories.length}} stories</small>
+                                            <small>{{calculatePoints this.stories}} points</small>
+                                            <br><small>{{story_summary this.stories}}</small>
+                                        </div>
+                                    </div>
+
+                                {{/each}}
+                            </div>
+
+                        </div>
+
+                    </div>
                 </div>
-            </div>
-        </div>
-        {{/each}}
 
+            {{/each}}
+        </div>
     </div>
 </div>
 
-{{/each}}
 
-
-
-<script>
-
-    function toggler (divId) {
-        console.log("Toggle");
-        $("#" + divId).toggle();
-    }
-
-</script>
