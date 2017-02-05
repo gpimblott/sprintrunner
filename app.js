@@ -150,6 +150,7 @@ projectFetcher.buildProjectCache(app.get('pivotalApiKey'), app.get('defaultProje
 
 app.use(function (req, res, next) {
   res.locals.projects = projectFetcher.getProjectSummary();
+  res.locals.defaultLabels = app.get('defaultLabels');
   next();
 });
 

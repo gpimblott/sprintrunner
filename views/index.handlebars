@@ -1,5 +1,40 @@
-<!-- Main jumbotron for a primary marketing message or call to action -->
 <div class="jumbotron">
-    <h1>Rubbernecker</h1>
-    <p>Viewer for Pivotal Tracker</p>
+    <div class="container">
+        <h1>Rubbernecker</h1>
+        <p>Viewer application for Pivotal Tracker.
+            Provides views to allow epics/stories to be managed for multiple projects.
+            Totals points for stories using multiple criteria.
+            Dynamic searching of epics, stories and labels</p>
+        <p>All data is retrieved dynamically using the Pivotal API - no caching - no stale data</p>
+    </div>
 </div>
+
+<div class="container">
+    <!-- Example row of columns -->
+    <div class="row">
+        <div class="col-md-4">
+            <h2>Kanban view</h2>
+            <p>Display Kanban style views for each project, or all stories across mutliple projects.</p>
+            {{#each projects}}
+                <li><a href="/kanban/{{this.id}}">{{this.name}}</a></li>
+            {{/each}}
+        </div>
+        <div class="col-md-4">
+            <h2>Label view</h2>
+            <p>View stories based on labels</p>
+            <ul>
+                {{#each defaultLabels}}
+                    <li><a href="/labels/{{this}}">{{this}}</a></li>
+                {{/each}}
+            </ul>
+        </div>
+        <div class="col-md-4">
+            <h2>Roadmap view</h2>
+            <p>View the epics assigned to a milestone label</p>
+            <ul>
+                <li><a href="/roadmap">Roadmap</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <hr>

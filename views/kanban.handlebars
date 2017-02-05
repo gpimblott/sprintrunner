@@ -1,105 +1,104 @@
-<!-- Jumbotron Header -->
-<div class="page-header">
-    <h1>KanBan View - {{title}}</h1>
+<div class="row">
+    <div class="col-md-12 text-center">
+        <h3>Kanban - {{title}}</h3>
+    </div>
 </div>
-
-
 <!-- Page Features -->
-<div class="container">
-    <div class="row">
+<div class="row">
+    <div class="col-md-12">
+        <div class="col-md-4" style="border: #cdcdcd medium dashed">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-10 col-md-offset-1">
+                        <h4 class="caption text-center">
+                            <b>Not Started</b> <br>
+                            <small>Stories:{{notStarted.length}}  Points:{{calculatePoints notStarted}}</small>
+                        </h4>
+                    </div>
+                </div>
+
+                {{#each notStarted}}
+                    <div class="row well well-sm">
+
+                        <div class="col-md-12">
+                            <h4><a href="{{this.url}}" target="_blank">{{this.name}}</a></h4>
+                            <p>{{{truncate this.description 100}}}</p>
+                            <p>
+                                {{#each this.labels}}
+                                    <a href="/labels/{{this.name}}">{{this.name}}</a>
+                                    {{#unless @last}},{{/unless}}
+                                {{/each}}</p>
+                            <p>{{this.estimate}} points ({{projectid2name this.project_id}})</p>
+                        </div>
+
+                    </div>
+                {{/each}}
+            </div>
+        </div>
+
+        <div class="col-md-4" style="border: #cdcdcd medium dashed">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-10 col-md-offset-1">
+                        <h4 class="caption text-center">
+                            <b>Started</b> <br>
+                            <small>Stories:{{started.length}}  Points:{{calculatePoints started}}</small>
+                        </h4>
+                    </div>
+                </div>
+
+                {{#each started}}
+                    <div class="row well well-sm">
+
+                        <div class="col-md-12">
+                            <h4><a href="{{this.url}}" target="_blank">{{this.name}}</a></h4>
+                            <p>{{{truncate this.description 100}}}</p>
+                            <p>
+                                {{#each this.labels}}
+                                    <a href="/labels/{{this.name}}">{{this.name}}</a>
+                                    {{#unless @last}},{{/unless}}
+                                {{/each}}</p>
+                            <p>{{this.estimate}} points ({{projectid2name this.project_id}})</p>
+                        </div>
+
+                    </div>
+                {{/each}}
+            </div>
+        </div>
+
+        <div class="col-md-4" style="border: #cdcdcd medium dashed"
+        ">
         <div class="col-md-12">
-            <div class="col-md-4" style="border: #cdcdcd medium dashed">
-                <div class="col-md-12" >
-                    <div class="row">
-                        <div class="col-md-10 col-md-offset-1">
-                            <h4 class="caption text-center">
-                                <b>Not Started</b> <br>
-                                <small>Stories:{{notStarted.length}}  Points:{{calculatePoints notStarted}}</small>
-                            </h4>
-                        </div>
-                    </div>
-
-                    {{#each notStarted}}
-                        <div class="row well well-sm">
-
-                            <div class="col-md-12">
-                                <h4><a href="{{this.url}}" target="_blank">{{this.name}}</a></h4>
-                                <p>{{{truncate this.description 100}}}</p>
-                                <p>
-                                    {{#each this.labels}}
-                                        <a href="/labels/{{this.name}}">{{this.name}}</a>
-                                        {{#unless @last}},{{/unless}}
-                                    {{/each}}</p>
-                                <p>{{this.estimate}} points ({{projectid2name this.project_id}})</p>
-                            </div>
-
-                        </div>
-                    {{/each}}
+            <div class="row">
+                <div class="col-md-10 col-md-offset-1">
+                    <h4 class="caption text-center">
+                        <b>Finished</b> <br>
+                        <small>Stories:{{finished.length}}  Points:{{calculatePoints finished}}</small>
+                    </h4>
                 </div>
             </div>
 
-            <div class="col-md-4" style="border: #cdcdcd medium dashed">
-                <div class="col-md-12">
-                    <div class="row">
-                        <div class="col-md-10 col-md-offset-1">
-                            <h4 class="caption text-center">
-                                <b>Started</b> <br>
-                                <small>Stories:{{started.length}}  Points:{{calculatePoints started}}</small>
-                            </h4>
-                        </div>
+            {{#each finished}}
+                <div class="row well well-sm">
+
+                    <div class="col-md-12">
+                        <h4><a href="{{this.url}}" target="_blank">{{this.name}}</a></h4>
+                        <p>{{{truncate this.description 100}}}</p>
+                        <p>
+                            {{#each this.labels}}
+                                <a href="/labels/{{this.name}}">{{this.name}}</a>
+                                {{#unless @last}},{{/unless}}
+                            {{/each}}</p>
+                        <p>{{this.estimate}} points ({{projectid2name this.project_id}})</p>
                     </div>
 
-                    {{#each started}}
-                        <div class="row well well-sm">
-
-                            <div class="col-md-12">
-                                <h4><a href="{{this.url}}" target="_blank">{{this.name}}</a></h4>
-                                <p>{{{truncate this.description 100}}}</p>
-                                <p>
-                                    {{#each this.labels}}
-                                        <a href="/labels/{{this.name}}">{{this.name}}</a>
-                                        {{#unless @last}},{{/unless}}
-                                    {{/each}}</p>
-                                <p>{{this.estimate}} points ({{projectid2name this.project_id}})</p>
-                            </div>
-
-                        </div>
-                    {{/each}}
                 </div>
-            </div>
-
-            <div class="col-md-4" style="border: #cdcdcd medium dashed"">
-                <div class="col-md-12">
-                    <div class="row">
-                        <div class="col-md-10 col-md-offset-1">
-                            <h4 class="caption text-center">
-                                <b>Finished</b> <br>
-                                <small>Stories:{{finished.length}}  Points:{{calculatePoints finished}}</small>
-                            </h4>
-                        </div>
-                    </div>
-
-                    {{#each finished}}
-                        <div class="row well well-sm">
-
-                            <div class="col-md-12">
-                                <h4><a href="{{this.url}}" target="_blank">{{this.name}}</a></h4>
-                                <p>{{{truncate this.description 100}}}</p>
-                                <p>
-                                    {{#each this.labels}}
-                                        <a href="/labels/{{this.name}}">{{this.name}}</a>
-                                        {{#unless @last}},{{/unless}}
-                                    {{/each}}</p>
-                               <p>{{this.estimate}} points ({{projectid2name this.project_id}})</p>
-                            </div>
-
-                        </div>
-                    {{/each}}
-                </div>
-            </div>
+            {{/each}}
         </div>
     </div>
 </div>
+</div>
+
 
 
 
