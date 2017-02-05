@@ -1,9 +1,7 @@
 <div class="row">
     <div class="panel panel-default">
-        <div class="panel-heading">{{title}}</div>
-        <div class="panel-body">
-            <p>Number of Stories : {{stories.length}}, Total points : {{totalPoints}},
-                Not Estimated : {{notEstimated}}</p>
+        <div class="panel-heading">
+            <h3 class="panel-title">{{title}}</h3>
         </div>
         <table class="table">
             <tr>
@@ -19,6 +17,8 @@
                 </tr>
             {{/each}}
         </table>
+        <div class="panel-footer"> Number of Stories : {{stories.length}} &nbsp; Total points : {{totalPoints}} &nbsp;
+            Not Estimated : {{notEstimated}}</div>
     </div>
 
 </div>
@@ -37,7 +37,7 @@
             <tbody>
             {{#each stories}}
                 <tr>
-                    <td><a href="{{this.url}}" target="_blank">{{this.name}}</a></td>
+                    <td><a href="{{this.url}}" target="_blank">{{this.name}}&nbsp;<span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span></a></td>
                     <td>{{this.estimate}}</td>
                     <td><a href="/stories/{{this.current_state}}">{{this.current_state}}</a></td>
                     <td>

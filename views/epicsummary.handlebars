@@ -6,20 +6,16 @@
                 <th>Name</th>
                 <th>Epic Label</th>
                 <th>Description</th>
-                <th>Goto Pivotal</th>
             </tr>
             </thead>
             <tbody>
             {{#each epics}}
                 <tr>
-                    <td><a href="/labels/{{this.label.name}}" target="_blank">{{this.name}}</a></td>
+                    <td><a href="{{this.url}}" target="_blank">{{this.name}} &nbsp;<span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span></a></td>
                     <td><a href="/labels/{{this.label.name}}">{{this.label.name}}</td>
                     <td>{{{nl2br this.description}}}</td>
-                    <td><a href="{{this.url}}" target="_blank"><span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span></a></td>
                 </tr>
             {{/each}}
-
-
             </tbody>
         </table>
     </div>

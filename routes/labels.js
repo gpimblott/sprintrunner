@@ -31,7 +31,7 @@ router.get("/:labelName", function (req, res, next) {
       });
 
     } else {
-      utils.renderStories(res, stories, "Stories with label " + label);
+      utils.renderStories(res, stories, "Stories with label '" + label + "'");
     }
   });
 });

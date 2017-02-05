@@ -33,7 +33,7 @@ router.get('/:status', function (req, res, next) {
       });
 
     } else {
-      utils.renderStories(res, stories, "Stories with Status " + status);
+      utils.renderStories(res, stories, "Stories with status '" + status+"'");
     }
   });
 
