@@ -17,6 +17,7 @@ var epics = require('./routes/epics');
 var stories = require('./routes/stories');
 var roadmap = require('./routes/roadmap');
 var kanban = require('./routes/kanban');
+var search = require('./routes/search');
 
 var projectFetcher = require('./lib/projectFetcher');
 
@@ -83,8 +84,8 @@ var hbs = exphbs.create({
       return points;
     },
     is_finished: function (stories, options) {
-      for(var i=0;i<stories.length;i++) {
-        if( stories[i].current_state!='finished') {
+      for (var i = 0; i < stories.length; i++) {
+        if (stories[ i ].current_state != 'finished') {
           return options.inverse(this);
         }
       }
@@ -99,19 +100,19 @@ var hbs = exphbs.create({
       return options.inverse(this);
     },
     story_summary: function (stories) {
-      var started=0;
-      var unstarted=0;
-      var unscheduled=0;
-      var finished=0;
+      var started = 0;
+      var unstarted = 0;
+      var unscheduled = 0;
+      var finished = 0;
       for (var i = 0; i < stories.length; i++) {
-        var story = stories[i];
-        if( story.current_state==='started') {
+        var story = stories[ i ];
+        if (story.current_state === 'started') {
           started++;
-        } else if (story.current_state==='finished') {
+        } else if (story.current_state === 'finished') {
           finished++;
-        } else if (story.current_state==='unstarted') {
+        } else if (story.current_state === 'unstarted') {
           unstarted++;
-        } else if (story.current_state==='unscheduled') {
+        } else if (story.current_state === 'unscheduled') {
           unscheduled++;
         }
       }
@@ -164,6 +165,7 @@ app.use('/epics', epics);
 app.use('/stories', stories);
 app.use('/roadmap', roadmap);
 app.use('/kanban', kanban);
+app.use('/search', search);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
