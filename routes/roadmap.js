@@ -29,11 +29,22 @@ internals.getEpics = function (stories, epics, callback) {
     var epic = epics[ j ];
 
     if (epic.label.name in labelMap) {
-      results.push({epic:epic, stories:labelMap[epic.label.name].stories});
+      results.push({ epic: epic, stories: labelMap[ epic.label.name ].stories });
     }
   }
 
   callback(null, results);
+}
+
+internals.getEpicsForMilestones = function (res, epics, name, callback) {
+  // Now get the labels we are interested in
+  storyFetcher.getAllStoriesWithLabel(res, name, res.app.get('defaultProjects'), function (error, stories) {
+    if (error) {
+      callback(error, null);
+    } else {
+      internals.getEpics(stories, epics, callback);
+    }
+  });
 }
 
 /**
@@ -53,38 +64,15 @@ router.get('/', function (req, res, next) {
 
     } else {
 
-      async.parallel([
-          function (callback) {
-            // Now get the labels we are interested in
-            storyFetcher.getAllStoriesWithLabel(res, "mvp nov17", res.app.get('defaultProjects'), function (error, stories) {
-              if (error) {
-                callback(error, null);
-              } else {
-                internals.getEpics(stories, epics, callback);
-              }
-            });
-          },
-          function (callback) {
-            // Now get the labels we are interested in
-            storyFetcher.getAllStoriesWithLabel(res, "mvp april 18", res.app.get('defaultProjects'), function (error, stories) {
-              if (error) {
-                callback(error, null);
-              } else {
-                internals.getEpics(stories, epics, callback);
-              }
-            });
-          },
-          function (callback) {
-            // Now get the labels we are interested in
-            storyFetcher.getAllStoriesWithLabel(res, "post april 18", res.app.get('defaultProjects'), function (error, stories) {
-              if (error) {
-                callback(error, null);
-              } else {
-                internals.getEpics(stories, epics, callback);
-              }
-            });
-          } ],
-        // Combine the results of the things above
+      var milestoneNames = res.app.get('milestoneLabels');
+      var functionArray = [];
+      for (var i = 0; i < milestoneNames.length; i++) {
+        functionArray.push(internals.getEpicsForMilestones.bind(null, res, epics, milestoneNames[ i ]));
+      }
+
+      async.parallel(
+        functionArray,
+
         function (err, results) {
           if (err) {
             res.render('damn', {
@@ -94,12 +82,12 @@ router.get('/', function (req, res, next) {
             });
           } else {
 
+            var resultsArray = [];
+            for (var i = 0; i < milestoneNames.length; i++) {
+              resultsArray.push({ title: milestoneNames[ i ] , data: results[ i ]});
+            }
             res.render("roadmap", {
-              milestones: [
-                { title: 'MVP Nov 17', data: results[ 0 ] },
-                { title: 'MVP April 18', data: results[ 1 ] },
-                { title: 'Post April 18', data: results[ 2 ] }
-              ]
+              milestones: resultsArray
             });
           }
         });

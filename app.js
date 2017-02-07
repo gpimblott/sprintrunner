@@ -43,6 +43,9 @@ app.set('defaultLabels', defaultLabels.split(','));
 var defaultProjects = process.env.DEFAULT_PROJECTS || "";
 app.set('defaultProjects', defaultProjects.split(','));
 
+var milestoneLabels = process.env.MILESTONE_LABELS || "";
+app.set('milestoneLabels', milestoneLabels.split(','));
+
 var hbs = exphbs.create({
   // Specify helpers which are only registered on this instance.
   helpers: {

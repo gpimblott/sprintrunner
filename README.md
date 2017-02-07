@@ -9,7 +9,7 @@ Pivotal also doesn't handle multiple teams at all. This fork has been designed t
 All searches are across multiple projects and transparently aggregated
 It also focussed on providing stats across projects to make it easier to generate reports
 
-Next steps are to project team based dashboards of current stories (as per the original design)
+Includes : Kanban boards oer team, Roadmap display, Story and Epic searching
 
 ##Installation
 
@@ -50,7 +50,5 @@ applications:
     PASSWORD: sensible long password goes here
     DEFAULT_PROJECTS: comma separated list of project ids that are searched
     DEFAULT_LABELS: The labels that you are really interested in (Pivotal creates lots)
+    MILESTONE_LABELS: The labels to use for the roadmap
 ```
-
-### Some Opinions inflicted on you
-We work in 2 week iterations so when figuring out days in a particular state we get back only the last two week of story transitions. If we don't find a thing. Feel free to raise an issue to make this configurable. It might add horrible extra work though to deal with pagination if you are working in longer iterations. If you are though; Ask yourself some questions.
