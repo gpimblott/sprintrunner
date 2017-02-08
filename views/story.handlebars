@@ -1,0 +1,50 @@
+<div class="row">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">{{story.name}}</h3>
+        </div>
+        <table class="table">
+
+            <tr>
+                <td>Description</td>
+                <td>
+                    {{{nl2br story.description}}}
+                </td>
+            </tr>
+            <tr>
+                <td>State</td>
+                <td>
+                    <a href="/stories/{{story.current_state}}">{{story.current_state}}</a>
+                </td>
+            </tr>
+            <tr>
+                <td>Project</td>
+                <td>
+                    <a href="/kanban/{{story.project_id}}">{{projectid2name story.project_id}}</a>
+                </td>
+            </tr>
+            <tr>
+                <td>Estimate</td>
+                <td>
+                    {{story.estimate}}
+                </td>
+            </tr>
+            <tr>
+                <td>Labels</td>
+                <td>
+                    {{#each story.labels}}
+                        <a href="/labels/{{this.name}}">{{this.name}}</a>
+                        {{#unless @last}},{{/unless}}
+                    {{/each}}
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <a href="{{story.url}}" target="_blank">Show in Pivotal &nbsp; <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span></a>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+</div>

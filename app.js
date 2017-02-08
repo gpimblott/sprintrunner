@@ -18,6 +18,7 @@ var stories = require('./routes/stories');
 var roadmap = require('./routes/roadmap');
 var kanban = require('./routes/kanban');
 var search = require('./routes/search');
+var story = require('./routes/story');
 
 var projectFetcher = require('./lib/projectFetcher');
 
@@ -166,6 +167,7 @@ app.use('/stories', stories);
 app.use('/roadmap', roadmap);
 app.use('/kanban', kanban);
 app.use('/search', search);
+app.use('/story', story);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

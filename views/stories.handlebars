@@ -37,7 +37,7 @@
             <tbody>
             {{#each stories}}
                 <tr>
-                    <td><a href="{{this.url}}" target="_blank">{{this.name}}&nbsp;<span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span></a></td>
+                    <td><a href="/story/{{this.project_id}}/{{this.id}}">{{this.name}}&nbsp</a></td>
                     <td>{{this.estimate}}</td>
                     <td><a href="/stories/{{this.current_state}}">{{this.current_state}}</a></td>
                     <td>

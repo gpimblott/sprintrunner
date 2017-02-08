@@ -21,8 +21,8 @@
                     <div class="row well well-sm">
 
                         <div class="col-md-12">
-                            <h4><a href="{{this.url}}" target="_blank">{{this.name}}</a></h4>
-                            <p>{{{truncate this.description 100}}}</p>
+                            <h4><a href="{{this.url}}" target="_blank" data-toggle="tooltip" data-placement="bottom" title="{{this.description}}">{{this.name}}</a></h4>
+                            <!--<p>{{{truncate this.description 100}}}</p>-->
                             <p>
                                 {{#each this.labels}}
                                     <a href="/labels/{{this.name}}">{{this.name}}</a>
@@ -51,8 +51,8 @@
                     <div class="row well well-sm">
 
                         <div class="col-md-12">
-                            <h4><a href="{{this.url}}" target="_blank">{{this.name}}</a></h4>
-                            <p>{{{truncate this.description 100}}}</p>
+                            <h4><a href="{{this.url}}" target="_blank" data-toggle="tooltip" data-placement="bottom" title="{{this.description}}">{{this.name}}</a></h4>
+                            <!--<p>{{{truncate this.description 100}}}</p>-->
                             <p>
                                 {{#each this.labels}}
                                     <a href="/labels/{{this.name}}">{{this.name}}</a>
@@ -82,8 +82,8 @@
                 <div class="row well well-sm">
 
                     <div class="col-md-12">
-                        <h4><a href="{{this.url}}" target="_blank">{{this.name}}</a></h4>
-                        <p>{{{truncate this.description 100}}}</p>
+                        <h4><a href="{{this.url}}" target="_blank" data-toggle="tooltip" data-placement="bottom" title="{{this.description}}">{{this.name}}</a></h4>
+                        <!--<p>{{{truncate this.description 100}}}</p>-->
                         <p>
                             {{#each this.labels}}
                                 <a href="/labels/{{this.name}}">{{this.name}}</a>
