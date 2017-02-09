@@ -56,6 +56,10 @@ var hbs = exphbs.create({
       var breakTag = (isXhtml || typeof isXhtml === 'undefined') ? '<br />' : '<br>';
       return (text + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + breakTag + '$2');
     },
+    encode: function (context, str) {
+      var uri = context || str;
+      return new Handlebars.SafeString(encodeURIComponent(uri));
+    },
     truncate: function (str, len) {
       if (str && str.length > len && str.length > 0) {
         var new_str = str + " ";
