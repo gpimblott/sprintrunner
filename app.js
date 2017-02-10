@@ -27,17 +27,6 @@ var app = express();
 /**
  * Set API Key based on Environment variable
  **/
-var pivotalApiKey = process.env.PIVOTAL_API_KEY || 'You need to set a key';
-app.set('pivotalApiKey', pivotalApiKey);
-
-var pivotalProjectId = process.env.PIVOTAL_PROJECT_ID || 'You need to set a project Id';
-app.set('pivotalProjectId', pivotalProjectId);
-
-var reviewSlotsLimit = process.env.REVIEW_SLOTS_LIMIT || 4;
-app.set('reviewSlotsLimit', reviewSlotsLimit);
-
-var signOffSlotsLimit = process.env.REVIEW_SLOTS_LIMIT || 5;
-app.set('signOffSlotsLimit', signOffSlotsLimit);
 
 var defaultLabels = process.env.DEFAULT_LABELS || "";
 app.set('defaultLabels', defaultLabels.split(','));
