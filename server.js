@@ -14,9 +14,11 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+
 var session = require('express-session');
-var utils = require('./lib/utils.js');
 var express_enforces_ssl = require('express-enforces-ssl');
+
+var utils = require('./lib/utils.js');
 
 var routes = require('./routes/index');
 var labels = require('./routes/labels');
@@ -33,10 +35,6 @@ var teamDao = require('./dao/team');
 /**
  * Set API Key based on Environment variable
  **/
-
-
-
-
 var SprintRunner = function() {
     var self = this;
 

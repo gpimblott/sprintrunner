@@ -5,6 +5,10 @@
   "scripts": {
     "start": "node ./server.js"
   },
+  "engines": {
+    "node": "4.4.6",
+    "npm": "2.15.5"
+  },
   "dependencies": {
     "db-migrate": "0.10.0-beta.12",
     "db-migrate-pg": "latest",

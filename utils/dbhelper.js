@@ -5,10 +5,8 @@
  */
 var pg = require('pg');
 
-
 var DBHelper = function () {
 };
-
 
 /**
  * Perform a select query operation
