@@ -1,0 +1,1 @@
+DELETE FROM story_status;

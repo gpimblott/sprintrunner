@@ -3,6 +3,8 @@
 /**
  * Module dependencies.
  */
+require('dotenv').config({path: 'process.env'});
+
 var app = require('../app');
 var debug = require('debug')('rubbernecker:server');
 var http = require('http');

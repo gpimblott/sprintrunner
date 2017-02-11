@@ -31,23 +31,23 @@
                 <th>Estimate</th>
                 <th>Status</th>
                 <th>Labels</th>
-                <th>Project</th>
+                <th>Team</th>
             </tr>
             </thead>
             <tbody>
             {{#each stories}}
                 <tr>
-                    <td><a href="/story/{{this.project_id}}/{{this.id}}">{{this.name}}&nbsp</a></td>
-                    <td>{{this.estimate}}</td>
-                    <td><a href="/stories/{{this.current_state}}">{{this.current_state}}</a></td>
+                    <td><a href="/story/{{this.id}}">{{this.title}}&nbsp</a></td>
+                    <td align="center">{{this.estimate}}</td>
+                    <td><a href="/stories/{{encode this.current_state}}">{{this.current_state}}</a></td>
                     <td>
                         {{#each this.labels}}
-                            <a href="/labels/{{this.name}}">{{this.name}}</a>
+                            <a href="/labels/{{encode this.name}}">{{this.name}}</a>
                             {{#unless @last}},{{/unless}}
                         {{/each}}
                     </td>
                     <td>
-                        <a href="/kanban/{{this.project_id}}">{{projectid2name this.project_id}}</a>
+                        <a href="/kanban/{{encode this.team_name}}">{{this.team_name}}</a>
                     </td>
                 </tr>
             {{/each}}

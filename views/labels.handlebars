@@ -25,7 +25,7 @@
             <tbody>
             {{#each labels}}
                 <tr>
-                    <td><a href="/labels/{{this}}">{{this}}</a></td>
+                    <td><a href="/labels/{{encode this.name}}">{{this.name}}</a></td>
                 </tr>
             {{/each}}
             </tbody>

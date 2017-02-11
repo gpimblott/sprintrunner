@@ -6,10 +6,13 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "db-migrate": "0.10.0-beta.12",
+    "db-migrate-pg": "latest",
     "body-parser": "~1.15.1",
     "cookie-parser": "~1.4.3",
     "debug": "~2.2.0",
     "ejs": "~2.4.1",
+    "dotenv": "1.2.0",
     "express": "~4.14.0",
     "morgan": "~1.7.0",
     "serve-favicon": "~2.3.0",
@@ -19,7 +22,11 @@
     "express-handlebars": "latest",
     "handlebars":"latest",
     "handlebars-dateformat": "latest",
-    "basic-auth":"latest"
+    "basic-auth":"latest",
+    "passport": "latest",
+    "passport-local": "latest",
+    "pg": "4.1.1",
+    "sanitize-html": "latest"
   },
   "main": "./bin/www"
 }

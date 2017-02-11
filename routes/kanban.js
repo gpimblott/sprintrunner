@@ -1,74 +1,57 @@
 var express = require('express');
 var router = express.Router();
-var projectFetcher = require('../lib/projectFetcher');
-var pivotalApi = require('../lib/pivotalApi');
+var storyDao = require('../dao/story');
 
 var internals = {};
 
-internals.renderKanban = function (res, projects, title) {
-  var statuses = [ 'unstarted', 'started', 'finished' ];
-  var queries = [];
+internals.renderKanban = function (res, team, title) {
 
-  statuses.forEach(function (status) {
-    projects.forEach(function (projectId) {
-      var fullQuery =
-        "/services/v5/projects/"
-        + projectId
-        + '/stories?date_format=millis&with_state='
-        + encodeURIComponent(status)
-        + '&fields=url,project_id,current_state,estimate,name,description,labels(name)';
-      queries.push(fullQuery);
-    });
-  })
+    var renderer = function (error, results) {
 
-  var query = queries.length === 0 ? "[]" : "[\"" + queries.join("\",\"") + "\"]";
+        if (error) {
+            res.render('damn', {
+                message: '┬──┬◡ﾉ(° -°ﾉ)',
+                status: error,
+                reason: "(╯°□°）╯︵ ┻━┻"
+            });
+        } else {
 
-  pivotalApi.aggregateQuery(res, query, function (error, results) {
+            var statusMap = {};
+            results.forEach(function (story) {
+                if (!(story.current_state in statusMap)) {
+                    statusMap [story.current_state] = {stories: []};
+                }
 
-    if (error) {
-      callback(error, null);
-      return;
-    }
+                statusMap [story.current_state].stories.push(story);
+            })
 
-    var statusMap = {};
+            var notStarted = (statusMap ['not started'] === undefined ? [] : statusMap['not started'].stories);
+            var started = (statusMap ['started'] === undefined ? [] : statusMap['started'].stories);
+            var finished = (statusMap ['finished'] === undefined ? [] : statusMap['finished'].stories);
 
-    for (var queryResult in results) {
-      var storyArray = results[ queryResult ];
-
-      for (var i = 0; i < storyArray.length; i++) {
-        var story = storyArray[i];
-
-        if (!(story.current_state in statusMap)) {
-          statusMap [ story.current_state ] = { stories: [] };
+            res.render("kanban", {
+                notStarted: notStarted,
+                started: started,
+                finished: finished,
+                title: title
+            });
         }
+    };
 
-        statusMap [ story.current_state ].stories.push(story);
-      }
+    if (team === null) {
+        storyDao.getAllStories(renderer);
+    } else {
+        storyDao.getStoriesForTeam(team, renderer);
     }
-
-    var notStarted = (statusMap [ 'unstarted' ]===undefined?[] : statusMap['unstarted'].stories);
-    var started = (statusMap [ 'started' ]===undefined?[] : statusMap['started'].stories);
-    var finished = (statusMap [ 'finished' ]===undefined?[] : statusMap['finished'].stories);
-
-    res.render("kanban", {
-      notStarted: notStarted,
-      started: started,
-      finished: finished,
-      title: title
-    });
-
-  });
-
-
 }
 
 router.get('/', function (req, res, next) {
-  internals.renderKanban(res, res.app.get('defaultProjects'), 'All projects');
+    internals.renderKanban(res, null, 'All projects');
 });
 
-router.get('/:projectId', function (req, res, next) {
-  var projectId = req.params[ "projectId" ];
-  internals.renderKanban(res, [ projectId ], projectFetcher.lookupProject(projectId))
+router.get('/:teamName', function (req, res, next) {
+    var teamName = decodeURIComponent(req.params["teamName"]);
+    internals.renderKanban(res, teamName, teamName)
 });
 
 module.exports = router;

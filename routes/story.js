@@ -1,12 +1,11 @@
 var express = require('express');
 var router = express.Router();
-var storyFetcher = require('../lib/storyFetcher');
+var storyDao = require('../dao/story');
 
-router.get('/:projectId/:storyId', function (req, res, next) {
-  var projectId = req.params[ "projectId" ];
+router.get('/:storyId', function (req, res, next) {
   var storyId = req.params[ "storyId" ];
 
-  storyFetcher.getStory(res, projectId , storyId, function (error, story) {
+  storyDao.getStory( storyId, function (error, story) {
 
     if (error) {
       res.render('damn', {
@@ -16,6 +15,7 @@ router.get('/:projectId/:storyId', function (req, res, next) {
       });
 
     } else {
+      console.log(story);
       res.render("story", {
         story: story
       });

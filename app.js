@@ -12,7 +12,7 @@ var utils = require('./lib/utils.js')
 
 var routes = require('./routes/index');
 var labels = require('./routes/labels');
-var projects = require('./routes/projects');
+var teams = require('./routes/teams');
 var epics = require('./routes/epics');
 var stories = require('./routes/stories');
 var roadmap = require('./routes/roadmap');
@@ -20,7 +20,8 @@ var kanban = require('./routes/kanban');
 var search = require('./routes/search');
 var story = require('./routes/story');
 
-var projectFetcher = require('./lib/projectFetcher');
+var teamDao = require('./dao/team');
+
 
 var app = express();
 
@@ -59,9 +60,6 @@ var hbs = exphbs.create({
         return new Handlebars.SafeString(new_str + '...');
       }
       return str;
-    },
-    projectid2name: function (id) {
-      return new Handlebars.SafeString(projectFetcher.lookupProject(id));
     },
     calculatePoints: function (stories) {
       var points = 0;
@@ -119,7 +117,6 @@ var hbs = exphbs.create({
 });
 
 app.engine('handlebars', hbs.engine);
-
 app.set('view engine', 'handlebars');
 
 var useAuth = process.env.USE_AUTH || 'false'
@@ -131,6 +128,7 @@ if (useAuth === 'true') {
 
 // view engine setup
 app.set('layoutsDir', path.join(__dirname, 'views/layouts'));
+app.set('partialsDir' , path.join(__dirname , 'views/partials'));
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -144,17 +142,17 @@ app.use(bodyParser.urlencoded({
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-projectFetcher.buildProjectCache(app.get('pivotalApiKey'), app.get('defaultProjects'));
+teamDao.rebuildCache();
 
 app.use(function (req, res, next) {
-  res.locals.projects = projectFetcher.getProjectSummary();
+  res.locals.teams = teamDao.getTeamCache();
   res.locals.defaultLabels = app.get('defaultLabels');
   next();
 });
 
 app.use('/', routes);
 app.use('/labels', labels);
-app.use('/projects', projects);
+app.use('/teams', teams);
 app.use('/epics', epics);
 app.use('/stories', stories);
 app.use('/roadmap', roadmap);

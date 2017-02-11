@@ -1,7 +1,7 @@
 <div class="row">
     <div class="panel panel-default">
         <div class="panel-heading">
-            <h3 class="panel-title">{{story.name}}</h3>
+            <h3 class="panel-title">{{story.title}}</h3>
         </div>
         <table class="table">
 
@@ -14,19 +14,24 @@
             <tr>
                 <td>State</td>
                 <td>
-                    <a href="/stories/{{story.current_state}}">{{story.current_state}}</a>
+                    <a href="/stories/{{encode .current_state}}">{{story.current_state}}</a>
                 </td>
             </tr>
             <tr>
-                <td>Project</td>
+                <td>Team</td>
                 <td>
-                    <a href="/kanban/{{story.project_id}}">{{projectid2name story.project_id}}</a>
+                    <a href="/kanban/{{encode story.team_name}}">{{story.team_name}}</a>
                 </td>
             </tr>
             <tr>
                 <td>Estimate</td>
                 <td>
-                    {{story.estimate}}
+                    {{#if story.estimate}}
+                        {{story.estimate}}
+                    {{else}}
+                        Not estimated
+                    {{/if}}
+
                 </td>
             </tr>
             <tr>
@@ -38,12 +43,7 @@
                     {{/each}}
                 </td>
             </tr>
-            <tr>
-                <td></td>
-                <td>
-                    <a href="{{story.url}}" target="_blank">Show in Pivotal &nbsp; <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span></a>
-                </td>
-            </tr>
+
         </table>
     </div>
 
