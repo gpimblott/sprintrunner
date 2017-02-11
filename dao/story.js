@@ -46,7 +46,7 @@ Story.getAllEpics = function (done) {
         + " JOIN story_status status"
         + " ON story.status_id=status.id"
         + " LEFT JOIN teams ON story.team_id=teams.id"
-        + " WHERE story.type=1";
+        + " WHERE story.type=0";
 
     var params = [];
     dbhelper.query(sql, params,
