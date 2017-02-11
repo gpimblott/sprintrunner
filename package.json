@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./server.js"
   },
   "dependencies": {
     "db-migrate": "0.10.0-beta.12",
@@ -14,12 +14,14 @@
     "ejs": "~2.4.1",
     "dotenv": "1.2.0",
     "express": "~4.14.0",
+    "express-enforces-ssl": "^1.1.0",
+    "express-session": "latest",
+    "express-handlebars": "latest",
     "morgan": "~1.7.0",
     "serve-favicon": "~2.3.0",
     "cfenv": "1.0.3",
     "request": "2.76.0",
     "async": "2.1.2",
-    "express-handlebars": "latest",
     "handlebars":"latest",
     "handlebars-dateformat": "latest",
     "basic-auth":"latest",

@@ -24,6 +24,7 @@ DBHelper.query = function (sql, parameters, done, error) {
 
     pg.defaults.poolSize=50;
 
+    console.log(process.env.DATABASE_URL);
     //console.log("query:" + sql);
     pg.connect(process.env.DATABASE_URL, function (err, client) {
         var results = [];
