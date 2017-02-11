@@ -1,6 +1,5 @@
 var express = require('express');
 var router = express.Router();
-var storyFetcher = require('../lib/storyFetcher');
 var utils = require('../lib/utils');
 var storyDao = require('../dao/story');
 

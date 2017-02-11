@@ -1,6 +1,6 @@
 CREATE TABLE stories(
                 id SERIAL PRIMARY KEY,
-                type integer,
+                type integer default(1),
                 title char varying(150),
                 description TEXT );
 

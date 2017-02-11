@@ -40,12 +40,32 @@ Story.getStory = function (storyId, done) {
         });
 }
 
+Story.getAllEpics = function (done) {
+    var sql = "SELECT story.*, status.name as current_state, COALESCE( teams.name,'Not assigned') as team_name"
+        + " FROM stories story"
+        + " JOIN story_status status"
+        + " ON story.status_id=status.id"
+        + " LEFT JOIN teams ON story.team_id=teams.id"
+        + " WHERE story.type=1";
+
+    var params = [];
+    dbhelper.query(sql, params,
+        function (results) {
+            done(null , results);
+        },
+        function (error) {
+            console.error(error);
+            done(error , null );
+        });
+}
+
 Story.getAllStories = function (done) {
     var sql = "SELECT story.*, status.name as current_state, COALESCE( teams.name,'Not assigned') as team_name"
      + " FROM stories story"
      + " JOIN story_status status"
      + " ON story.status_id=status.id"
-     + " LEFT JOIN teams ON story.team_id=teams.id;";
+     + " LEFT JOIN teams ON story.team_id=teams.id"
+        + " WHERE story.type=1";
 
     var params = [];
     dbhelper.query(sql, params,

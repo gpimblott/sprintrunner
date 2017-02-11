@@ -5,7 +5,6 @@ var type = dbm.dataType;
 var fs = require('fs');
 var path = require('path');
 
-
 /**
   * We receive the dbmigrate dependency from dbmigrate initially.
   * This enables us to not have to rely on NODE_PATH.

@@ -1,25 +1,23 @@
 var express = require('express');
 var router = express.Router();
-var epicFetcher = require('../lib/epicFetcher');
+var utils = require('../lib/utils');
+var storyDao = require('../dao/story');
 
 router.get('/', function (req, res, next) {
 
-  epicFetcher.getAllEpics(res, res.app.get('defaultProjects'), function (error, epics) {
+    storyDao.getAllEpics( function (error, stories) {
 
-    if (error) {
-      res.render('damn', {
-        message: '┬──┬◡ﾉ(° -°ﾉ)',
-        status: error,
-        reason: "(╯°□°）╯︵ ┻━┻"
-      });
-    } else {
+        if (error) {
+            res.render('damn', {
+                message: '┬──┬◡ﾉ(° -°ﾉ)',
+                status: error,
+                reason: "(╯°□°）╯︵ ┻━┻"
+            });
 
-      res.render('epicsummary', {
-        epics: epics
-      });
-
-    }
-  });
+        } else {
+            utils.renderStories(res, stories, "All Epics");
+        }
+    })
 
 });
 
