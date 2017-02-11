@@ -19,13 +19,13 @@ var DBHelper = function () {
  */
 DBHelper.query = function (sql, parameters, done, error) {
     if (process.env.USE_SSL && process.env.USE_SSL.toLowerCase() !== 'false') {
+        console.log('Using SSL');
         pg.defaults.ssl = true;
     }
 
     pg.defaults.poolSize=50;
 
     console.log(process.env.DATABASE_URL);
-    //console.log("query:" + sql);
     pg.connect(process.env.DATABASE_URL, function (err, client) {
         var results = [];
 
