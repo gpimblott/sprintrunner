@@ -15,8 +15,8 @@
         <div class="col-md-4">
             <h2>Kanban view</h2>
             <p>Display Kanban style views for each project, or all stories across mutliple projects.</p>
-            {{#each projects}}
-                <li><a href="/kanban/{{this.id}}">{{this.name}}</a></li>
+            {{#each teams}}
+                <li><a href="/kanban/{{encode this.name}}">{{this.name}}</a></li>
             {{/each}}
         </div>
         <div class="col-md-4">
