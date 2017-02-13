@@ -1,79 +1,44 @@
-body {
-  padding-top: 70px;
+.normal-page {
+    padding-top: 70px;
 }
 
-.panel-started {
-  border-color: #2c3e50;
-}
-.panel-started > .panel-heading {
-  color: #fff;
-  background-color: #2c3e50;
-  border-color: #2c3e50;
-}
-.panel-started > .panel-heading + .panel-collapse > .panel-body {
-  border-top-color: #2c3e50;
-}
-.panel-started > .panel-heading .badge {
-  color: #2c3e50;
-  background-color: #fff;
-}
-.panel-started > .panel-footer + .panel-collapse > .panel-body {
-  border-bottom-color: #2c3e50;
+.index-page {
+    padding-top: 0px;
 }
 
-.panel-finished {
-  border-color: #f39c12;
-}
-.panel-finished > .panel-heading {
-  color: #fff;
-  background-color: #f39c12;
-  border-color: #f39c12;
-}
-.panel-finished > .panel-heading + .panel-collapse > .panel-body {
-  border-top-color: #f39c12;
-}
-.panel-finished > .panel-heading .badge {
-  color: #f39c12;
-  background-color: #fff;
-}
-.panel-finished > .panel-footer + .panel-collapse > .panel-body {
-  border-bottom-color: #f39c12;
+.kanban-column {
+    border-style: none dotted none dotted;
+    border-width: 1px;
+    border-color:   #004444;
+    background-color: ghostwhite;
 }
 
-.panel-delivered {
-  border-color: #27ae60;
-}
-.panel-delivered > .panel-heading {
-  color: #fff;
-  background-color: #27ae60;
-  border-color: #27ae60;
-}
-.panel-delivered > .panel-heading + .panel-collapse > .panel-body {
-  border-top-color: #27ae60;
-}
-.panel-delivered > .panel-heading .badge {
-  color: #27ae60;
-  background-color: #fff;
-}
-.panel-delivered > .panel-footer + .panel-collapse > .panel-body {
-  border-bottom-color: #27ae60;
+.kanban-card {
+    border: 1px solid gray;
+    padding: 0 ;
 }
 
-.panel-rejected {
-  border-color: #bdc3c7;
+.panel-group {
 }
-.panel-rejected > .panel-heading {
-  color: #fff;
-  background-color: #bdc3c7;
-  border-color: #bdc3c7;
+
+.panel > .panel-title {
 }
-.panel-rejected > .panel-heading + .panel-collapse > .panel-body {
-  border-top-color: #bdc3c7;
+
+
+.panel > .panel-body {
+    padding: 5px;
 }
-.panel-rejected > .panel-heading .badge {
-  color: #bdc3c7;
-  background-color: #fff;
+
+.panel > .panel-heading {
+    padding: 5px;
+    font-weight: bold;
+    color: black;
 }
-.panel-rejected > .panel-footer + .panel-collapse > .panel-body {
-  border-bottom-color: #bdc3c7;
+
+.panel > .panel-footer {
+}
+
+.panel > .panel-footer > p {
+    margin: 0 0 0 0;
+    padding-left: 5px;
 }
