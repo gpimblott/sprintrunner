@@ -1,0 +1,57 @@
+<div class="row">
+    <div class="col-md-10 col-md-offset-1">
+        <h2>Update Persona</h2>
+    </div>
+</div>
+
+<form action="/personas/update" enctype="multipart/form-data" method="post">
+
+    <input type="hidden" name="id" value="{{this.persona.id}}">
+
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="inputName" class="col-2 col-form-label">Name</label>
+                    <div class="col-12">
+                        <input class="form-control" type="text" name="name" id="name" value="{{this.persona.name}}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputDetails">Details</label>
+                    <textarea class="form-control" id="details" name="details"
+                              rows="10">{{this.persona.details}}
+                    </textarea>
+                </div>
+                <div class="form-group">
+                    <label for="inputGoal">Goal</label>
+                    <textarea class="form-control" id="goal" name="goal"
+                              rows="10">{{this.persona.goal}}
+                    </textarea>
+                </div>
+
+            </div>
+            <div class="col-md-6">
+                <figure class="thumbnail" style="padding-top: 20px;">
+                    <img id="avatarPreview" class="img-responsive" style="max-height: 200px; max-width: 250px" readonly
+                         src="/personas/image/{{this.persona.id}}"/>
+                    <figcaption class="text-center">
+                        <label for="avatar">Avatar</label>
+                        <input type="file" id="avatar" class="form-control" name="avatar"
+                               style="padding-bottom: 10px; min-height: 50px">
+                    </figcaption>
+                </figure>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            <div class="col-md-6">
+                <button type="submit" class="btn btn-primary">Update</button>
+                <a href="/personas/" class="btn btn-primary">Cancel</a>
+            </div>
+            <div class="col-md-6">
+            </div>
+        </div>
+    </div>
+</form>

@@ -1,13 +1,13 @@
 var express = require('express');
 var router = express.Router();
-var storyDao = require('../dao/story');
+var epicDao = require('../dao/epic');
 var personaDao = require('../dao/persona');
 var sanitizer = require('sanitize-html');
 
 router.get('/add', function (req, res, next) {
   personaDao.getNames( function( error , names) {
 
-    res.render("stories/add-story", {
+    res.render("epics/add-epic", {
       personas: names,
     });
   })
@@ -16,16 +16,14 @@ router.get('/add', function (req, res, next) {
 
 router.post('/add', function (req, res, next) {
   var title = sanitizer(req.body.title);
-  var status = sanitizer(req.body.status);
-  var estimate = sanitizer(req.body.estimate);
   var persona = sanitizer(req.body.persona);
   var description = sanitizer(req.body.description);
   var reason = sanitizer(req.body.reason);
   var acceptance_criteria = sanitizer(req.body.acceptance_criteria);
 
 
-  storyDao.add( title, persona , status , description, reason, acceptance_criteria, estimate , function( result , error ) {
-      res.redirect('/stories');
+  epicDao.add( title, persona  , description, reason, acceptance_criteria, function( result , error ) {
+      res.redirect('/epics');
   });
 });
 
@@ -33,7 +31,7 @@ router.post('/add', function (req, res, next) {
 router.get('/edit/:storyId', function (req, res, next) {
   var storyId = req.params[ "storyId" ];
 
-  storyDao.getStory( storyId, function (error, story) {
+  epicDao.getEpic( storyId, function (error, story) {
     personaDao.getNames(function (error, names) {
 
       if (error) {
@@ -44,7 +42,7 @@ router.get('/edit/:storyId', function (req, res, next) {
         });
 
       } else {
-        res.render("stories/edit-story", {
+        res.render("epics/edit-epic", {
           story: story,
           personas: names
         });
@@ -57,16 +55,14 @@ router.get('/edit/:storyId', function (req, res, next) {
 router.post('/update/:storyId', function (req, res, next) {
   var storyId = req.params[ "storyId" ];
   var title = sanitizer(req.body.title);
-  var status = sanitizer(req.body.status);
-  var estimate = sanitizer(req.body.estimate);
   var persona = sanitizer(req.body.persona);
   var description = sanitizer(req.body.description);
   var reason = sanitizer(req.body.reason);
   var acceptance_criteria = sanitizer(req.body.acceptance_criteria);
 
 
-  storyDao.update( storyId, title, persona , status , description, reason, acceptance_criteria, estimate , function( result , error ) {
-    res.redirect('/story/' + storyId);
+  epicDao.update( storyId, title, persona , description, reason, acceptance_criteria , function( result , error ) {
+    res.redirect('/epic/' + storyId);
   });
 });
 
@@ -74,15 +70,16 @@ router.post('/update/:storyId', function (req, res, next) {
 router.get('/delete/:storyId', function (req, res, next) {
   var storyId = req.params[ "storyId" ];
 
-  storyDao.delete( storyId , function(result , error) {
-    res.redirect('/stories');
+  epicDao.delete( storyId , function(result , error) {
+    res.redirect('/epics');
   })
 });
+
 
 router.get('/:storyId', function (req, res, next) {
   var storyId = req.params[ "storyId" ];
 
-  storyDao.getStory( storyId, function (error, story) {
+  epicDao.getEpic( storyId, function (error, story) {
 
     if (error) {
       res.render('damn', {
@@ -92,7 +89,7 @@ router.get('/:storyId', function (req, res, next) {
       });
 
     } else {
-      res.render("stories/show-story", {
+      res.render("epics/show-epic", {
         story: story
       });
     }

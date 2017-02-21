@@ -1,0 +1,68 @@
+<script src="/js/jquery.matchHeight-min.js" type="text/javascript"></script>
+<div class="row">
+    <div class="col-md-12">
+        <h2>Persona</h2>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="col-md-4 persona-column" id="name-column">
+            <h3><span class="glyphicon glyphicon-tag"></span>&nbsp;Name & Picture</h3>
+            <hr>
+            <img id="avatarPreview" class="thumbnail center-block"
+                 style="max-height: 200px; max-width: 200px; margin-top: 20px"
+                 readonly
+                 src="/personas/image/{{this.persona.id}}"/>
+            <h4 class="text-center">{{this.persona.name}}</h4>
+
+        </div>
+        <div class="col-md-4 persona-column" id="details-column">
+            <h3><span class="glyphicon glyphicon-search"></span>&nbsp;Details</h3>
+            <hr></hr>
+            <div>{{{nl2br this.persona.details}}}</div>
+        </div>
+        <div class="col-md-4 persona-column" id="goals-column">
+            <h3><span class="glyphicon glyphicon-record"></span>&nbsp;Goals</h3>
+            <hr>
+            <div>{{{nl2br this.persona.goal}}}</div>
+        </div>
+    </div>
+</div>
+
+<div class="row" style="margin-top: 20px">
+    <div class="col-md-10">
+        <a type="button" class="btn btn-primary btn-sm" href="/personas/edit/{{this.persona.id}}">Edit</a>
+        <a type="button" class="btn btn-primary btn-sm" href="/personas/delete/{{this.persona.id}}">Delete</a>
+        <a type="button" class="btn btn-primary btn-sm" href="/personas/">List Personas</a>
+    </div>
+</div>
+
+<script type="application/javascript">
+    $('#name-column').on('shown.bs.collapse', function() {
+        $.fn.matchHeight._update();
+    });
+    $('#details-column').on('shown.bs.collapse', function() {
+        $.fn.matchHeight._update();
+    });
+    $('#goals-column').on('shown.bs.collapse', function() {
+        $.fn.matchHeight._update();
+    });
+
+
+    (function() {
+        /* matchHeight example */
+        $(function() {
+            var options = {
+                byRow: true,
+                property: 'height',
+                target: null,
+                remove: false
+            };
+
+            $(function () {
+                $('.persona-column').matchHeight(options);
+            });
+        })})();
+</script>
+

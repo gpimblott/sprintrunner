@@ -1,0 +1,66 @@
+<div class="row">
+    <div class="col-md-10 col-md-offset-1">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">{{story.title}}</h3>
+            </div>
+            <table class="table">
+
+                <tr>
+                    <td>Description</td>
+                    <td>
+                        <p><b>As a</b> <a href="/personas/{{encode story.persona}}">{{story.persona_name}}</a><br><br>
+                            <b>I want</b><br> {{{nl2br story.description}}}<br><br>
+                            <b>So that</b><br> {{{nl2br story.reason}}}</p><br>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Acceptance criteria</td>
+                    <td>
+                        <p>{{{nl2br story.acceptance_criteria}}}</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>State</td>
+                    <td>
+                        <a href="/stories/{{encode story.current_state}}">{{story.current_state}}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Team</td>
+                    <td>
+                        <a href="/kanban/{{encode story.team_name}}">{{story.team_name}}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Estimate</td>
+                    <td>
+                        {{#if story.estimate}}
+                            {{story.estimate}}
+                        {{else}}
+                            Not estimated
+                        {{/if}}
+
+                    </td>
+                </tr>
+                <tr>
+                    <td>Labels</td>
+                    <td>
+                        {{#each story.labels}}
+                            <a href="/labels/{{this.name}}">{{this.name}}</a>
+                            {{#unless @last}},{{/unless}}
+                        {{/each}}
+                    </td>
+                </tr>
+
+            </table>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-10 col-md-offset-1">
+        <a type="button" class="btn btn-primary btn-sm" href="/story/edit/{{story.id}}">Edit</a>
+        <a type="button" class="btn btn-primary btn-sm" href="/story/delete/{{story.id}}">Delete</a>
+        <a type="button" class="btn btn-primary btn-sm" href="/stories/">Back to stories</a>
+    </div>
+</div>

@@ -27,12 +27,12 @@ internals.renderKanban = function (res, team, title) {
 
             var notStarted = (statusMap ['not started'] === undefined ? [] : statusMap['not started'].stories);
             var started = (statusMap ['started'] === undefined ? [] : statusMap['started'].stories);
-            var finished = (statusMap ['finished'] === undefined ? [] : statusMap['finished'].stories);
+            var delivered = (statusMap ['delivered'] === undefined ? [] : statusMap['delivered'].stories);
 
-            res.render("kanban", {
+            res.render("kanban/show-kanban", {
                 notStarted: notStarted,
                 started: started,
-                finished: finished,
+                delivered: delivered,
                 title: title
             });
         }
@@ -46,7 +46,7 @@ internals.renderKanban = function (res, team, title) {
 }
 
 router.get('/', function (req, res, next) {
-    internals.renderKanban(res, null, 'All projects');
+    internals.renderKanban(res, null, 'All stories');
 });
 
 router.get('/:teamName', function (req, res, next) {

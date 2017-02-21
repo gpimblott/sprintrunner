@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var labelDao = require('../dao/label');
 var storyDao = require('../dao/story');
-var utils = require('../lib/utils');
+var utils = require('../utils/storyHelper');
 
 
 router.get('/', function (req, res, next) {

@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var utils = require('../lib/utils');
+var utils = require('../utils/storyHelper');
 var storyDao = require('../dao/story');
 
 router.get('/', function (req, res, next) {

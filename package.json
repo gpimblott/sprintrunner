@@ -10,29 +10,30 @@
     "npm": "2.15.5"
   },
   "dependencies": {
+    "async": "2.1.2",
+    "body-parser": "latest",
+    "cfenv": "1.0.3",
+    "cookie-parser": "~1.4.3",
     "db-migrate": "0.10.0-beta.12",
     "db-migrate-pg": "latest",
-    "body-parser": "~1.15.1",
-    "cookie-parser": "~1.4.3",
     "debug": "~2.2.0",
-    "ejs": "~2.4.1",
     "dotenv": "1.2.0",
+    "ejs": "~2.4.1",
     "express": "~4.14.0",
     "express-enforces-ssl": "^1.1.0",
     "express-session": "latest",
     "express-handlebars": "latest",
     "morgan": "~1.7.0",
-    "serve-favicon": "~2.3.0",
-    "cfenv": "1.0.3",
+    "multer": "latest",
     "request": "2.76.0",
-    "async": "2.1.2",
+    "sanitize-html": "latest",
+    "serve-favicon": "~2.3.0",
     "handlebars":"latest",
     "handlebars-dateformat": "latest",
     "basic-auth":"latest",
     "passport": "latest",
     "passport-local": "latest",
-    "pg": "4.1.1",
-    "sanitize-html": "latest"
+    "pg": "4.1.1"
   },
   "main": "./bin/www"
 }

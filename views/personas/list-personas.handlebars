@@ -1,0 +1,32 @@
+
+<div class="row">
+    <div class="col-md-10 col-md-offset-1">
+        <table id="personaTable" class="table display">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Goal</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{#each personas}}
+                <tr>
+                    <td><a href="/personas/{{this.id}}">{{this.name}}&nbsp</a></td>
+                    <td align="left">{{this.details}}</td>
+                    <td align="left">{{this.goal}}</td>
+                </tr>
+            {{/each}}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+
+<script>
+    $(document).ready(function() {
+        $('#personaTable').DataTable();
+    } );
+</script>
+

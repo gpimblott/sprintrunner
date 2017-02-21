@@ -10,9 +10,9 @@
         </div>
         <div id="collapse_{{this.id}}" class="panel-collapse collapse">
             <div class="panel-body">
-                <b>As a</b> {{this.persona}}<br>
+                <b>As </b> {{this.persona_name}}<br>
                 <b>I want</b> {{{nl2br this.description}}}<br>
-                <b>So that I can</b> {{{nl2br this.reason}}}
+                <b>So that </b> {{{nl2br this.reason}}}
                 <hr>
                 <b>Acceptance Criteria</b><br>
                 {{{nl2br this.acceptance_criteria}}}
@@ -24,11 +24,14 @@
                 <a href="/labels/{{encode this.name}}">{{this.name}}</a>
                 {{#unless @last}},{{/unless}}
             {{/each}}
-            {{#if this.estimate}}
-                <p>{{this.estimate}} points ({{this.team_name}})</p>
-            {{else}}
-                <p>Not estimated ({{this.team_name}})</p>
-            {{/if}}
+            <p>
+                {{#if this.estimate}}
+                    {{this.estimate}} points
+                {{else}}
+                    Not estimated
+                {{/if}}
+                {{#if this.team_name}} ( <a href="/kanban/{{encode this.team_name}}">{{this.team_name}} </a>){{/if}}
+            </p>
         </div>
     </div>
 </div>

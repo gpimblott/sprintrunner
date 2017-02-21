@@ -10,7 +10,12 @@
     border-style: none dotted none dotted;
     border-width: 1px;
     border-color:   #004444;
-    background-color: ghostwhite;
+    background-color: aliceblue;
+}
+
+.persona-column {
+    border: 1px dotted #004444;
+    background-color: aliceblue;
 }
 
 .kanban-card {
@@ -18,27 +23,4 @@
     padding: 0 ;
 }
 
-.panel-group {
-}
 
-.panel > .panel-title {
-}
-
-
-.panel > .panel-body {
-    padding: 5px;
-}
-
-.panel > .panel-heading {
-    padding: 5px;
-    font-weight: bold;
-    color: black;
-}
-
-.panel > .panel-footer {
-}
-
-.panel > .panel-footer > p {
-    margin: 0 0 0 0;
-    padding-left: 5px;
-}

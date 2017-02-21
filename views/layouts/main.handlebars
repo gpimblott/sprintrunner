@@ -24,63 +24,7 @@
     <link rel="stylesheet" href="/css/sprintrunner.css">
 </head>
 <body>
-<nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container">
-        <div class="navbar-header">
-            <a href="/" class="navbar-left"><img width="45" src="/images/android-chrome-192x192.png"></a>
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-
-        </div>
-        <div id="navbar" class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-                <li class="active"><a href="/">Home</a></li>
-                <li><a href="/teams">Teams</a></li>
-                <li><a href="/epics">Epics</a></li>
-                <li><a href="/labels">Labels</a></li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Stories<span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="/stories">All Stories</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li class="dropdown-header">By Status</li>
-                        <li><a href="/stories/unscheduled">Unscheduled</a></li>
-                        <li><a href="/stories/accepted">Accepted</a></li>
-                        <li><a href="/stories/planned">Planned</a></li>
-                        <li><a href="/stories/not%20started">Not started</a></li>
-                        <li><a href="/stories/started">Started</a></li>
-                        <li><a href="/stories/delivered">Delivered</a></li>
-                        <li><a href="/stories/finished">Finished</a></li>
-                        <li><a href="/stories/rejected">Rejected</a></li>
-                    </ul>
-                </li>
-
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Kanban<span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="/kanban">All Teams</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li class="dropdown-header">By Teams</li>
-                        {{#each teams}}
-                        <li><a href="/kanban/{{encode this.name}}">{{this.name}}</a></li>
-                        {{/each}}
-                    </ul>
-                </li>
-                <li><a href="/roadmap">Roadmap</a></li>
-            </ul>
-            <form class="navbar-form pull-right" action="/search" method="get">
-                <div class="form-group input-group-sm">
-                    <input type="text" class="form-control" placeholder="Search" name="query">
-                </div>
-                <button type="submit" class="btn btn-sm">Search</button>
-            </form>
-        </div><!--/.nav-collapse -->
-    </div>
-</nav>
+{{>menubar}}
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
@@ -90,6 +34,7 @@
 <div class="container theme-showcase normal-page" role="main">
     {{{body}}}
 </div>
+
 
 </body>
 </html>
