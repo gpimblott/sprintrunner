@@ -40,7 +40,7 @@
     "basic-auth":"latest",
     "passport": "latest",
     "passport-local": "latest",
-    "pg": "6.1.0",
+    "pg": "6.1.0"
   },
   "main": "./bin/www"
 }
