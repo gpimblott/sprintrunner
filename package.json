@@ -1,9 +1,16 @@
 {
   "name": "sprintrunner",
   "version": "0.1.0",
-  "private": true,
   "scripts": {
     "start": "node ./server.js"
+  },
+  "keywords": [
+    "Node.js",
+    "application"
+  ],
+  "author": {
+    "name": "Gordon Pimblott",
+    "email": "gordon@pimblott.com"
   },
   "engines": {
     "node": "6.9.1",
@@ -17,10 +24,10 @@
     "db-migrate": "0.10.0-beta.12",
     "db-migrate-pg": "latest",
     "debug": "~2.2.0",
-    "dotenv": "1.2.0",
-    "ejs": "~2.4.1",
-    "express": "~4.14.0",
-    "express-enforces-ssl": "^1.1.0",
+    "dotenv": "latest",
+    "express": "latest",
+    "express-enforces-ssl": "latest",
+    "express-helpers": "latest",
     "express-session": "latest",
     "express-handlebars": "latest",
     "morgan": "~1.7.0",
@@ -33,7 +40,7 @@
     "basic-auth":"latest",
     "passport": "latest",
     "passport-local": "latest",
-    "pg": "4.1.1"
+    "pg": "6.1.0",
   },
   "main": "./bin/www"
 }
