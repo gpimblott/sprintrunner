@@ -24,9 +24,7 @@ var routes = require('./routes/index');
 var labels = require('./routes/labels');
 var teams = require('./routes/teams');
 var epics = require('./routes/epics');
-var epic = require('./routes/epic');
 var stories = require('./routes/stories');
-var story = require('./routes/story');
 var roadmap = require('./routes/roadmap');
 var kanban = require('./routes/kanban');
 var persona = require('./routes/personas');
@@ -92,15 +90,16 @@ var SprintRunner = function () {
 
     // Setup Express
     self.app = express();
-    self.app.engine('handlebars',
+    self.app.engine('hbs',
       exphbs({
         helpers: {
           dateFormat: hdf
         },
-        defaultLayout: 'main'
+        defaultLayout: 'main',
+        extname: '.hbs'
       }));
 
-    self.app.set('view engine', 'handlebars');
+    self.app.set('view engine', 'hbs');
 
     var defaultLabels = process.env.DEFAULT_LABELS || "";
     self.app.set('defaultLabels', defaultLabels.split(','));
@@ -173,11 +172,9 @@ var SprintRunner = function () {
     self.app.use('/labels', labels);
     self.app.use('/teams', teams);
     self.app.use('/epics', epics);
-    self.app.use('/epic' , epic);
     self.app.use('/stories', stories);
     self.app.use('/roadmap', roadmap);
     self.app.use('/kanban', kanban);
-    self.app.use('/story', story);
     self.app.use('/personas', persona);
 
     self.app.use(function(req, res, next){

@@ -1,0 +1,35 @@
+<div class="row">
+    <div class="col-md-10 col-md-offset-1">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">{{title}}</h3>
+            </div>
+            <table class="table">
+                <tr>
+                    <th>Status</th>
+                    <th>Stories</th>
+                    <th>Points</th>
+                </tr>
+                {{#each stateMap}}
+                    <tr>
+                        <td><a href="/stories/status/{{@key}}">{{@key}}</a></td>
+                        <td>{{this.count}}</td>
+                        <td>{{this.points}}</td>
+                    </tr>
+                {{/each}}
+            </table>
+            <div class="panel-footer"> Number of Stories : {{stories.length}} &nbsp; Total points : {{totalPoints}}
+                &nbsp;
+                Not Estimated : {{notEstimated}}</div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-10 col-md-offset-1">
+        {{>story-list}}
+    </div>
+</div>
+
+
+
+

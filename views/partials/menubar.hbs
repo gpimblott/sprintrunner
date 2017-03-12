@@ -27,7 +27,7 @@
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                    aria-expanded="false">Epics<span class="caret"></span></a>
                 <ul class="dropdown-menu">
-                    <li><a href="/epic/add">Add Epic</a></li>
+                    <li><a href="/epics/add">Add Epic</a></li>
                     <li role="separator" class="divider"></li>
                     <li><a href="/epics">View</a></li>
                 </ul>
@@ -36,13 +36,13 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                        aria-expanded="false">Stories<span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="/story/add">Add Story</a></li>
+                        <li><a href="/stories/add">Add Story</a></li>
                         <li role="separator" class="divider"></li>
                         <li><a href="/stories">All Stories</a></li>
                         <li role="separator" class="divider"></li>
                         <li class="dropdown-header">By Status</li>
                         {{#each status}}
-                            <li><a href="/stories/{{encode this.name}}">{{this.name}}</a></li>
+                            <li><a href="/stories/status/{{encode this.name}}">{{this.name}}</a></li>
                         {{/each}}
                     </ul>
                 </li>

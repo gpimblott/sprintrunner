@@ -1,0 +1,98 @@
+<div class="row">
+    <div class="col-md-10 col-md-offset-1">
+        <h3>Story</h3>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-10 col-md-offset-1">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">{{story.title}}
+                    <a type="button" class=" pull-right" id="editButton"
+                       href="javascript:unlockForm();">Edit Story</a>
+                </h3>
+            </div>
+
+            <div class="panel-body">
+                <div class="col-md-12">
+                    <form action="/stories/{{story.id}}" method="post" class="form-horizontal">
+                        <fieldset disabled id="formFieldSet">
+                            <div class="form-group">
+                                <label for="inputEmail" class="control-label col-sm-3">Title</label>
+                                <div class="controls col-sm-9">
+                                    <input type="text" class="form-control" id="title" name="title" placeholder="Title"
+                                           value="{{story.title}}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputStatus" class="control-label col-sm-3">Status</label>
+                                <div class="controls col-sm-9">
+                                    <select name="status" class="form-control">
+                                        {{#each status}}
+                                            <option value="{{this.id}}"{{#ifCond this.id
+                                                                                 ../story.status_id}}selected{{/ifCond}}>{{this.name}}</option>
+                                        {{/each}}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputEstimate" class="control-label col-sm-3">Estimate</label>
+                                <div class="controls col-sm-9">
+                                    <input type="number" class="form-control" id="estimate" placeholder="0"
+                                           name="estimate" value="{{story.estimate}}">
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="form-group">
+                                <label for="inputPersona" class="control-label col-sm-3">As... </label>
+                                <div class="controls col-sm-9">
+                                    <select name="persona" class="form-control" id="persona">
+                                        {{#each this.personas}}
+                                            <option value="{{this.id}}"{{#ifCond this.id
+                                                                                 ../story.persona}}selected{{/ifCond}}>{{this.name}}</option>
+                                        {{/each}}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputWhat" class="control-label col-sm-3">I want... </label>
+                                <div class="controls col-sm-9">
+                                    <textarea name="description" class="form-control"
+                                              rows="5">{{story.description}}</textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputWhy" class="control-label col-sm-3">So that... </label>
+                                <div class="controls col-sm-9">
+                                    <textarea name="reason" class="form-control" rows="5">{{story.reason}}</textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputAcceptance" class="control-label col-sm-3">Acceptance Criteria </label>
+                                <div class="controls col-sm-9">
+                                    <textarea name="acceptance_criteria" class="form-control"
+                                              rows="5">{{story.acceptance_criteria}}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-9">
+                                    <button type="submit" id="updateButton" style="display:none"
+                                            class="btn btn-primary">Update
+                                    </button>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/utils.js"></script>
+
+

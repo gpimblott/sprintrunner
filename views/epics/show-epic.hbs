@@ -1,0 +1,94 @@
+<div class="row">
+    <div class="col-md-10 col-md-offset-1">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#epic" data-toggle="tab">Epic</a></li>
+                <li class=""><a href="#stories" data-toggle="tab">Stories</a></li>
+            </ul>
+
+            <div class="tab-content clearfix">
+                <div class="tab-pane active" id="epic">
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">{{epic.title}}
+                                <a type="button" class=" pull-right" id="editButton"
+                                   href="javascript:unlockForm();">Edit Epic</a>
+                            </h3>
+                        </div>
+
+                        <div class="panel-body">
+                            <form action="/epics/{{epic.id}}" method="post" class="form-horizontal">
+                                <fieldset disabled id="formFieldSet">
+                                    <div class="form-group">
+                                        <label for="inputEmail" class="control-label col-sm-3">Title</label>
+                                        <div class="controls col-sm-9">
+                                            <input type="text" class="form-control" id="title" name="title"
+                                                   placeholder="Title"
+                                                   value="{{epic.title}}">
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="form-group">
+                                        <label for="inputPersona"
+                                               class="control-label col-sm-3">As... </label>
+                                        <div class="controls col-sm-9">
+                                            <select name="persona" class="form-control" id="persona">
+                                                {{#each this.personas}}
+                                                    <option value="{{this.id}}" {{#ifCond this.id
+                                                                                          ../epic.persona}}selected{{/ifCond}}>{{this.name}}</option>
+                                                {{/each}}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputWhat" class="control-label col-sm-3">I
+                                            want... </label>
+                                        <div class="controls col-sm-9">
+                                            <textarea name="description"
+                                                      class="form-control">{{epic.description}}</textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputWhy" class="control-label col-sm-3">So
+                                            that... </label>
+                                        <div class="controls col-sm-9">
+                                                        <textarea name="reason"
+                                                                  class="form-control">{{epic.reason}}</textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputAcceptance" class="control-label col-sm-3">Acceptance
+                                            Criteria </label>
+                                        <div class="controls col-sm-9">
+                                    <textarea name="acceptance_criteria"
+                                              class="form-control">{{epic.acceptance_criteria}}</textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="col-sm-3"></div>
+                                        <div class="col-sm-9">
+                                            <button type="submit" class="btn btn-primary" id="updateButton"
+                                                    style="display:none">Update
+                                            </button>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="tab-pane" id="stories" >
+                    <br>
+                    {{>story-list}}
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+<script src="/js/utils.js"></script>
+

@@ -1,13 +1,14 @@
 <div class="row">
+    <div class="col-md-10 col-md-offset-1">
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">{{title}}</h3>
         </div>
     </div>
-
+    </div>
 </div>
 <div class="row">
-    <div class="col-md-12 center-block">
+    <div class="col-md-10 col-md-offset-1">
         <table id="storyTable" class="table display">
             <thead>
             <tr>
@@ -18,9 +19,9 @@
             </tr>
             </thead>
             <tbody>
-            {{#each stories}}
+            {{#each epics}}
                 <tr>
-                    <td><a href="/epic/{{this.id}}">{{this.title}}</a></td>
+                    <td><a href="/epics/{{this.id}}">{{this.title}}</a></td>
                     <td>{{this.description}}</td>
                     <td>
                         {{#each this.labels}}

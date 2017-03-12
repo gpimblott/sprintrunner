@@ -1,0 +1,36 @@
+<table id="storyTable" class="table display">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Estimate</th>
+        <th>Status</th>
+        <th>Labels</th>
+        <th>Team</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{#each stories}}
+        <tr>
+            <td><a href="/stories/show/{{this.id}}">{{this.title}}&nbsp</a></td>
+            <td align="center">{{this.estimate}}</td>
+            <td><a href="/stories/status/{{encode this.current_state}}">{{this.current_state}}</a></td>
+            <td>
+                {{#each this.labels}}
+                    <a href="/labels/{{encode this.name}}">{{this.name}}</a>
+                    {{#unless @last}},{{/unless}}
+                {{/each}}
+            </td>
+            <td>
+                <a href="/kanban/{{encode this.team_name}}">{{this.team_name}}</a>
+            </td>
+        </tr>
+    {{/each}}
+    </tbody>
+</table>
+
+
+<script>
+    $(document).ready(function () {
+        $('#storyTable').DataTable();
+    });
+</script>

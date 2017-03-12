@@ -4,7 +4,7 @@ var router = express.Router();
 var utils = require('../utils/storyHelper');
 var multer = require('multer');
 var storage = multer.memoryStorage();
-var upload = multer({ storage: storage });
+var upload = multer({ storage: storage, limits: { fileSize:10000} });
 var personaDao = require('../dao/persona');
 var sanitizer = require('sanitize-html');
 
@@ -50,7 +50,23 @@ router.get('/delete/:id', function (req, res, next) {
 });
 
 
-router.post('/add', upload.single('avatar'), function (req, res, next) {
+router.post('/:personaId', upload.single('avatar'), function (req, res, next) {
+  var id = decodeURI(req.params[ "personaId" ]);;
+  var name = sanitizer(req.body.name);
+  var details = sanitizer(req.body.details);
+  var goal = sanitizer(req.body.goal);
+  var avatarData = null;
+
+  if (req.file) {
+    avatarData = req.file.buffer;
+  }
+
+  personaDao.update(id, name, details, goal, avatarData, function (results, error) {
+    res.redirect('/personas');
+  });
+});
+
+router.post('/', upload.single('avatar'), function (req, res, next) {
 
   var name = sanitizer(req.body.name);
   var details = sanitizer(req.body.details);
@@ -66,21 +82,7 @@ router.post('/add', upload.single('avatar'), function (req, res, next) {
   });
 });
 
-router.post('/update', upload.single('avatar'), function (req, res, next) {
-  var id = sanitizer(req.body.id);
-  var name = sanitizer(req.body.name);
-  var details = sanitizer(req.body.details);
-  var goal = sanitizer(req.body.goal);
-  var avatarData = null;
 
-  if (req.file) {
-    avatarData = req.file.buffer;
-  }
-
-  personaDao.update(id, name, details, goal, avatarData, function (results, error) {
-    res.redirect('/personas');
-  });
-});
 
 router.get('/', function (req, res, next) {
 

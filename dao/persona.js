@@ -79,7 +79,7 @@ Persona.deletePersona = function (id, done) {
 }
 
 Persona.getAllPersonas = function (done) {
-  var sql = "SELECT * FROM personas";
+  var sql = "SELECT id,name,details,goal FROM personas";
 
   var params = [];
   dbhelper.query(sql, params,
@@ -93,7 +93,7 @@ Persona.getAllPersonas = function (done) {
 }
 
 Persona.getNames = function (done) {
-  var sql = "SELECT * FROM personas";
+  var sql = "SELECT id,name FROM personas";
 
   var params = [];
   dbhelper.query(sql, params,
