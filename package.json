@@ -19,6 +19,7 @@
   "dependencies": {
     "async": "2.1.2",
     "body-parser": "latest",
+    "oauth": "0.9.5",
     "passport": "latest",
     "passport-google-oauth20": "latest",
     "cfenv": "1.0.3",
