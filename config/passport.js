@@ -26,7 +26,7 @@ var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8090;
 var callback;
 console.log(address);
 
-if (address == undefined) {
+if (!process.env.HEROKU) {
   address = "localhost";
   callback = "http://" + address + ":" + port + "/auth/google/callback";
 } else {
