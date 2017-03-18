@@ -24,6 +24,7 @@ passport.deserializeUser(function (user, done) {
 var address = process.env.OPENSHIFT_NODEJS_IP;
 var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8090;
 var callback;
+console.log(address);
 
 if (address == undefined) {
   address = "localhost";
@@ -31,6 +32,8 @@ if (address == undefined) {
 } else {
   callback = "http://sprintrunner.digidad.space/auth/google/callback";
 }
+console.log(callback);
+
 
 // =========================================================================
 // GOOGLE ==================================================================
