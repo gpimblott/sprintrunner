@@ -25,9 +25,11 @@ GOOGLE_CLIENTID - For Google Authentication
 GOOGLE_CLIENT_SECRET - For Google Authentication
 DATABASE_URL - Where your database is
 USE_SSL - For database connection (Heroku needs this)\
+COOKIE_KEY - Key to use as seed for cookies (any string)
 
 DEFAULT_LABELS - Most commonly used labels
 MILESTONE_LABELS - The labels for 3 Milestones
+
 
 ```
 

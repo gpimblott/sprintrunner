@@ -1,6 +1,6 @@
 require('dotenv').config({ path: 'process.env' });
 
-var passport        = require('passport');
+var passport = require('passport');
 require('./config/passport');
 
 var debug = require('debug')('sprintrunner:server');
@@ -19,7 +19,6 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var session = require('express-session');
-
 
 var authroutes = require('./routes/authroutes.js');
 var routes = require('./routes/index');
@@ -90,7 +89,6 @@ var SprintRunner = function () {
     self.setupVariables();
     self.setupTerminationHandlers();
 
-
     // Setup Express
     self.app = express();
     self.app.engine('hbs',
@@ -106,9 +104,6 @@ var SprintRunner = function () {
 
     var defaultLabels = process.env.DEFAULT_LABELS || "";
     self.app.set('defaultLabels', defaultLabels.split(','));
-
-    var defaultProjects = process.env.DEFAULT_PROJECTS || "";
-    self.app.set('defaultProjects', defaultProjects.split(','));
 
     var milestoneLabels = process.env.MILESTONE_LABELS || "";
     self.app.set('milestoneLabels', milestoneLabels.split(','));
@@ -128,7 +123,6 @@ var SprintRunner = function () {
     self.app.use(session(sess));
     self.app.use(passport.initialize());
     self.app.use(passport.session());
-
 
     // Load the cache values
     statusDao.rebuildCache();
@@ -162,8 +156,7 @@ var SprintRunner = function () {
     self.app.use(function (req, res, next) {
       res.locals.teams = teamDao.getAllTeams();
       res.locals.status = statusDao.getStatusCache();
-      if( req.user ) {
-        console.log(req.user);
+      if (req.user) {
         res.locals.profile = req.user;
       }
 
@@ -174,8 +167,12 @@ var SprintRunner = function () {
     // Setup the google routes
     authroutes.createRoutes(self);
 
-    self.app.use('/login' , function (req,res,next) {
-      res.render( 'login' , { layout: 'main-login'});
+    self.app.use('/login', function (req, res, next) {
+      if (req.isAuthenticated()) {
+        res.redirect('/');
+      } else {
+        res.render('login', { layout: 'main-login' });
+      }
     })
 
     self.app.use('/', routes);
@@ -187,14 +184,12 @@ var SprintRunner = function () {
     self.app.use('/kanban', kanban);
     self.app.use('/personas', persona);
 
-    self.app.use(function(req, res, next){
+    self.app.use(function (req, res, next) {
       // the status option, or res.statusCode = 404
       // are equivalent, however with the option we
       // get the "status" local available as well
       res.render('404', { status: 404, url: req.url });
     });
-
-
 
   };
 
