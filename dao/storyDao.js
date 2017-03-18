@@ -17,7 +17,7 @@ Story.add = function (title, persona, status, description, reason, acceptance_cr
       done(result.rows[ 0 ].id, null);
     },
     function (error) {
-      console.log(error);
+      console.error(error);
       done(null, error);
     });
 };
@@ -33,7 +33,7 @@ Story.update = function (id, title, persona, status, description, reason, accept
       done(true, null);
     },
     function (error) {
-      console.log(error);
+      console.error(error);
       done(false, error);
     });
 };

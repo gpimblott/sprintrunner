@@ -17,7 +17,7 @@ Epic.add = function (title, persona, description, reason, acceptance_criteria, d
       done(result.rows[ 0 ].id, null);
     },
     function (error) {
-      console.log(error);
+      console.error(error);
       done(null, error);
     });
 };
@@ -33,7 +33,7 @@ Epic.linkStoryToEpic = function (epicId, storyId, done) {
       done(result.rows[ 0 ].id, null);
     },
     function (error) {
-      console.log(error);
+      console.error(error);
       done(null, error);
     });
 };
@@ -49,7 +49,7 @@ Epic.update = function (id, title, persona, description, reason, acceptance_crit
       done(true, null);
     },
     function (error) {
-      console.log(error);
+      console.error(error);
       done(false, error);
     });
 };
@@ -89,7 +89,6 @@ Epic.moveEpic = function( from, to, done) {
         }
 
         var sql;
-        console.log( from + ":" + to + "\n");
         if (from >  to) {
           sql = 'UPDATE epics set theorder = theorder+1 where theorder >= $2 and theorder < $1';
         }
@@ -97,7 +96,6 @@ Epic.moveEpic = function( from, to, done) {
           sql = 'UPDATE epics set theorder = theorder-1 where theorder > $1 and theorder <= $2';
         }
 
-        console.log('using : '  + sql );
         client.query(sql, [from,to], function(err, result) {
           if(err) {
             rollback(client);
@@ -119,59 +117,8 @@ Epic.moveEpic = function( from, to, done) {
       });
     });
   });
-
-
 }
 
-Epic.moveEpic2 = function (from, to, done) {
-  // Moving up the list
-  var params = [ from ];
-  var sql = null;
-
-  sql = "UPDATE epics set theorder=null where theorder=$1";
-  dbhelper.insert(sql, params,
-    function (result) {
-      console.log('success null original record:');
-
-      params = [ from, to ];
-      if (from > to) {
-        sql = 'UPDATE epics set theorder = theorder+1 where theorder >= $2 and theorder < $1';
-      }
-      else {
-        sql = 'UPDATE epics set theorder = theorder-1 where theorder>$1 and theorder <= $2';
-      }
-
-
-      dbhelper.insert(sql, params,
-
-        function (result) {
-          console.log(" success moving records");
-
-          sql = "UPDATE epics set theorder=$1 where theorder is null";
-          params = [ to ];
-
-          dbhelper.insert(sql, params,
-            function (result) {
-
-              console.log("Moved original record");
-              done(true, null);
-            },
-            function (error) {
-              console.log('error:' + error);
-              done(false, error);
-            });
-        },
-        function (error) {
-          console.log('error:' + error);
-          done(false, error);
-        });
-    },
-    function (error) {
-      console.log('error:' + error);
-      done(false, error);
-    });
-
-}
 
 Epic.getEpic = function (storyId, done) {
   var sql = "SELECT epic.*, personas.name as persona_name"

@@ -19,7 +19,7 @@ Label.add = function (name, done) {
             done(result.rows[0].id, null);
         },
         function (error) {
-            console.log(error);
+            console.error(error);
             done(null, error);
         });
 };

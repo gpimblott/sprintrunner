@@ -32,7 +32,7 @@ Team.add = function (name, description, done) {
       done(result.rows[ 0 ].id, null);
     },
     function (error) {
-      console.log(error);
+      console.error(error);
       done(null, error);
     });
 };

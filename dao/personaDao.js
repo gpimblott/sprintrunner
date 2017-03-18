@@ -17,7 +17,7 @@ Persona.add = function (name, details, goal, avatar, done) {
       done(result.rows[ 0 ].id, null);
     },
     function (error) {
-      console.log(error);
+      console.error(error);
       done(null, error);
     });
 };
@@ -41,7 +41,7 @@ Persona.update = function (id, name, details, goal, avatar, done) {
       done(result, null);
     },
     function (error) {
-      console.log(error);
+      console.error(error);
       done(null, error);
     });
 };
@@ -116,7 +116,7 @@ Persona.updateAvatar = function (id, avatar, done) {
       done(true);
     },
     function (error) {
-      console.log(error);
+      console.error(error);
       done(false, error);
     });
 };
@@ -133,7 +133,7 @@ Persona.getAvatar = function (id, done) {
       }
     },
     function (error) {
-      console.log(error);
+      console.error(error);
       done(null, error);
     });
 };

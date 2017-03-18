@@ -5,7 +5,6 @@ var GoogleStrategy = require('passport-google-oauth2').Strategy;
 // load up the user model
 var User = require('../models/user');
 
-
 passport.serializeUser(function (user, done) {
   done(null, user.id);
 });
@@ -21,16 +20,13 @@ passport.deserializeUser(function (user, done) {
   });
 });
 
-
 var callback;
-
 
 if (process.env.GOOGLE_CALLBACK) {
   callback = process.env.GOOGLE_CALLBACK;
 } else {
   callback = "http://localhost:8090/auth/google/callback";
 }
-
 
 // =========================================================================
 // GOOGLE ==================================================================
@@ -42,7 +38,7 @@ passport.use(new GoogleStrategy({
   },
   function (accessToken, refreshToken, profile, done) {
 
-    console.log("accessToken: %s : refreshToken : %s", accessToken, refreshToken);
+    // console.log("accessToken: %s : refreshToken : %s", accessToken, refreshToken);
     // make the code asynchronous
     // User.findOne won't fire until we have all our data back from Google
     process.nextTick(function () {

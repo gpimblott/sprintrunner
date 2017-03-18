@@ -29,7 +29,7 @@ User.findOne = function (profile, done) {
       return done(null, user);
     },
     function (error) {
-      console.log(error);
+      console.error(error);
       return done(null, null);
     });
 };
@@ -50,7 +50,7 @@ User.findById = function (id, done) {
       }
     },
     function (error) {
-      console.log(error);
+      console.error(error);
       return done(null, null);
     });
 };
@@ -66,7 +66,7 @@ User.prototype.save = function (done) {
       return done(result.rows[ 0 ].id);
     },
     function (error) {
-      console.log(error);
+      console.error(error);
       return done(null);
     });
 }
@@ -80,7 +80,7 @@ User.updateAccessToken = function (userid, token, done) {
       done(results);
     },
     function (error) {
-      console.log(error);
+      console.error(error);
       return done(null);
     });
 }
