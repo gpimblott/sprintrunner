@@ -26,7 +26,6 @@
     "debug": "~2.2.0",
     "dotenv": "latest",
     "express": "latest",
-    "express-enforces-ssl": "latest",
     "express-helpers": "latest",
     "express-session": "latest",
     "express-handlebars": "latest",
