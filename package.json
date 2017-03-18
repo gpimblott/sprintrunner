@@ -19,9 +19,6 @@
   "dependencies": {
     "async": "2.1.2",
     "body-parser": "latest",
-    "oauth": "0.9.5",
-    "passport": "latest",
-    "passport-google-oauth20": "latest",
     "cfenv": "1.0.3",
     "cookie-parser": "~1.4.3",
     "db-migrate": "0.10.0-beta.12",
@@ -29,17 +26,20 @@
     "debug": "~2.2.0",
     "dotenv": "latest",
     "express": "latest",
+    "express-handlebars": "latest",
     "express-helpers": "latest",
     "express-session": "latest",
-    "express-handlebars": "latest",
+    "handlebars": "latest",
+    "handlebars-dateformat": "latest",
     "morgan": "~1.7.0",
     "multer": "latest",
+    "oauth": "0.9.5",
+    "passport": "latest",
+    "passport-google-oauth2": "^0.1.6",
+    "pg": "6.1.0",
     "request": "2.76.0",
     "sanitize-html": "latest",
-    "serve-favicon": "~2.3.0",
-    "handlebars":"latest",
-    "handlebars-dateformat": "latest",
-    "pg": "6.1.0"
+    "serve-favicon": "~2.3.0"
   },
   "main": "./server"
 }
