@@ -5,8 +5,6 @@ var GoogleStrategy = require('passport-google-oauth2').Strategy;
 // load up the user model
 var User = require('../models/user');
 
-// load the auth variables
-var configAuth = require('./auth');
 
 passport.serializeUser(function (user, done) {
   done(null, user.id);
@@ -38,8 +36,8 @@ if (address == undefined) {
 // GOOGLE ==================================================================
 // =========================================================================
 passport.use(new GoogleStrategy({
-    clientID: configAuth.googleAuth.clientID,
-    clientSecret: configAuth.googleAuth.clientSecret,
+    clientID: process.env.GOOGLE_CLIENTID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     callbackURL: callback
   },
   function (accessToken, refreshToken, profile, done) {
