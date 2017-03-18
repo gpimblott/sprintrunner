@@ -5,7 +5,7 @@ var utils = require('../utils/storyHelper');
 var multer = require('multer');
 var storage = multer.memoryStorage();
 var upload = multer({ storage: storage, limits: { fileSize:10000} });
-var personaDao = require('../dao/persona');
+var personaDao = require('../dao/personaDao');
 var sanitizer = require('sanitize-html');
 
 router.get('/add', function (req, res, next) {

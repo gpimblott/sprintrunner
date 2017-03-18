@@ -11,8 +11,13 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h3 class="panel-title">{{epic.title}}
-                                <a type="button" class=" pull-right" id="editButton"
-                                   href="javascript:unlockForm();">Edit Epic</a>
+                            <div class="pull-right">
+                                <a type="button"  id="addStoryButton"
+                                   href="/stories/add/{{epic.id}}">Add Story</a> |
+                                <a type="button"  id="editButton"
+                                   href="javascript:unlockForm();">Edit</a>
+                            </div>
+
                             </h3>
                         </div>
 

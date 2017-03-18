@@ -1,15 +1,12 @@
 var express = require('express');
 var router = express.Router();
-var teamsDao = require('../dao/team');
+var teamsDao = require('../dao/teamDao');
 
 router.get('/', function (req, res, next) {
 
-    teamsDao.getAllTeams(function (error, results) {
-
-        res.render('teamsummary', {
-            projects: results
-        });
-    });
+  res.render('teamsummary', {
+    projects: teamsDao.getAllTeams()
+  });
 });
 
 module.exports = router;

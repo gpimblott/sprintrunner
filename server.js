@@ -29,8 +29,8 @@ var roadmap = require('./routes/roadmap');
 var kanban = require('./routes/kanban');
 var persona = require('./routes/personas');
 
-var teamDao = require('./dao/team');
-var statusDao = require('./dao/status');
+var teamDao = require('./dao/teamDao');
+var statusDao = require('./dao/statusDao');
 
 /**
  * Set API Key based on Environment variable
@@ -133,8 +133,8 @@ var SprintRunner = function () {
     }
 
     // Load the cache values
-    teamDao.rebuildCache();
     statusDao.rebuildCache();
+    teamDao.rebuildCache();
 
     // view engine setup
     self.app.set('layoutsDir', path.join(__dirname, 'views/layouts'));
@@ -162,7 +162,7 @@ var SprintRunner = function () {
     }
 
     self.app.use(function (req, res, next) {
-      res.locals.teams = teamDao.getTeamCache();
+      res.locals.teams = teamDao.getAllTeams();
       res.locals.status = statusDao.getStatusCache();
       res.locals.defaultLabels = self.app.get('defaultLabels');
       next();

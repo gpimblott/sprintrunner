@@ -1,35 +1,29 @@
 <div class="row">
     <div class="col-md-10 col-md-offset-1">
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title">{{title}}</h3>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">{{title}}</h3>
+            </div>
         </div>
-    </div>
     </div>
 </div>
 <div class="row">
     <div class="col-md-10 col-md-offset-1">
-        <table id="storyTable" class="table display">
+        <table id="epicTable" class="table display">
             <thead>
             <tr>
+                <th width="10px">Order</th>
                 <th>Name</th>
                 <th>Description</th>
-                <th>Labels</th>
 
             </tr>
             </thead>
             <tbody>
             {{#each epics}}
                 <tr>
+                    <td>{{this.theorder}}</td>
                     <td><a href="/epics/{{this.id}}">{{this.title}}</a></td>
                     <td>{{this.description}}</td>
-                    <td>
-                        {{#each this.labels}}
-                            <a href="/labels/{{encode this.name}}">{{this.name}}</a>
-                            {{#unless @last}},{{/unless}}
-                        {{/each}}
-                    </td>
-
                 </tr>
             {{/each}}
             </tbody>
@@ -40,8 +34,49 @@
 
 
 <script>
-    $(document).ready(function() {
-        $('#storyTable').DataTable();
-    } );
+
+    $(document).ready(function () {
+
+        var table = $('#epicTable').DataTable({
+            rowReorder: true,
+            scrollY: 500,
+            paging: false
+        });
+
+        table.on('row-reorder', function (e, diff, edit) {
+            var from = edit.triggerRow.data()[ 0 ];
+            var to = null;
+
+            for (var i = 0, ien = diff.length; i < ien; i++) {
+                var rowData = table.row(diff[ i ].node).data();
+
+                if( from==diff[i].oldData) {
+                    to = diff[ i ].newData;
+                }
+            }
+
+            console.log( " moved " + from + " to " + to + "\n");
+
+            $.ajax({
+                type: "PATCH",
+                url: '/epics/'+from+'/'+to,
+                data: {},
+                success: function(result){ console.log("success:" + result)},
+                error: function(error){ console.log("error:"+ error)}
+            });
+
+//            $.post('/api/technology/<%= technology.id %>/vote',
+//                    data,
+//                    function (result) {
+//                        if (result.success) {
+//                            enableVoteButtons();
+//                            $('#voteBtn_'+statusValue).toggleClass('disabled', true);
+//                            refreshVotes();
+//                        }
+//                        ;
+//                        $("#votePulldown").removeClass("disabled");
+//                    });
+        });
+    });
 </script>
 

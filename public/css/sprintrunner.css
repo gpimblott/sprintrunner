@@ -11,6 +11,7 @@
     border-width: 1px;
     border-color:   #004444;
     background-color: aliceblue;
+
 }
 
 .persona-column {
@@ -22,6 +23,8 @@
     border: 1px solid gray;
     padding: 0 ;
 }
+
+
 
 fieldset:disabled .form-control { background-color:#ffFFFF;cursor: auto; color: #000000 }
 fieldset .form-control { background-color: #e2f1ef;cursor: auto }

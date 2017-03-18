@@ -107,3 +107,4 @@ manifest.yml
 .op
 .idea/
 process.env
+/config/auth.js

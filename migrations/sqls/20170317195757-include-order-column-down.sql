@@ -1,0 +1,1 @@
+ALTER TABLE epics drop column theorder;

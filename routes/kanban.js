@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var storyDao = require('../dao/story');
+var storyDao = require('../dao/storyDao');
 
 var internals = {};
 

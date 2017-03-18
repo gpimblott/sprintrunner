@@ -1,13 +1,14 @@
 var express = require('express');
 var router = express.Router();
 var utils = require('../utils/storyHelper');
-var epicDao = require('../dao/epic');
-var personaDao = require('../dao/persona');
+var epicDao = require('../dao/epicDao');
+var storyDao = require('../dao/storyDao');
+var personaDao = require('../dao/personaDao');
 var sanitizer = require('sanitize-html');
 
 router.get('/', function (req, res, next) {
 
-  epicDao.getAllEpics(function (error, epics) {
+  epicDao.getAllEpics(function (epics, error) {
 
     if (error) {
       res.render('damn', {
@@ -42,22 +43,25 @@ router.get('/add', function (req, res, next) {
 router.get('/:epicId', function (req, res, next) {
   var epicId = req.params[ "epicId" ];
 
-  epicDao.getEpic(epicId, function (error, epic) {
+  epicDao.getEpic(epicId, function (epic, error) {
     personaDao.getNames(function (error, names) {
-      if (error) {
-        res.render('damn', {
-          message: 'Something went wrong',
-          status: error,
-          reason: "Don't know why"
-        });
+      storyDao.getStoriesForEpic(epicId, function (error, stories) {
 
-      } else {
-        res.render("epics/show-epic", {
-          epic: epic,
-          personas: names,
-          stories: []
-        });
-      }
+        if (error) {
+          res.render('damn', {
+            message: 'Something went wrong',
+            status: error,
+            reason: "Don't know why"
+          });
+
+        } else {
+          res.render("epics/show-epic", {
+            epic: epic,
+            personas: names,
+            stories: stories
+          });
+        }
+      })
     })
   })
 
@@ -96,6 +100,25 @@ router.post('/', function (req, res, next) {
 
   epicDao.add(title, persona, description, reason, acceptance_criteria, function (result, error) {
     res.redirect('/epics');
+  });
+});
+
+router.patch('/:from/:to', function (req, res, next) {
+  var from = req.params[ "from" ];
+  var to = req.params[ "to" ];
+  console.log('Moving:' + from + ' to ' + to);
+
+  if ( to==null || from == null || from == "null" || to == "null" || from == to) {
+    res.sendStatus(200);
+    return;
+  }
+
+  epicDao.moveEpic(from, to, function (result, error) {
+    if (error) {
+      res.sendStatus(500);
+    } else {
+      res.sendStatus(200);
+    }
   });
 });
 

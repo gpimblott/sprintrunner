@@ -15,32 +15,24 @@
             <ul class="nav navbar-nav">
                 <li class="active"><a href="/">Home</a></li>
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                       aria-expanded="false">Personas<span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="/personas/add">Add Persona</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="/personas">View All</a></li>
-                    </ul>
-                </li><li class="dropdown">
 
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                   aria-expanded="false">Epics<span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                    <li><a href="/epics/add">Add Epic</a></li>
-                    <li role="separator" class="divider"></li>
-                    <li><a href="/epics">View</a></li>
-                </ul>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">Epics<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/epics">View All</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="/epics/add">Add Epic</a></li>
+                    </ul>
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                        aria-expanded="false">Stories<span class="caret"></span></a>
                     <ul class="dropdown-menu">
+                        <li><a href="/stories">View All</a></li>
+                        <li role="separator" class="divider"></li>
                         <li><a href="/stories/add">Add Story</a></li>
                         <li role="separator" class="divider"></li>
-                        <li><a href="/stories">All Stories</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li class="dropdown-header">By Status</li>
+                        <li class="dropdown-header">View by status</li>
                         {{#each status}}
                             <li><a href="/stories/status/{{encode this.name}}">{{this.name}}</a></li>
                         {{/each}}
@@ -51,9 +43,7 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                        aria-expanded="false">View<span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="/teams">Teams</a></li>
-                        <li><a href="/labels">Labels</a></li>
-                        <li role="separator" class="divider"></li>
+
                         <li><a href="/roadmap">Roadmap</a></li>
                         <li role="separator" class="divider"></li>
                         <li class="dropdown-header">Kanban boards</li>
@@ -61,9 +51,30 @@
                         {{#each teams}}
                             <li><a href="/kanban/{{encode this.name}}">{{this.name}}</a></li>
                         {{/each}}
+                        <li role="separator" class="divider"></li>
+                        <li class="dropdown-header">Story boards</li>
+                        <li><a href="/stories">All Teams</a></li>
+                        {{#each teams}}
+                            <li><a href="/stories/team/{{encode this.name}}">{{this.name}}</a></li>
+                        {{/each}}
                     </ul>
                 </li>
-
+                <li class="dropdown pull-right">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">Manage<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-header">Peronas</li>
+                        <li><a href="/personas">View Personas</a></li>
+                        <li><a href="/personas/add">Add Persona</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li class="dropdown-header">Teams</li>
+                        <li><a href="/teams">View Teams</a></li>
+                        <li><a href="/teams/add">Add Team</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li class="dropdown-header">Labels</li>
+                        <li><a href="/labels">View Labels</a></li>
+                    </ul>
+                </li>
             </ul>
 
         </div><!--/.nav-collapse -->

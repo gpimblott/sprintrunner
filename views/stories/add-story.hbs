@@ -65,6 +65,9 @@
                             <div class="col-sm-9"> <button type="submit" class="btn btn-primary">Add Story</button></div>
                         </div>
 
+                        {{#if epic}}
+                        <input type="hidden" value="{{epic}}" name="epicid"/>
+                        {{/if}}
                     </form>
                 </div>
             </div>

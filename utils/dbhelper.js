@@ -8,6 +8,26 @@ var pg = require('pg');
 var DBHelper = function () {
 };
 
+DBHelper.connect = function ( done ) {
+  if (process.env.USE_SSL && process.env.USE_SSL.toLowerCase() !== 'false') {
+    pg.defaults.ssl = true;
+  }
+
+  pg.defaults.poolSize = 50;
+
+  pg.connect(process.env.DATABASE_URL, function (err, client) {
+
+    // Handle connection errors
+    if (err) {
+      if (client) {
+        client.end();
+      }
+      done( null , err );
+    }
+    done( client  , null );
+  });
+}
+
 /**
  * Perform a select query operation
  * @param sql Statement to perform
@@ -17,37 +37,24 @@ var DBHelper = function () {
  */
 DBHelper.query = function (sql, parameters, done, error) {
 
-  if (process.env.USE_SSL && process.env.USE_SSL.toLowerCase() !== 'false') {
-    pg.defaults.ssl = true;
-  }
-
-
-  pg.defaults.poolSize = 50;
-
-  pg.connect(process.env.DATABASE_URL, function (err, client) {
-    var results = [];
-
-    // Handle connection errors
-    if (err) {
-      if (client) {
-        client.end();
-      }
+  DBHelper.connect(function (client , err) {
+    if (client == null) {
       error(err);
-      return;
+    } else {
+      var results = [];
+
+      var query = client.query(sql, parameters);
+
+      query.on('row', function (row) {
+        results.push(row);
+      });
+
+      // After all data is returned, close connection and return results
+      query.on('end', function () {
+        client.end();
+        done(results);
+      });
     }
-
-    var query = client.query(sql, parameters);
-
-    query.on('row', function (row) {
-      results.push(row);
-    });
-
-    // After all data is returned, close connection and return results
-    query.on('end', function () {
-      client.end();
-      done(results);
-    });
-
   });
 }
 

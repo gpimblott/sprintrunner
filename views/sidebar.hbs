@@ -1,0 +1,113 @@
+<div class="container normal-page">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="col-md-4 kanban-column" id="stories-column">
+                <div class="col-md-12">
+                    <div class="row ">
+                        <div class="col-md-10 col-md-offset-1">
+                            <h4 class="caption text-center">
+                                <b>Stories</b> <br>
+                                <small>Stories:{{stories.length}}  Points:{{calculatePoints stories}}</small>
+                            </h4>
+                        </div>
+                    </div>
+
+                    <div class="panel-group">
+                        {{#each stories}}
+                            {{> kanbancard }}
+                        {{/each}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 kanban-column epic-column" id="epics-column">
+                <div class="col-md-12">
+                    <div class="row ">
+                        <div class="col-md-10 col-md-offset-1">
+                            <h4 class="caption text-center">
+                                <b>Epics</b> <br>
+                                <small>Epics:{{epics.length}}</small>
+                            </h4>
+                        </div>
+                    </div>
+
+                    <div class="panel-group">
+                        {{#each epics}}
+                            {{> kanbancard }}
+                        {{/each}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 kanban-column" id="delivered-column">
+                <div class="col-md-12">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="drop-overlay"></div>
+<script src="/js/draggabilly.pkgd.min.js"></script>
+<script src="/js/dragdrop.js"></script>
+<script>
+    (function () {
+        var body = document.body,
+                dropArea = document.getElementById('epics-column'),
+                droppableArr = [], dropAreaTimeout;
+
+        // initialize droppables
+        [].slice.call(document.querySelectorAll('.kanban-card')).forEach(function (el) {
+            droppableArr.push(new Droppable(el, {
+                onDrop: function (instance, draggableEl) {
+                    // show checkmark inside the droppabe element
+                    classie.add(instance.el, 'drop-feedback');
+                    clearTimeout(instance.checkmarkTimeout);
+                    instance.checkmarkTimeout = setTimeout(function () {
+                        classie.remove(instance.el, 'drop-feedback');
+                    }, 800);
+                    // ...
+                }
+            }));
+        });
+
+        // initialize draggable(s)
+        [].slice.call(document.querySelectorAll('.kanban-card')).forEach(function (el) {
+            new Draggable(el, droppableArr, {
+                scroll: true,
+                scrollable: '#drop-area',
+                scrollSpeed: 40,
+                scrollSensitivity: 50,
+                draggabilly: { containment: document.body },
+                onStart: function () {
+                    // add class 'drag-active' to body
+                    classie.add(body, 'drag-active');
+                    // clear timeout: dropAreaTimeout (toggle drop area)
+                    clearTimeout(dropAreaTimeout);
+                    // show dropArea
+                    classie.add(dropArea, 'show');
+                },
+                onEnd: function (wasDropped) {
+                    var afterDropFn = function () {
+                        // hide dropArea
+                        classie.remove(dropArea, 'show');
+                        // remove class 'drag-active' from body
+                        classie.remove(body, 'drag-active');
+                    };
+
+                    if (!wasDropped) {
+                        afterDropFn();
+                    }
+                    else {
+                        // after some time hide drop area and remove class 'drag-active' from body
+                        clearTimeout(dropAreaTimeout);
+                        dropAreaTimeout = setTimeout(afterDropFn, 400);
+                    }
+                }
+            });
+        });
+    })();
+</script>
