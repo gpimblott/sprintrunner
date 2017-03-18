@@ -11,7 +11,8 @@ AuthRoutes.createRoutes = function (self) {
 
   self.app.get('/auth/google', passport.authenticate('google',
     {
-      scope: [ 'https://www.googleapis.com/auth/userinfo.profile' ],
+      scope: [ 'https://www.googleapis.com/auth/userinfo.profile',
+      'https://www.googleapis.com/auth/userinfo.email'],
       // prompt:'none',
       accessType: 'online',
       approvalPrompt: 'auto'
