@@ -21,18 +21,15 @@ passport.deserializeUser(function (user, done) {
   });
 });
 
-var address = process.env.OPENSHIFT_NODEJS_IP;
-var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8090;
-var callback;
-console.log(address);
 
-if (!process.env.HEROKU) {
-  address = "localhost";
-  callback = "http://" + address + ":" + port + "/auth/google/callback";
+var callback;
+
+
+if (process.env.GOOGLE_CALLBACK) {
+  callback = process.env.GOOGLE_CALLBACK;
 } else {
-  callback = "http://sprintrunner.digidad.space/auth/google/callback";
+  callback = "http://localhost:8090/auth/google/callback";
 }
-console.log(callback);
 
 
 // =========================================================================
