@@ -1,5 +1,8 @@
 require('dotenv').config({ path: 'process.env' });
 
+var passport        = require('passport');
+require('./config/passport');
+
 var debug = require('debug')('sprintrunner:server');
 var http = require('http');
 
@@ -17,8 +20,8 @@ var bodyParser = require('body-parser');
 
 var session = require('express-session');
 
-var basicAuth = require('./utils/basicAuth.js');
 
+var authroutes = require('./routes/authroutes.js');
 var routes = require('./routes/index');
 var labels = require('./routes/labels');
 var teams = require('./routes/teams');
@@ -87,6 +90,7 @@ var SprintRunner = function () {
     self.setupVariables();
     self.setupTerminationHandlers();
 
+
     // Setup Express
     self.app = express();
     self.app.engine('hbs',
@@ -122,13 +126,9 @@ var SprintRunner = function () {
     }
 
     self.app.use(session(sess));
+    self.app.use(passport.initialize());
+    self.app.use(passport.session());
 
-    var useAuth = process.env.USE_AUTH || 'false'
-    if (useAuth === 'true') {
-      var username = process.env.USERNAME
-      var password = process.env.PASSWORD
-      self.app.use(basicAuth.basicAuth(username, password))
-    }
 
     // Load the cache values
     statusDao.rebuildCache();
@@ -162,9 +162,21 @@ var SprintRunner = function () {
     self.app.use(function (req, res, next) {
       res.locals.teams = teamDao.getAllTeams();
       res.locals.status = statusDao.getStatusCache();
+      if( req.user ) {
+        console.log(req.user);
+        res.locals.profile = req.user;
+      }
+
       res.locals.defaultLabels = self.app.get('defaultLabels');
       next();
     });
+
+    // Setup the google routes
+    authroutes.createRoutes(self);
+
+    self.app.use('/login' , function (req,res,next) {
+      res.render( 'login' , { layout: 'main-login'});
+    })
 
     self.app.use('/', routes);
     self.app.use('/labels', labels);

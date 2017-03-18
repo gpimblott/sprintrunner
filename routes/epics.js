@@ -1,4 +1,5 @@
 var express = require('express');
+var security = require('../utils/security');
 var router = express.Router();
 var utils = require('../utils/storyHelper');
 var epicDao = require('../dao/epicDao');
@@ -6,7 +7,7 @@ var storyDao = require('../dao/storyDao');
 var personaDao = require('../dao/personaDao');
 var sanitizer = require('sanitize-html');
 
-router.get('/', function (req, res, next) {
+router.get('/', security.ensureAuthenticated , function (req, res, next) {
 
   epicDao.getAllEpics(function (epics, error) {
 
@@ -30,7 +31,7 @@ router.get('/', function (req, res, next) {
 
 });
 
-router.get('/add', function (req, res, next) {
+router.get('/add', security.ensureAuthenticated, function (req, res, next) {
   personaDao.getNames(function (error, names) {
 
     res.render("epics/add-epic", {
@@ -40,7 +41,7 @@ router.get('/add', function (req, res, next) {
 
 });
 
-router.get('/:epicId', function (req, res, next) {
+router.get('/:epicId', security.ensureAuthenticated, function (req, res, next) {
   var epicId = req.params[ "epicId" ];
 
   epicDao.getEpic(epicId, function (epic, error) {
@@ -67,7 +68,7 @@ router.get('/:epicId', function (req, res, next) {
 
 });
 
-router.get('/delete/:epicId', function (req, res, next) {
+router.get('/delete/:epicId', security.ensureAuthenticated, function (req, res, next) {
   var epicId = req.params[ "epicId" ];
 
   epicDao.delete(epicId, function (result, error) {
@@ -78,7 +79,7 @@ router.get('/delete/:epicId', function (req, res, next) {
 /**
  * Update methods
  */
-router.post('/:epicId', function (req, res, next) {
+router.post('/:epicId', security.ensureAuthenticated , function (req, res, next) {
   var epicId = req.params[ "epicId" ];
   var title = sanitizer(req.body.title);
   var persona = sanitizer(req.body.persona);
@@ -91,7 +92,7 @@ router.post('/:epicId', function (req, res, next) {
   });
 });
 
-router.post('/', function (req, res, next) {
+router.post('/', security.ensureAuthenticated , function (req, res, next) {
   var title = sanitizer(req.body.title);
   var persona = sanitizer(req.body.persona);
   var description = sanitizer(req.body.description);
@@ -103,7 +104,7 @@ router.post('/', function (req, res, next) {
   });
 });
 
-router.patch('/:from/:to', function (req, res, next) {
+router.patch('/:from/:to', security.ensureAuthenticated , function (req, res, next) {
   var from = req.params[ "from" ];
   var to = req.params[ "to" ];
   console.log('Moving:' + from + ' to ' + to);

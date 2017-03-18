@@ -1,6 +1,7 @@
 'use strict';
 
 var express = require('express');
+var security = require('../utils/security');
 var utils = require('../utils/storyHelper');
 var router = express.Router();
 var storyDao = require('../dao/storyDao');
@@ -9,7 +10,7 @@ var teamDao = require('../dao/teamDao');
 var personaDao = require('../dao/personaDao');
 var sanitizer = require('sanitize-html');
 
-router.get('/', function (req, res, next) {
+router.get('/', security.ensureAuthenticated , function (req, res, next) {
 
   storyDao.getAllStories(function (error, stories) {
     console.log( stories);
@@ -26,7 +27,7 @@ router.get('/', function (req, res, next) {
   })
 });
 
-router.get('/assign', function (req, res, next) {
+router.get('/assign', security.ensureAuthenticated , function (req, res, next) {
 
   storyDao.getAllStories(function (error, stories) {
 
@@ -50,7 +51,7 @@ router.get('/assign', function (req, res, next) {
   })
 });
 
-router.get('/status/:status', function (req, res, next) {
+router.get('/status/:status', security.ensureAuthenticated , function (req, res, next) {
   var status = decodeURIComponent(req.params[ "status" ]);
 
   storyDao.getStoriesWithStatus(status, function (error, stories) {
@@ -67,7 +68,7 @@ router.get('/status/:status', function (req, res, next) {
   });
 });
 
-router.get('/team/:teamName', function (req, res, next) {
+router.get('/team/:teamName', security.ensureAuthenticated , function (req, res, next) {
   var teamName = decodeURIComponent(req.params[ "teamName" ]);
 
   storyDao.getStoriesForTeam(teamName, function (error, stories) {
@@ -85,7 +86,7 @@ router.get('/team/:teamName', function (req, res, next) {
 });
 
 
-router.get('/add/:epicId', function (req, res, next) {
+router.get('/add/:epicId', security.ensureAuthenticated , function (req, res, next) {
   var epicId = req.params[ "epicId" ];
   personaDao.getNames(function (error, names) {
 
@@ -97,7 +98,7 @@ router.get('/add/:epicId', function (req, res, next) {
 
 });
 
-router.get('/add', function (req, res, next) {
+router.get('/add', security.ensureAuthenticated , function (req, res, next) {
   personaDao.getNames(function (error, names) {
 
     res.render("stories/add-story", {
@@ -107,7 +108,7 @@ router.get('/add', function (req, res, next) {
 
 });
 
-router.get('/edit/:storyId', function (req, res, next) {
+router.get('/edit/:storyId', security.ensureAuthenticated , function (req, res, next) {
   var storyId = req.params[ "storyId" ];
 
   storyDao.getStory(storyId, function (error, story) {
@@ -131,7 +132,7 @@ router.get('/edit/:storyId', function (req, res, next) {
 
 });
 
-router.get('/show/:storyId', function (req, res, next) {
+router.get('/show/:storyId', security.ensureAuthenticated , function (req, res, next) {
   var storyId = req.params[ "storyId" ];
 
   storyDao.getStory(storyId, function (error, story) {
@@ -160,7 +161,7 @@ router.get('/show/:storyId', function (req, res, next) {
  */
 
 
-router.post('/:storyId', function (req, res, next) {
+router.post('/:storyId', security.ensureAuthenticated , function (req, res, next) {
   var storyId = req.params[ "storyId" ];
 
   console.log("Received update POST for " + storyId);
@@ -180,7 +181,7 @@ router.post('/:storyId', function (req, res, next) {
 });
 
 
-router.post('/', function (req, res, next) {
+router.post('/', security.ensureAuthenticated , function (req, res, next) {
   var title = sanitizer(req.body.title);
   var status = sanitizer(req.body.status);
   var estimate = sanitizer(req.body.estimate);
@@ -203,7 +204,7 @@ router.post('/', function (req, res, next) {
   });
 });
 
-router.delete('/:storyId', function (req, res, next) {
+router.delete('/:storyId', security.ensureAuthenticated , function (req, res, next) {
   var storyId = req.params[ "storyId" ];
 
   storyDao.delete(storyId, function (result, error) {

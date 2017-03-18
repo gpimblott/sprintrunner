@@ -19,6 +19,8 @@
   "dependencies": {
     "async": "2.1.2",
     "body-parser": "latest",
+    "passport": "latest",
+    "passport-google-oauth20": "latest",
     "cfenv": "1.0.3",
     "cookie-parser": "~1.4.3",
     "db-migrate": "0.10.0-beta.12",
@@ -36,12 +38,7 @@
     "serve-favicon": "~2.3.0",
     "handlebars":"latest",
     "handlebars-dateformat": "latest",
-    "basic-auth":"latest",
-    "passport": "latest",
-    "passport-local": "latest",
-    "pg": "6.1.0",
-    "passport": "latest",
-    "passport-google-oauth20": "latest"
+    "pg": "6.1.0"
   },
-  "main": "./bin/www"
+  "main": "./server"
 }
