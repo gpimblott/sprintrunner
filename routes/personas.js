@@ -1,6 +1,7 @@
+'use strict';
+
 var fs = require('fs');
 var express = require('express');
-var security = require('../utils/security');
 var router = express.Router();
 var utils = require('../utils/storyHelper');
 var multer = require('multer');
@@ -9,13 +10,13 @@ var upload = multer({ storage: storage, limits: { fileSize:10000} });
 var personaDao = require('../dao/personaDao');
 var sanitizer = require('sanitize-html');
 
-router.get('/add', security.ensureAuthenticated , function (req, res, next) {
+router.get('/add' , function (req, res, next) {
 
   res.render('personas/add-persona' );
 
 });
 
-router.get('/image/:id', security.ensureAuthenticated , function (req, res, next) {
+router.get('/image/:id' , function (req, res, next) {
   var id = decodeURI(req.params[ "id" ]);
   personaDao.getAvatar(id, function (data, error) {
     if (data === null) {
@@ -32,7 +33,7 @@ router.get('/image/:id', security.ensureAuthenticated , function (req, res, next
 
 });
 
-router.get('/edit/:id', security.ensureAuthenticated , function (req, res, next) {
+router.get('/edit/:id', function (req, res, next) {
   var personaId = decodeURI(req.params[ "id" ]);
 
   personaDao.getPersona(personaId, function (persona, error) {
@@ -41,7 +42,7 @@ router.get('/edit/:id', security.ensureAuthenticated , function (req, res, next)
 
 });
 
-router.get('/delete/:id', security.ensureAuthenticated , function (req, res, next) {
+router.get('/delete/:id' , function (req, res, next) {
   var personaId = decodeURI(req.params[ "id" ]);
 
   personaDao.deletePersona(personaId, function (persona, error) {
@@ -51,7 +52,7 @@ router.get('/delete/:id', security.ensureAuthenticated , function (req, res, nex
 });
 
 
-router.post('/:personaId', security.ensureAuthenticated , upload.single('avatar'), function (req, res, next) {
+router.post('/:personaId', upload.single('avatar'), function (req, res, next) {
   var id = decodeURI(req.params[ "personaId" ]);;
   var name = sanitizer(req.body.name);
   var details = sanitizer(req.body.details);
@@ -67,7 +68,7 @@ router.post('/:personaId', security.ensureAuthenticated , upload.single('avatar'
   });
 });
 
-router.post('/', security.ensureAuthenticated , upload.single('avatar'), function (req, res, next) {
+router.post('/', upload.single('avatar'), function (req, res, next) {
 
   var name = sanitizer(req.body.name);
   var details = sanitizer(req.body.details);
@@ -85,7 +86,7 @@ router.post('/', security.ensureAuthenticated , upload.single('avatar'), functio
 
 
 
-router.get('/', security.ensureAuthenticated , function (req, res, next) {
+router.get('/', function (req, res, next) {
 
   personaDao.getAllPersonas(function (error, personas) {
     res.render('personas/list-personas', { personas: personas });
@@ -93,7 +94,7 @@ router.get('/', security.ensureAuthenticated , function (req, res, next) {
 
 });
 
-router.get('/:id', security.ensureAuthenticated , function (req, res, next) {
+router.get('/:id' , function (req, res, next) {
   var personaId = decodeURI(req.params[ "id" ]);
 
   personaDao.getPersona(personaId, function (persona, error) {

@@ -1,4 +1,5 @@
-var security = require('../utils/security.js');
+'use strict';
+
 var passport = require('passport');
 
 var AuthRoutes = function () {

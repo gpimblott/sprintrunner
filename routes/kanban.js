@@ -1,5 +1,6 @@
+'use strict';
+
 var express = require('express');
-var security = require('../utils/security');
 var router = express.Router();
 var storyDao = require('../dao/storyDao');
 
@@ -46,11 +47,11 @@ internals.renderKanban = function (res, team, title) {
     }
 }
 
-router.get('/', security.ensureAuthenticated , function (req, res, next) {
+router.get('/', function (req, res, next) {
     internals.renderKanban(res, null, 'All stories');
 });
 
-router.get('/:teamName', security.ensureAuthenticated , function (req, res, next) {
+router.get('/:teamName', function (req, res, next) {
     var teamName = decodeURIComponent(req.params["teamName"]);
     internals.renderKanban(res, teamName, teamName)
 });

@@ -1,4 +1,5 @@
 var dbhelper = require('../utils/dbhelper.js');
+var debug = require('debug')('sprintrunner:user');
 
 var User = function () {
   this.id = 0;
@@ -15,7 +16,7 @@ var User = function () {
 // You need to assign a new function here
 User.findOne = function (profile, done) {
 
-  console.log("findOne : %s", profile.id);
+  debug("findOne : %s", profile.id);
   var sql = "SELECT *  FROM users where googleid=$1 ";
 
   dbhelper.query(sql, [ profile.id ],
@@ -35,7 +36,7 @@ User.findOne = function (profile, done) {
 };
 
 User.findById = function (id, done) {
-  console.log("findById : %s", id);
+  debug("findById : %s", id);
 
   var sql = "SELECT * FROM users where id=$1 ";
 

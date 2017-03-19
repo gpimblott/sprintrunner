@@ -9,12 +9,13 @@
 .login-form {
     background-color: #cdcdcd;
     border-radius: 10px;
-    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";       /* IE 8 */
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";       /* IE 8 */
     filter: alpha(opacity=80);  /* IE 5-7 */
     -moz-opacity: 0.8;          /* Netscape */
     -khtml-opacity: 0.8;        /* Safari 1.x */
     opacity: 0.8;               /* Good browsers */
 }
+
 
 .normal-page {
     padding-top: 70px;
@@ -43,8 +44,28 @@
 }
 
 
-
 fieldset:disabled .form-control { background-color:#ffFFFF;cursor: auto; color: #000000 }
 fieldset .form-control { background-color: #e2f1ef;cursor: auto }
+
+.alert-minimalist {
+    background-color: rgb(241, 242, 240);
+    border-color: rgba(149, 149, 149, 0.3);
+    border-radius: 3px;
+    color: rgb(149, 149, 149);
+    padding: 10px;
+}
+.alert-minimalist > [data-notify="icon"] {
+    height: 50px;
+    margin-right: 12px;
+}
+.alert-minimalist > [data-notify="title"] {
+    color: rgb(51, 51, 51);
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+.alert-minimalist > [data-notify="message"] {
+    font-size: 80%;
+}
 
 

@@ -1,5 +1,8 @@
+'use strict';
+
 // load the google module
 var passport = require('passport');
+var debug = require('debug')('sprintrunner:passport');
 var GoogleStrategy = require('passport-google-oauth2').Strategy;
 
 // load up the user model
@@ -11,6 +14,7 @@ passport.serializeUser(function (user, done) {
 
 passport.deserializeUser(function (user, done) {
 
+  debug('deserializeUser');
   User.findById(user, function (err, user) {
     if (err) {
       done(err);
@@ -38,7 +42,8 @@ passport.use(new GoogleStrategy({
   },
   function (accessToken, refreshToken, profile, done) {
 
-    // console.log("accessToken: %s : refreshToken : %s", accessToken, refreshToken);
+    debug('looking up user %s', profile.username);
+
     // make the code asynchronous
     // User.findOne won't fire until we have all our data back from Google
     process.nextTick(function () {
@@ -51,17 +56,17 @@ passport.use(new GoogleStrategy({
         }
 
         if (user) {
-          console.log('User found');
+          debug('User %s found' , profile.username );
           if (user.googletoken != accessToken) {
             user.googletoken = accessToken;
             User.updateAccessToken(user.id, accessToken, function (error) {
-              console.log("Token updated");
+              debug("Token updated for user %s" , profile.username);
             })
           }
 
           return done(null, user);
         } else {
-          console.log('No User found');
+          debug('No User found');
 
           var newUser = new User();
 
@@ -77,7 +82,7 @@ passport.use(new GoogleStrategy({
 
           // save the user
           newUser.save(function (id) {
-            console.log('created new user');
+            debug('created new user : %s' , profile.username );
             if (id == null) {
               return done(null, false);
             }

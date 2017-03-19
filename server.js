@@ -1,3 +1,5 @@
+'use strict';
+
 require('dotenv').config({ path: 'process.env' });
 
 var passport = require('passport');
@@ -7,6 +9,8 @@ var debug = require('debug')('sprintrunner:server');
 var http = require('http');
 
 var express = require('express');
+var sse = require('./routes/sse');
+
 var exphbs = require('express-handlebars');
 var Handlebars = require('handlebars');
 var hdf = require('handlebars-dateformat');
@@ -20,18 +24,11 @@ var bodyParser = require('body-parser');
 
 var session = require('express-session');
 
-var authroutes = require('./routes/authroutes.js');
-var routes = require('./routes/index');
-var labels = require('./routes/labels');
-var teams = require('./routes/teams');
-var epics = require('./routes/epics');
-var stories = require('./routes/stories');
-var roadmap = require('./routes/roadmap');
-var kanban = require('./routes/kanban');
-var persona = require('./routes/personas');
+var setupRoutes = require('./routes/setupRoutes');
 
 var teamDao = require('./dao/teamDao');
 var statusDao = require('./dao/statusDao');
+
 
 /**
  * Set API Key based on Environment variable
@@ -55,11 +52,11 @@ var SprintRunner = function () {
    */
   self.terminator = function (sig) {
     if (typeof sig === "string") {
-      console.log('%s: Received %s - terminating SprintRunner ...',
+      debug('%s: Received %s - terminating SprintRunner ...',
         Date(Date.now()), sig);
       process.exit(1);
     }
-    console.log('%s: Node server stopped.', Date(Date.now()));
+    debug('%s: Node server stopped.', Date(Date.now()));
   };
 
   /**
@@ -86,6 +83,8 @@ var SprintRunner = function () {
    *  the handlers.
    */
   self.initialize = function () {
+
+
     self.setupVariables();
     self.setupTerminationHandlers();
 
@@ -102,11 +101,17 @@ var SprintRunner = function () {
 
     self.app.set('view engine', 'hbs');
 
+    // Setup the Google Analytics ID if defined
+    self.app.locals.google_id = process.env.GOOGLE_ID || undefined;
+    debug("GA ID: %s", self.app.locals.google_id);
+
     var defaultLabels = process.env.DEFAULT_LABELS || "";
     self.app.set('defaultLabels', defaultLabels.split(','));
+    debug('Default labels : %s' , defaultLabels);
 
     var milestoneLabels = process.env.MILESTONE_LABELS || "";
     self.app.set('milestoneLabels', milestoneLabels.split(','));
+    debug('Milestone labels : %s' , milestoneLabels);
 
     var cookie_key = process.env.COOKIE_KEY || 'aninsecurecookiekey';
     var sess = {
@@ -120,6 +125,12 @@ var SprintRunner = function () {
       sess.cookie.secure = true;
     }
 
+    // Definition of static resources needs to be before
+    // Passport initialisation otherwise Passport
+    // will be called for every static resource
+    self.app.use(express.static(path.join(__dirname, 'public')));
+
+    // Now initialise the session and passport
     self.app.use(session(sess));
     self.app.use(passport.initialize());
     self.app.use(passport.session());
@@ -132,7 +143,6 @@ var SprintRunner = function () {
     self.app.set('layoutsDir', path.join(__dirname, 'views/layouts'));
     self.app.set('partialsDir', path.join(__dirname, 'views/partials'));
     self.app.set('views', path.join(__dirname, 'views'));
-    self.app.use(express.static(path.join(__dirname, 'public')));
 
     self.app.use(bodyParser.json());
     self.app.use(bodyParser.urlencoded({
@@ -143,7 +153,7 @@ var SprintRunner = function () {
     // development error handler
     // will print stacktrace
     if (self.app.get('env') === 'development') {
-      console.log("In development mode");
+      debug("In development mode");
       self.app.use(function (err, req, res, next) {
         res.status(err.status || 500);
         res.render('error', {
@@ -164,25 +174,14 @@ var SprintRunner = function () {
       next();
     });
 
-    // Setup the google routes
-    authroutes.createRoutes(self);
 
-    self.app.use('/login', function (req, res, next) {
-      if (req.isAuthenticated()) {
-        res.redirect('/');
-      } else {
-        res.render('login', { layout: 'main-login' });
-      }
-    })
+    // Setup sse event streaming
+   // self.app.use(sse);
 
-    self.app.use('/', routes);
-    self.app.use('/labels', labels);
-    self.app.use('/teams', teams);
-    self.app.use('/epics', epics);
-    self.app.use('/stories', stories);
-    self.app.use('/roadmap', roadmap);
-    self.app.use('/kanban', kanban);
-    self.app.use('/personas', persona);
+    // Setup all the routes
+    setupRoutes.createRoutes( self );
+
+
 
     self.app.use(function (req, res, next) {
       // the status option, or res.statusCode = 404
