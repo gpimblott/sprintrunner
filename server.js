@@ -43,7 +43,7 @@ var SprintRunner = function () {
    */
   self.setupVariables = function () {
     //  Set the environment variables we need.
-    self.port = process.env.PORT || 8090;
+    self.port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT  || 8090;
 
   };
 
