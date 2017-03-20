@@ -184,6 +184,16 @@ var SprintRunner = function () {
     setupRoutes.createRoutes( self );
 
 
+    // On certain hosts the SSE connections need to be kept alive
+    if( process.env.SSE_KEEP_ALIVE) {
+      var CronJob = require('cron').CronJob;
+      new CronJob('*/10 * * * * *', function () {
+        debug('sending ping');
+        sse.sendMsgToClients('{ping:true}');
+      }, null, true, 'America/Los_Angeles');
+    }
+
+
     self.app.use(function (req, res, next) {
       // the status option, or res.statusCode = 404
       // are equivalent, however with the option we

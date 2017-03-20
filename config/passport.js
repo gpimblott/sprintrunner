@@ -41,7 +41,7 @@ passport.use(new GoogleStrategy({
     callbackURL: callback
   },
   function (accessToken, refreshToken, profile, done) {
-   
+
     debug('looking up user %s', profile.id);
 
     // make the code asynchronous
