@@ -41,9 +41,8 @@ passport.use(new GoogleStrategy({
     callbackURL: callback
   },
   function (accessToken, refreshToken, profile, done) {
-    debug(profile);
-    
-    debug('looking up user %s', profile.username);
+   
+    debug('looking up user %s', profile.id);
 
     // make the code asynchronous
     // User.findOne won't fire until we have all our data back from Google
@@ -57,7 +56,7 @@ passport.use(new GoogleStrategy({
         }
 
         if (user) {
-          debug('User %s found' , profile.username );
+          debug('User %s found' , profile.id );
           if (user.googletoken != accessToken) {
             user.googletoken = accessToken;
             User.updateAccessToken(user.id, accessToken, function (error) {
