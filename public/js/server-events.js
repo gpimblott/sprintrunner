@@ -21,6 +21,29 @@ function listenForSSE () {
         '<span data-notify="message">{2}</span>' +
         '</div>'
       });
+
+      // Update the menubar to include the new event and show the count
+      var html = '<li class="notification"> \
+      <div class="media"> \
+        <div class="media-left"> \
+          <div class="media-object"> \
+            <img data-src="{{this.icon}}" src="' + data.icon + '" class="img-circle" alt="Name"> \
+          </div> \
+        </div> \
+        <div class="media-body"> \
+          <strong class="notification-title">' + data.title + '</a></strong> \
+          <p class="notification-desc">' + data.message + '</p> \
+        <div class="notification-meta"> \
+          <small class="timestamp">27. 11. 2015, 15:00</small> \
+        </div> \
+      </div> \
+      </div> \
+      </li>';
+
+      // Update the menu items
+      $('#notification-list').append(html);
+      $('#notification-count').attr('data-count' , parseInt($('#notification-count').attr('data-count') , 10 )+1 );
+
     }, false)
 
     source.addEventListener('open', function (e) {

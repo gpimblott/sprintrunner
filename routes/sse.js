@@ -1,6 +1,7 @@
 'use strict'
 var debug = require('debug')('sprintrunner:sse');
 
+var eventQueue = [];
 var openConnections = [];
 
 var SseRoutes = function () {
@@ -49,13 +50,22 @@ SseRoutes.createRoutes = function (self) {
 
 }
 
+SseRoutes.getLatestNotifications = function () {
+  return eventQueue;
+}
+
 SseRoutes.sendMsgToClients = function (json) {
-  var message = JSON.stringify(json) + '\n\n';
-  debug("Sending to %s client(s): %s" , openConnections.length , message );
+  var message = JSON.stringify(json);
+  debug("Sending to %s client(s): %s", openConnections.length, message);
+
+  eventQueue.push(json);
+  if (eventQueue.length > 5) {
+    eventQueue.shift();
+  }
 
   openConnections.forEach(function (resp) {
-    resp.write('data: '+message); // Note the extra newline
-    resp.flush();
+    resp.write('data: ' + message + '\n\n'); // Note the extra newline
+    resp.flushHeaders();
   });
 }
 

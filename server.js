@@ -29,6 +29,8 @@ var setupRoutes = require('./routes/setupRoutes');
 var teamDao = require('./dao/teamDao');
 var statusDao = require('./dao/statusDao');
 
+var sseRoutes = require('./routes/sse');
+
 
 /**
  * Set API Key based on Environment variable
@@ -163,6 +165,10 @@ var SprintRunner = function () {
       });
     }
 
+    // Notifications are just a queue so we can keep the reference
+    self.app.locals.eventQueue = sseRoutes.getLatestNotifications();
+    self.app.locals.defaultLabels = self.app.get('defaultLabels');
+
     self.app.use(function (req, res, next) {
       res.locals.teams = teamDao.getAllTeams();
       res.locals.status = statusDao.getStatusCache();
@@ -170,17 +176,12 @@ var SprintRunner = function () {
         res.locals.profile = req.user;
       }
 
-      res.locals.defaultLabels = self.app.get('defaultLabels');
       next();
     });
 
 
-    // Setup sse event streaming
-   // self.app.use(sse);
-
     // Setup all the routes
     setupRoutes.createRoutes( self );
-
 
 
     self.app.use(function (req, res, next) {

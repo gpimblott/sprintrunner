@@ -106,7 +106,7 @@ router.post('/', function (req, res, next) {
     data.type='epic-add';
     data.icon = req.user.picture;
     data.title = req.user.firstname + " "  + req.user.surname;
-    data.message = "New epic added by " + data.username + "\n" + title;
+    data.message = "New epic added : " + title;
 
     sse.sendMsgToClients(data);
 
@@ -136,7 +136,7 @@ router.patch('/:from/:to' , function (req, res, next) {
       data.title = req.user.firstname + " "  + req.user.surname;
       data.from = from;
       data.to = to;
-      data.message = "Epics re-ordered by " + data.username;
+      data.message = "Epics re-ordered please refresh lists";
 
       sse.sendMsgToClients(data);
 
