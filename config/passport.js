@@ -41,7 +41,8 @@ passport.use(new GoogleStrategy({
     callbackURL: callback
   },
   function (accessToken, refreshToken, profile, done) {
-
+    debug(profile);
+    
     debug('looking up user %s', profile.username);
 
     // make the code asynchronous
@@ -82,7 +83,7 @@ passport.use(new GoogleStrategy({
 
           // save the user
           newUser.save(function (id) {
-            debug('created new user : %s' , profile.username );
+            debug('created new user : %s');
             if (id == null) {
               return done(null, false);
             }
