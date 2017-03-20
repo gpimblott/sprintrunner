@@ -185,11 +185,14 @@ var SprintRunner = function () {
 
 
     // On certain hosts the SSE connections need to be kept alive
-    if( process.env.SSE_KEEP_ALIVE) {
+
+    if( process.env.SSE_KEEP_ALIVE || false ) {
       var CronJob = require('cron').CronJob;
       new CronJob('*/10 * * * * *', function () {
         debug('sending ping');
-        sse.sendMsgToClients('{ping:true}');
+        var message = {};
+        message.ping=true;
+        sse.sendMsgToClients(message);
       }, null, true, 'America/Los_Angeles');
     }
 

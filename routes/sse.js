@@ -58,14 +58,29 @@ SseRoutes.sendMsgToClients = function (json) {
   var message = JSON.stringify(json);
   debug("Sending to %s client(s): %s", openConnections.length, message);
 
-  eventQueue.push(json);
-  if (eventQueue.length > 5) {
-    eventQueue.shift();
+  if (!json.ping) {
+    debug('adding to queue');
+    eventQueue.push(json);
+    if (eventQueue.length > 5) {
+      eventQueue.shift();
+    }
   }
 
-  openConnections.forEach(function (resp) {
-    resp.write('data: ' + message + '\n\n'); // Note the extra newline
-    resp.flushHeaders();
+  var failedConnections = [];
+
+  for (var j = 0; j < openConnections.length; j++) {
+    var resp = openConnections[ j ];
+    try {
+      resp.write('data: ' + message + '\n\n'); // Note the extra newline
+      resp.flushHeaders();
+    } catch (error) {
+      failedConnections.push(j);
+    }
+  }
+  ;
+
+  failedConnections.forEach(function (item) {
+    debug('Failed %s', item);
   });
 }
 
