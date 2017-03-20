@@ -5,7 +5,12 @@ function listenForSSE () {
 
     source.addEventListener('message', function (e) {
       var data = JSON.parse(e.data);
-      console.log(data);
+
+      // Skip ping messages
+      if( data.ping) {
+        return;
+      }
+
       $.notify({
         icon: data.icon,
         title: data.title,
