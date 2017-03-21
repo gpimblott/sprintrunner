@@ -10,7 +10,7 @@ var SseRoutes = function () {
 /*****************************************************
  * Server-send API calls
  ******************************************************/
-SseRoutes.createRoutes = function (self) {
+SseRoutes.setup = function (self) {
 
 
   // simple route to register the clients
@@ -47,6 +47,17 @@ SseRoutes.createRoutes = function (self) {
       debug('Remove connection: %s open', openConnections.length);
     });
   });
+
+  // On certain hosts the SSE connections need to be kept alive
+  if( process.env.SSE_KEEP_ALIVE || false ) {
+    var CronJob = require('cron').CronJob;
+    new CronJob('*/10 * * * * *', function () {
+      debug('sending ping');
+      var data={};
+      data.type='ping';
+      sse.sendMsgToClients(null , data);
+    }, null, true, 'America/Los_Angeles');
+  }
 
 }
 

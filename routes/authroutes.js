@@ -8,7 +8,7 @@ var AuthRoutes = function () {
 /*****************************************************
  * API Interfaces
  ******************************************************/
-AuthRoutes.createRoutes = function (self) {
+AuthRoutes.setup = function (self) {
 
   self.app.get('/auth/google', passport.authenticate('google',
     {

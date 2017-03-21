@@ -9,19 +9,15 @@ var debug = require('debug')('sprintrunner:server');
 var http = require('http');
 
 var express = require('express');
-var sse = require('./routes/sse');
-
 var exphbs = require('express-handlebars');
-var Handlebars = require('handlebars');
 var hdf = require('handlebars-dateformat');
 require('./utils/handlerbarsHelpers');
 
 var path = require('path');
 var favicon = require('serve-favicon');
-var logger = require('morgan');
+var morgan = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
 var session = require('express-session');
 
 var setupRoutes = require('./routes/setupRoutes');
@@ -29,7 +25,9 @@ var setupRoutes = require('./routes/setupRoutes');
 var teamDao = require('./dao/teamDao');
 var statusDao = require('./dao/statusDao');
 
-var sseRoutes = require('./routes/sse');
+var serverSideEvents = require('./routes/sse');
+
+var helmet = require('helmet');
 
 
 /**
@@ -92,6 +90,9 @@ var SprintRunner = function () {
 
     // Setup Express
     self.app = express();
+    self.app.use(morgan('tiny'));
+    self.app.use(helmet());
+
     self.app.engine('hbs',
       exphbs({
         helpers: {
@@ -166,7 +167,7 @@ var SprintRunner = function () {
     }
 
     // Notifications are just a queue so we can keep the reference
-    self.app.locals.eventQueue = sseRoutes.getLatestNotifications();
+    self.app.locals.eventQueue = serverSideEvents.getLatestNotifications();
     self.app.locals.defaultLabels = self.app.get('defaultLabels');
 
     self.app.use(function (req, res, next) {
@@ -180,22 +181,8 @@ var SprintRunner = function () {
     });
 
 
-    // Setup all the routes
-    setupRoutes.createRoutes( self );
-
-
-    // On certain hosts the SSE connections need to be kept alive
-
-    if( process.env.SSE_KEEP_ALIVE || false ) {
-      var CronJob = require('cron').CronJob;
-      new CronJob('*/10 * * * * *', function () {
-        debug('sending ping');
-        var data={};
-        data.type='ping';
-        sse.sendMsgToClients(null , data);
-      }, null, true, 'America/Los_Angeles');
-    }
-
+    // Setup the Server-side events
+    setupRoutes.setup( self );
 
     self.app.use(function (req, res, next) {
       // the status option, or res.statusCode = 404

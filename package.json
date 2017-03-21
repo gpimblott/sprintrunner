@@ -1,6 +1,6 @@
 {
   "name": "sprintrunner",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "scripts": {
     "start": "node ./server.js"
   },
@@ -31,9 +31,10 @@
     "express-session": "latest",
     "handlebars": "latest",
     "handlebars-dateformat": "latest",
+    "helmet":"latest",
     "morgan": "~1.7.0",
     "multer": "latest",
-    "oauth": "0.9.5",
+    "oauth": "0.9.15",
     "passport": "latest",
     "passport-google-oauth2": "^0.1.6",
     "pg": "6.1.0",

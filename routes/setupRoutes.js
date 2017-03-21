@@ -19,10 +19,10 @@ var SetupRoutes = function () {
 };
 
 
-SetupRoutes.createRoutes = function (self) {
+SetupRoutes.setup = function (self) {
 
   // Setup the google routes
-  authroutes.createRoutes(self);
+  authroutes.setup(self);
 
   // Check for the login route first - this can be accessed unauthenticated
   self.app.get('/login', function (req, res, next) {
@@ -56,7 +56,7 @@ SetupRoutes.createRoutes = function (self) {
   self.app.use('/personas', persona);
 
 
-  sse.createRoutes( self );
+  sse.setup( self );
   // self.app.get('/stream', function(req, res) {
   //   res.sseSetup()
   //   res.sseSend('Connected :)')
