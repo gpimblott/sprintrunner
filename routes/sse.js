@@ -55,7 +55,7 @@ SseRoutes.setup = function (self) {
       debug('sending ping');
       var data={};
       data.type='ping';
-      sse.sendMsgToClients(null , data);
+      SseRoutes.sendMsgToClients(null , data);
     }, null, true, 'America/Los_Angeles');
   }
 
