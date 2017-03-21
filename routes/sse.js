@@ -30,7 +30,7 @@ SseRoutes.createRoutes = function (self) {
     res.flushHeaders();
 
     // push this res object to our global variable
-    openConnections.push(res);
+    openConnections.push({ userid: req.user.googleid, connection: res });
     debug('Add connection : %s open', openConnections.length);
     // When the request is closed, e.g. the browser window
     // is closed. We search through the open connections
@@ -38,7 +38,7 @@ SseRoutes.createRoutes = function (self) {
     req.on("close", function () {
       var toRemove;
       for (var j = 0; j < openConnections.length; j++) {
-        if (openConnections[ j ] == res) {
+        if (openConnections[ j ].connection == res) {
           toRemove = j;
           break;
         }
@@ -54,11 +54,11 @@ SseRoutes.getLatestNotifications = function () {
   return eventQueue;
 }
 
-SseRoutes.sendMsgToClients = function (json) {
+SseRoutes.sendMsgToClients = function (userid, json) {
   var message = JSON.stringify(json);
   debug("Sending to %s client(s): %s", openConnections.length, message);
 
-  if (!json.ping) {
+  if (json.type !== 'ping') {
     debug('adding to queue');
     eventQueue.push(json);
     if (eventQueue.length > 5) {
@@ -69,10 +69,13 @@ SseRoutes.sendMsgToClients = function (json) {
   var failedConnections = [];
 
   for (var j = 0; j < openConnections.length; j++) {
-    var resp = openConnections[ j ];
+    var conn = openConnections[ j ];
     try {
-      resp.write('data: ' + message + '\n\n'); // Note the extra newline
-      resp.flushHeaders();
+      // Don't send to the originating user
+      if (conn.userid == null || conn.userid != userid) {
+        conn.connection.write('data: ' + message + '\n\n'); // Note the extra newline
+        conn.connection.flushHeaders();
+      }
     } catch (error) {
       failedConnections.push(j);
     }

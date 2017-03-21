@@ -108,7 +108,7 @@ router.post('/', function (req, res, next) {
     data.title = req.user.firstname + " "  + req.user.surname;
     data.message = "New epic added : " + title;
 
-    sse.sendMsgToClients(data);
+    sse.sendMsgToClients(req.user.googleid , data);
 
     res.redirect('/epics');
   });
@@ -138,7 +138,7 @@ router.patch('/:from/:to' , function (req, res, next) {
       data.to = to;
       data.message = "Epics re-ordered please refresh lists";
 
-      sse.sendMsgToClients(data);
+      sse.sendMsgToClients(req.user.googleid, data);
 
       res.sendStatus(200);
     }

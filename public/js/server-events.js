@@ -7,7 +7,7 @@ function listenForSSE () {
       var data = JSON.parse(e.data);
 
       // Skip ping messages
-      if( data.ping) {
+      if( data.type == 'ping') {
         return;
       }
 

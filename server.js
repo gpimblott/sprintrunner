@@ -190,9 +190,9 @@ var SprintRunner = function () {
       var CronJob = require('cron').CronJob;
       new CronJob('*/10 * * * * *', function () {
         debug('sending ping');
-        var message = {};
-        message.ping=true;
-        sse.sendMsgToClients(message);
+        var data={};
+        data.type='ping';
+        sse.sendMsgToClients(null , data);
       }, null, true, 'America/Los_Angeles');
     }
 
