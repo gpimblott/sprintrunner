@@ -68,4 +68,7 @@ fieldset .form-control { background-color: #e2f1ef;cursor: auto }
     font-size: 80%;
 }
 
+.cursor-wait {
+    cursor: wait !important;
+}
 

@@ -12,10 +12,7 @@ var sse = require('../routes/sse');
 
 router.get("/", function (req, res, next) {
 
-      var title = "All Epics";
-
       res.render("epics/list-epics", {
-        title: title
       });
   });
 

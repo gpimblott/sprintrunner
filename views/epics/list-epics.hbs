@@ -1,16 +1,11 @@
 <div class="row">
     <div class="col-md-10 col-md-offset-1">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">{{title}}</h3>
-            </div>
-        </div>
+        <h3 class="">Epics</h3>
     </div>
 </div>
 <div class="row">
     <div class="col-md-10 col-md-offset-1">
         <table id="epicTable" class="table display">
-
         </table>
     </div>
 
@@ -23,7 +18,7 @@
 
         var table = $('#epicTable').DataTable({
             rowReorder: {
-              dataSrc: 'theorder'
+                dataSrc: 'theorder'
             },
             scrollY: 500,
             paging: false,
@@ -32,7 +27,7 @@
                 "type": "GET",
                 "dataSrc": ""
             },
-                columns: [{
+            columns: [ {
                 data: 'theorder',
                 title: 'Id'
             }, {
@@ -41,43 +36,43 @@
             }, {
                 data: 'description',
                 title: 'Description'
-            }]
+            } ]
         });
-
-
 
         table.on('row-reorder', function (e, diff, edit) {
             var from = edit.triggerRow.data().theorder;
             var fromId = edit.triggerRow.data().id;
             var to = null;
-            console.log("from: " + from + " id: " + fromId );
-
-
+            console.log("from: " + from + " id: " + fromId);
 
             for (var i = 0, ien = diff.length; i < ien; i++) {
                 var rowData = table.row(diff[ i ].node).data();
 
-
-                if( rowData.theorder == from) {
-                  to = table.row(diff[i].newPosition).data().theorder;
+                if (rowData.theorder == from) {
+                    to = table.row(diff[ i ].newPosition).data().theorder;
                 }
             }
 
-
+            cursor_wait();
             $.ajax({
                 type: "PATCH",
-                url: '/epics/' + from + '/'+ fromId + '/' + to,
-                data: { },
-                success: function (result) { console.log("success:" + result)},
+                url: '/epics/' + from + '/' + fromId + '/' + to,
+                data: {},
+                success: function (result) {
+                    console.log("success:" + result);
+                    remove_cursor_wait();
+                },
                 error: function (error) {
-                  alert('Unable to move rows - please refresh page');
+                    remove_cursor_wait();
+                    alert('Unable to move rows - please refresh page');
                 }
             });
 
         });
 
-
     });
 
 </script>
+
+<script src="/js/page-utils.js"></script>
 

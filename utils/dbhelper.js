@@ -16,7 +16,7 @@ const config = {
   port: params.port,
   database: params.pathname.split("/")[ 1 ],
   ssl: process.env.USE_SSL,
-  max: 50, //set pool max size to 50
+  max: 20, //set pool max size to 20 - Max for free Heroku instance
   min: 4, //set min pool size to 4
   idleTimeoutMillis: 2000 //close idle clients after 2 seconds
 };
@@ -54,6 +54,14 @@ DBHelper.connect = function (done) {
     debug("Connected");
     done(client, null);
   });
+};
+
+/**
+ * Return the current DB connection pool to the caller
+ * @returns {*}
+ */
+DBHelper.getPool = function() {
+  return pool;
 };
 
 /**

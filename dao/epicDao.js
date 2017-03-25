@@ -61,10 +61,14 @@ Epic.moveEpic = function (from, fromId, to, done) {
   fromId = parseInt(fromId, 10);
   to = parseInt(to, 10);
 
-  dbhelper.connect(function (client, error) {
+  var pool = dbhelper.getPool();
+
+  pool.connect(function (error, client, release) {
+    // dbhelper.connect(function (client, error) {
 
     if (client === null) {
       debug("Error with DB client");
+      release();
       done(null, error);
       return;
     }
@@ -76,7 +80,6 @@ Epic.moveEpic = function (from, fromId, to, done) {
       //ROLLBACK it is cleaner and more correct
       client.query("ROLLBACK", function () {
         debug("Rolling back transaction");
-        client.end();
         return;
       });
     };
@@ -85,8 +88,9 @@ Epic.moveEpic = function (from, fromId, to, done) {
       if (err) {
         debug("Error starting transaction");
         rollback(client);
+        release(true);
         done(null, err);
-        return ;
+        return;
       }
 
       debug("Updating from:%s id:%s", from, fromId);
@@ -95,6 +99,7 @@ Epic.moveEpic = function (from, fromId, to, done) {
         if (err) {
           debug("Error updating Epic");
           rollback(client);
+          release(true);
           done(null, err);
           return;
         }
@@ -102,6 +107,7 @@ Epic.moveEpic = function (from, fromId, to, done) {
         if (result.rowCount == 0) {
           debug("Epic order NOT updated");
           rollback(client);
+          release(true);
           done(null, "Epic order incorrect");
           return;
         }
@@ -118,6 +124,7 @@ Epic.moveEpic = function (from, fromId, to, done) {
           if (err) {
             debug("Other Epics not reordered");
             rollback(client);
+            release(true);
             done(null, err);
             return;
           }
@@ -125,20 +132,20 @@ Epic.moveEpic = function (from, fromId, to, done) {
             if (err) {
               debug("Error moving original Epic");
               rollback(client);
+              release(true);
               done(null, err);
               return;
             }
             //disconnect after successful commit
             client.query("COMMIT", client.end.bind(client));
-            client.end();
+            release();
             done(true, null);
-            return;
           });
         });
       });
     });
   });
-}
+};
 
 Epic.getEpic = function (storyId, done) {
   var sql = "SELECT epic.*, personas.name as persona_name"
