@@ -1,7 +1,8 @@
-'use strict';
+"use strict";
 
-var pg = require('pg');
-var dbhelper = require('../utils/dbhelper.js');
+var pg = require("pg");
+var dbhelper = require("../utils/dbhelper.js");
+var debug = require("debug")("sprintrunner:epics-dao");
 
 var Epic = function () {
 };
@@ -54,63 +55,70 @@ Epic.update = function (id, title, persona, description, reason, acceptance_crit
     });
 };
 
+Epic.moveEpic = function (from, fromId, to, done) {
 
-Epic.moveEpic = function( from, to, done) {
+  from = parseInt(from, 10);
+  fromId = parseInt(fromId, 10);
+  to = parseInt(to, 10);
 
-  from = parseInt( from , 10);
-  to = parseInt( to, 10);
+  dbhelper.connect(function (client, error) {
 
-  dbhelper.connect( function( client  , error ) {
-
-    if( client == null ){
-      done( false , error);
+    if (client == null) {
+      done(false, error);
       return;
     }
 
-
-    var rollback = function(client) {
+    var rollback = function (client) {
       //terminating a client connection will
       //automatically rollback any uncommitted transactions
       //so while it's not technically mandatory to call
       //ROLLBACK it is cleaner and more correct
-      client.query('ROLLBACK', function() {
+      client.query("ROLLBACK", function () {
         client.end();
         return;
       });
     };
 
-    client.query('BEGIN', function(err, result) {
-      if(err) return rollback(client);
-      client.query('UPDATE epics set theorder=null where theorder=$1', [from], function(err, result) {
-        if(err) {
+    client.query("BEGIN", function (err, result) {
+      if (err) return rollback(client);
+      debug("Updating from:%s id:%s", from, fromId);
+      client.query("UPDATE epics set theorder=null where theorder=$1 and id=$2", [ from, fromId ], function (err, result) {
+        debug("Update count: %s", result.rowCount);
+        if (err) {
           rollback(client);
-          done( null , err);
+          done(null, err);
+          return;
+        }
+
+        if (result.rowCount == 0) {
+          rollback(client);
+          done(null, "Epic order incorrect");
           return;
         }
 
         var sql;
-        if (from >  to) {
-          sql = 'UPDATE epics set theorder = theorder+1 where theorder >= $2 and theorder < $1';
+        if (from > to) {
+          sql = "UPDATE epics set theorder = theorder+1 where theorder >= $2 and theorder < $1";
         }
         else {
-          sql = 'UPDATE epics set theorder = theorder-1 where theorder > $1 and theorder <= $2';
+          sql = "UPDATE epics set theorder = theorder-1 where theorder > $1 and theorder <= $2";
         }
 
-        client.query(sql, [from,to], function(err, result) {
-          if(err) {
+        client.query(sql, [ from, to ], function (err, result) {
+          if (err) {
             rollback(client);
-            done( false , err);
+            done(false, err);
             return;
           }
-          client.query('UPDATE epics set theorder=$1 where theorder is null', [to], function(err, result) {
+          client.query("UPDATE epics set theorder=$1 where theorder is null", [ to ], function (err, result) {
             if (err) {
               rollback(client);
-              done( false , err);
+              done(false, err);
             }
             //disconnect after successful commit
-            client.query('COMMIT', client.end.bind(client));
+            client.query("COMMIT", client.end.bind(client));
 
-            done( true, null );
+            done(true, null);
             return;
           });
         });
@@ -118,7 +126,6 @@ Epic.moveEpic = function( from, to, done) {
     });
   });
 }
-
 
 Epic.getEpic = function (storyId, done) {
   var sql = "SELECT epic.*, personas.name as persona_name"

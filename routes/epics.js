@@ -1,5 +1,7 @@
-var express = require('express');
-var debug = require('debug')('epics-route');
+"use strict";
+
+var express = require("express");
+var debug = require("debug")("sprintrunner:epics-route");
 var router = express.Router();
 var utils = require('../utils/storyHelper');
 var epicDao = require('../dao/epicDao');
@@ -8,31 +10,32 @@ var personaDao = require('../dao/personaDao');
 var sanitizer = require('sanitize-html');
 var sse = require('../routes/sse');
 
-router.get('/', function (req, res, next) {
+router.get("/", function (req, res, next) {
+
+      var title = "All Epics";
+
+      res.render("epics/list-epics", {
+        title: title
+      });
+  });
+
+
+router.get("/json", function (req, res, next) {
 
   epicDao.getAllEpics(function (epics, error) {
 
     if (error) {
-      res.render('damn', {
-        message: 'Something went wrong',
-        status: error,
-        reason: "Don't know why"
-      });
-
+      debug("Error fetching all epics: %s" , error);
+      res.sendStatus(500);
     } else {
-
-      var title = "All Epics";
-
-      res.render('epics/list-epics', {
-        title: title,
-        epics: epics,
-      });
+      res.setHeader("Content-Type", "application/json");
+      res.send(JSON.stringify(epics));
+      debug("All epics returned ok");
     }
-  })
-
+  });
 });
 
-router.get('/add', function (req, res, next) {
+router.get("/add", function (req, res, next) {
   personaDao.getNames(function (error, names) {
 
     res.render("epics/add-epic", {
@@ -42,7 +45,7 @@ router.get('/add', function (req, res, next) {
 
 });
 
-router.get('/:epicId', function (req, res, next) {
+router.get("/:epicId", function (req, res, next) {
   var epicId = req.params[ "epicId" ];
 
   epicDao.getEpic(epicId, function (epic, error) {
@@ -50,8 +53,8 @@ router.get('/:epicId', function (req, res, next) {
       storyDao.getStoriesForEpic(epicId, function (error, stories) {
 
         if (error) {
-          res.render('damn', {
-            message: 'Something went wrong',
+          res.render("damn", {
+            message: "Something went wrong",
             status: error,
             reason: "Don't know why"
           });
@@ -110,24 +113,28 @@ router.post('/', function (req, res, next) {
 
     sse.sendMsgToClients(req.user.googleid , data);
 
-    res.redirect('/epics');
+    res.redirect("/epics");
   });
 });
 
 // Update the order of an epic
-router.patch('/:from/:to' , function (req, res, next) {
+router.patch("/:from/:fromId/:to" , function (req, res, next) {
   var from = req.params[ "from" ];
+  var fromId = req.params[ "fromId" ];
   var to = req.params[ "to" ];
-  debug('Moving epic:' + from + ' to ' + to);
+  debug("Moving epic: %s (%s) to %s", from, fromId, to);
 
   if ( to==null || from == null || from == "null" || to == "null" || from == to) {
+    debug("Invalid parameters - PATCH ignored");
     res.sendStatus(200);
     return;
   }
 
-  epicDao.moveEpic(from, to, function (result, error) {
+  epicDao.moveEpic(from, fromId,  to, function (result, error) {
     if (error) {
+      debug("Error moving epic");
       res.sendStatus(500);
+      return;
     } else {
 
       var data={};
@@ -140,7 +147,9 @@ router.patch('/:from/:to' , function (req, res, next) {
 
       sse.sendMsgToClients(req.user.googleid, data);
 
+      debug("PATCH successful");
       res.sendStatus(200);
+      return;
     }
   });
 });

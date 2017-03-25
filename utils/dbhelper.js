@@ -45,18 +45,18 @@ DBHelper.query = function (sql, parameters, done, error) {
 
       var query = client.query(sql, parameters);
 
-      query.on('row', function (row) {
+      query.on("row", function (row) {
         results.push(row);
       });
 
       // After all data is returned, close connection and return results
-      query.on('end', function () {
+      query.on("end", function () {
         client.end();
         done(results);
       });
     }
   });
-}
+};
 
 /**
  * Perform an insert operation on the database
@@ -83,7 +83,7 @@ DBHelper.insert = function (sql, parameters, done, error) {
     client.query(sql, parameters,
       function (err, result) {
         if (err) {
-          error(err)
+          error(err);
         } else {
           client.end();
           done(result);

@@ -1,13 +1,19 @@
 function listenForSSE () {
 
   if (!!window.EventSource) {
-    var source = new EventSource('/stream')
+    var source = new EventSource("/stream")
+
+    // Remove the notification when pulldown shown
+    $(".dropdown").on("show.bs.dropdown", function(){
+      $("#notification-count").removeClass("notification-icon");
+      $("#notification-count").attr("data-count" , 0 );
+    });
 
     source.addEventListener('message', function (e) {
       var data = JSON.parse(e.data);
 
       // Skip ping messages
-      if( data.type == 'ping') {
+      if( data.type == "ping") {
         return;
       }
 
@@ -16,15 +22,15 @@ function listenForSSE () {
         title: data.title,
         message: data.message,
       }, {
-        type: 'minimalist',
+        type: "minimalist",
         delay: 6000,
-        icon_type: 'image',
+        icon_type: "image",
         offset: { x: 10, y: 70 },
-        template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
-        '<img data-notify="icon" class="img-circle pull-left">' +
-        '<span data-notify="title">{1}</span>' +
-        '<span data-notify="message">{2}</span>' +
-        '</div>'
+        template: "<div data-notify=\"container\" class=\"col-xs-11 col-sm-3 alert alert-{0}\" role=\"alert\">" +
+        "<img data-notify=\"icon\" class=\"img-circle pull-left\">" +
+        "<span data-notify=\"title\">{1}</span>" +
+        "<span data-notify=\"message\">{2}</span>" +
+        "</div>"
       });
 
       // Update the menubar to include the new event and show the count
@@ -46,8 +52,11 @@ function listenForSSE () {
       </li>';
 
       // Update the menu items
-      $('#notification-list').append(html);
-      $('#notification-count').attr('data-count' , parseInt($('#notification-count').attr('data-count') , 10 )+1 );
+      $("#notification-list").append(html);
+      if($("#notification-count").attr('data-count')==0) {
+        $("#notification-count").addClass('notification-icon');
+      }
+      $("#notification-count").attr('data-count' , parseInt($("#notification-count").attr('data-count') , 10 )+1 );
 
     }, false)
 

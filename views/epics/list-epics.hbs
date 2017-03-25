@@ -10,23 +10,7 @@
 <div class="row">
     <div class="col-md-10 col-md-offset-1">
         <table id="epicTable" class="table display">
-            <thead>
-            <tr>
-                <th width="10px">Order</th>
-                <th>Name</th>
-                <th>Description</th>
 
-            </tr>
-            </thead>
-            <tbody>
-            {{#each epics}}
-                <tr>
-                    <td>{{this.theorder}}</td>
-                    <td><a href="/epics/{{this.id}}">{{this.title}}</a></td>
-                    <td>{{this.description}}</td>
-                </tr>
-            {{/each}}
-            </tbody>
         </table>
     </div>
 
@@ -38,32 +22,61 @@
     $(document).ready(function () {
 
         var table = $('#epicTable').DataTable({
-            rowReorder: true,
+            rowReorder: {
+              dataSrc: 'theorder'
+            },
             scrollY: 500,
-            paging: false
+            paging: false,
+            ajax: {
+                "url": "/epics/json",
+                "type": "GET",
+                "dataSrc": ""
+            },
+                columns: [{
+                data: 'theorder',
+                title: 'Id'
+            }, {
+                data: 'title',
+                title: 'Title'
+            }, {
+                data: 'description',
+                title: 'Description'
+            }]
         });
 
+
+
         table.on('row-reorder', function (e, diff, edit) {
-            var from = edit.triggerRow.data()[ 0 ];
+            var from = edit.triggerRow.data().theorder;
+            var fromId = edit.triggerRow.data().id;
             var to = null;
+            console.log("from: " + from + " id: " + fromId );
+
+
 
             for (var i = 0, ien = diff.length; i < ien; i++) {
                 var rowData = table.row(diff[ i ].node).data();
 
-                if (from == diff[ i ].oldData) {
-                    to = diff[ i ].newData;
+
+                if( rowData.theorder == from) {
+                  to = table.row(diff[i].newPosition).data().theorder;
                 }
             }
 
+
             $.ajax({
                 type: "PATCH",
-                url: '/epics/' + from + '/' + to,
-                data: {},
+                url: '/epics/' + from + '/'+ fromId + '/' + to,
+                data: { },
                 success: function (result) { console.log("success:" + result)},
-                error: function (error) { console.log("error:" + error)}
+                error: function (error) {
+                  alert('Unable to move rows - please refresh page');
+                }
             });
 
         });
+
+
     });
 
 </script>

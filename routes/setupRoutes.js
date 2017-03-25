@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 var debug = require('debug')('sprintrunner:routes');
 
@@ -27,22 +27,23 @@ SetupRoutes.setup = function (self) {
   // Check for the login route first - this can be accessed unauthenticated
   self.app.get('/login', function (req, res, next) {
     if (req.isAuthenticated()) {
-      res.redirect('/');
+      res.redirect("/");
     } else {
-      res.render('login', { layout: 'main-login' });
+      res.render("login", { layout: "main-login" });
     }
-  })
+
+  });
 
   // Everything should be authenticated
   self.app.use( function (req, res, next) {
     if( req.isUnauthenticated()) {
-      debug('Unauthenticated request caught : %s' , req.path);
-      res.redirect('/login');
+      debug("Unauthenticated request caught : %s" , req.path);
+      res.redirect("/login");
     } else {
-      debug('authenticated request : %s' , req.path);
-      next('route');
+      debug("authenticated request : %s" , req.path);
+      next("route");
     }
-  })
+  });
 
 
   // All of these routes should be authenticated

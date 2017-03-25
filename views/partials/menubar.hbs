@@ -16,7 +16,7 @@
 
                 <li class="dropdown dropdown-notifications">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">
-                        <i data-count="{{eventQueue.length}}" class="glyphicon glyphicon-bell notification-icon" id="notification-count"></i>
+                       <i data-count="{{eventQueue.length}}" class="glyphicon glyphicon-bell {{#ifCond eventQueue.length  ">" 0 }}notification-icon{{/ifCond}}" id="notification-count"></i>
                     </a>
                     <ul class="dropdown-menu notifications" id="notification-list">
                         {{#each eventQueue }}
@@ -27,7 +27,7 @@
                                         <img data-src="{{this.icon}}" src="{{this.icon}}" class="img-circle" alt="Name">
                                     </div>
                                 </div>
-                                <div class="media-body">
+                                <div class="media-body">cw
                                     <strong class="notification-title">{{this.title}}</a></strong>
                                     <p class="notification-desc">{{this.message}}</p>
 

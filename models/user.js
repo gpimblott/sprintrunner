@@ -43,14 +43,17 @@ User.findById = function (id, done) {
   dbhelper.query(sql, [ id ],
     function (results) {
 
-      if (results.length == 0) {
+      if (results.length === 0) {
+        debug("User %s NOT found" , id);
         return done(null, null);
       } else {
+        debug("User %s found" , id);
         var user = User.recordToUser(results[ 0 ]);
         return done(null, user);
       }
     },
     function (error) {
+      debug("Error finding user %s : %s" , id , error);
       console.error(error);
       return done(null, null);
     });
