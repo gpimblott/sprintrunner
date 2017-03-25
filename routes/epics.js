@@ -138,12 +138,13 @@ router.patch("/:from/:fromId/:to" , function (req, res, next) {
     } else {
 
       var data={};
-      data.type='epic-move';
+      data.type="epic-move";
       data.icon = req.user.picture;
       data.title = req.user.firstname + " "  + req.user.surname;
       data.from = from;
       data.to = to;
       data.message = "Epics re-ordered please refresh lists";
+      data.time = new Date().toISOString().replace(/T/, " ").replace(/\..+/, "");
 
       sse.sendMsgToClients(req.user.googleid, data);
 

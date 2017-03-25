@@ -63,8 +63,9 @@ Epic.moveEpic = function (from, fromId, to, done) {
 
   dbhelper.connect(function (client, error) {
 
-    if (client == null) {
-      done(false, error);
+    if (client === null) {
+      debug("Error with DB client");
+      done(null, error);
       return;
     }
 
@@ -74,23 +75,32 @@ Epic.moveEpic = function (from, fromId, to, done) {
       //so while it's not technically mandatory to call
       //ROLLBACK it is cleaner and more correct
       client.query("ROLLBACK", function () {
+        debug("Rolling back transaction");
         client.end();
         return;
       });
     };
 
     client.query("BEGIN", function (err, result) {
-      if (err) return rollback(client);
+      if (err) {
+        debug("Error starting transaction");
+        rollback(client);
+        done(null, err);
+        return ;
+      }
+
       debug("Updating from:%s id:%s", from, fromId);
       client.query("UPDATE epics set theorder=null where theorder=$1 and id=$2", [ from, fromId ], function (err, result) {
         debug("Update count: %s", result.rowCount);
         if (err) {
+          debug("Error updating Epic");
           rollback(client);
           done(null, err);
           return;
         }
 
         if (result.rowCount == 0) {
+          debug("Epic order NOT updated");
           rollback(client);
           done(null, "Epic order incorrect");
           return;
@@ -106,18 +116,21 @@ Epic.moveEpic = function (from, fromId, to, done) {
 
         client.query(sql, [ from, to ], function (err, result) {
           if (err) {
+            debug("Other Epics not reordered");
             rollback(client);
-            done(false, err);
+            done(null, err);
             return;
           }
           client.query("UPDATE epics set theorder=$1 where theorder is null", [ to ], function (err, result) {
             if (err) {
+              debug("Error moving original Epic");
               rollback(client);
-              done(false, err);
+              done(null, err);
+              return;
             }
             //disconnect after successful commit
             client.query("COMMIT", client.end.bind(client));
-
+            client.end();
             done(true, null);
             return;
           });

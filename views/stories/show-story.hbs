@@ -30,7 +30,7 @@
                                 <div class="controls col-sm-9">
                                     <select name="status" class="form-control">
                                         {{#each status}}
-                                            <option value="{{this.id}}"{{#ifCond this.id
+                                            <option value="{{this.id}}"{{#ifCond this.id "=="
                                                                                  ../story.status_id}}selected{{/ifCond}}>{{this.name}}</option>
                                         {{/each}}
                                     </select>
@@ -49,7 +49,7 @@
                                     <select name="team" class="form-control">
                                         <option value="0"{{#unless../story.team_id}}selected{{/unless}}>Not assigned</option>
                                         {{#each teams}}
-                                            <option value="{{this.id}}"{{#ifCond this.id
+                                            <option value="{{this.id}}"{{#ifCond this.id "=="
                                                                                  ../story.team_id}}selected{{/ifCond}}>{{this.name}}</option>
                                         {{/each}}
                                     </select>
@@ -68,7 +68,7 @@
                                 <div class="controls col-sm-9">
                                     <select name="persona" class="form-control" id="persona">
                                         {{#each this.personas}}
-                                            <option value="{{this.id}}"{{#ifCond this.id
+                                            <option value="{{this.id}}"{{#ifCond this.id "=="
                                                                                  ../story.persona}}selected{{/ifCond}}>{{this.name}}</option>
                                         {{/each}}
                                     </select>

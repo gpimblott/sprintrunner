@@ -1,64 +1,41 @@
-'use strict';
+"use strict";
 
-var express = require('express');
-var utils = require('../utils/storyHelper');
+var express = require("express");
+var utils = require("../utils/storyHelper");
 var router = express.Router();
-var storyDao = require('../dao/storyDao');
-var epicDao = require('../dao/epicDao');
-var teamDao = require('../dao/teamDao');
-var personaDao = require('../dao/personaDao');
-var sanitizer = require('sanitize-html');
+var debug = require("debug")("sprintrunner:stories");
+var storyDao = require("../dao/storyDao");
+var epicDao = require("../dao/epicDao");
+var teamDao = require("../dao/teamDao");
+var personaDao = require("../dao/personaDao");
+var sanitizer = require("sanitize-html");
 
-router.get('/', function (req, res, next) {
+router.get("/", function (req, res, next) {
 
   storyDao.getAllStories(function (error, stories) {
-    console.log( stories);
     if (error) {
-      res.render('damn', {
-        message: '┬──┬◡ﾉ(° -°ﾉ)',
+      res.render("damm", {
+        message: "Something went wrong)",
         status: error,
-        reason: "(╯°□°）╯︵ ┻━┻"
+        reason: "Don't know what :("
       });
 
     } else {
       utils.renderStories(res, stories, "All Stories");
     }
-  })
+  });
 });
 
-router.get('/assign', function (req, res, next) {
 
-  storyDao.getAllStories(function (error, stories) {
-
-    if (error) {
-      res.render('damn', {
-        message: 'Something went wrong',
-        status: error,
-        reason: "I don't know why"
-      });
-
-    } else {
-
-      epicDao.getAllEpics(function (epics, errors) {
-        res.render("sidebar", {
-          stories: stories,
-          epics:epics,
-          layout: 'main-dragdrop'
-        })
-      })
-    }
-  })
-});
-
-router.get('/status/:status' , function (req, res, next) {
+router.get("/status/:status" , function (req, res, next) {
   var status = decodeURIComponent(req.params[ "status" ]);
 
   storyDao.getStoriesWithStatus(status, function (error, stories) {
     if (error) {
-      res.render('damn', {
-        message: '┬──┬◡ﾉ(° -°ﾉ)',
+      res.render("damn", {
+        message: "Something went wrong",
         status: error,
-        reason: "(╯°□°）╯︵ ┻━┻"
+        reason: "Don't know"
       });
 
     } else {
@@ -67,15 +44,15 @@ router.get('/status/:status' , function (req, res, next) {
   });
 });
 
-router.get('/team/:teamName', function (req, res, next) {
+router.get("/team/:teamName", function (req, res, next) {
   var teamName = decodeURIComponent(req.params[ "teamName" ]);
 
   storyDao.getStoriesForTeam(teamName, function (error, stories) {
     if (error) {
-      res.render('damn', {
-        message: '┬──┬◡ﾉ(° -°ﾉ)',
+      res.render("damn", {
+        message: "Something went wrong",
         status: error,
-        reason: "(╯°□°）╯︵ ┻━┻"
+        reason: "Don't know"
       });
 
     } else {
@@ -85,7 +62,7 @@ router.get('/team/:teamName', function (req, res, next) {
 });
 
 
-router.get('/add/:epicId', function (req, res, next) {
+router.get("/add/:epicId", function (req, res, next) {
   var epicId = req.params[ "epicId" ];
   personaDao.getNames(function (error, names) {
 
@@ -93,11 +70,11 @@ router.get('/add/:epicId', function (req, res, next) {
       personas: names,
       epic: epicId
     });
-  })
+  });
 
 });
 
-router.get('/add', function (req, res, next) {
+router.get("/add", function (req, res, next) {
   personaDao.getNames(function (error, names) {
 
     res.render("stories/add-story", {
@@ -107,17 +84,17 @@ router.get('/add', function (req, res, next) {
 
 });
 
-router.get('/edit/:storyId', function (req, res, next) {
+router.get("/edit/:storyId", function (req, res, next) {
   var storyId = req.params[ "storyId" ];
 
   storyDao.getStory(storyId, function (error, story) {
     personaDao.getNames(function (error, names) {
 
       if (error) {
-        res.render('damn', {
-          message: '┬──┬◡ﾉ(° -°ﾉ)',
+        res.render("damn", {
+          message: "Something went wrong",
           status: error,
-          reason: "(╯°□°）╯︵ ┻━┻"
+          reason: "Don't know"
         });
 
       } else {
@@ -131,15 +108,14 @@ router.get('/edit/:storyId', function (req, res, next) {
 
 });
 
-router.get('/show/:storyId', function (req, res, next) {
+router.get("/show/:storyId", function (req, res, next) {
   var storyId = req.params[ "storyId" ];
 
   storyDao.getStory(storyId, function (error, story) {
-    console.log(story);
     personaDao.getNames(function (error, names) {
       if (error) {
-        res.render('damn', {
-          message: 'Something went wrong',
+        res.render("damn", {
+          message: "Something went wrong",
           status: error,
           reason: "Don't know"
         });
@@ -160,10 +136,10 @@ router.get('/show/:storyId', function (req, res, next) {
  */
 
 
-router.post('/:storyId', function (req, res, next) {
+router.post("/:storyId", function (req, res, next) {
   var storyId = req.params[ "storyId" ];
 
-  console.log("Received update POST for " + storyId);
+  debug("Received update POST for %s", storyId);
   var title = sanitizer(req.body.title);
   var status = sanitizer(req.body.status);
   var estimate = sanitizer(req.body.estimate);
@@ -174,13 +150,13 @@ router.post('/:storyId', function (req, res, next) {
   var acceptance_criteria = sanitizer(req.body.acceptance_criteria);
 
   storyDao.update(storyId, title, persona, status, description, reason, acceptance_criteria, estimate, team, function (result, error) {
-    res.redirect('/stories/show/' + storyId);
+    res.redirect("/stories/show/" + storyId);
   });
 
 });
 
 
-router.post('/', function (req, res, next) {
+router.post("/", function (req, res, next) {
   var title = sanitizer(req.body.title);
   var status = sanitizer(req.body.status);
   var estimate = sanitizer(req.body.estimate);
@@ -199,15 +175,15 @@ router.post('/', function (req, res, next) {
       } );
     }
 
-    res.redirect('/stories');
+    res.redirect("/stories");
   });
 });
 
-router.delete('/:storyId' , function (req, res, next) {
+router.delete("/:storyId" , function (req, res, next) {
   var storyId = req.params[ "storyId" ];
 
   storyDao.delete(storyId, function (result, error) {
-    res.redirect('/stories');
+    res.redirect("/stories");
   })
 });
 

@@ -1,32 +1,60 @@
-'use strict';
+"use strict";
 
 /**
  * Helper function to perform base database operations (e.g. query, insert)
  */
-var pg = require('pg');
+const pg = require("pg");
+const url = require("url");
+
+const params = url.parse(process.env.DATABASE_URL);
+const auth = params.auth.split(":");
+
+const config = {
+  user: auth[ 0 ],
+  password: auth[ 1 ],
+  host: params.hostname,
+  port: params.port,
+  database: params.pathname.split("/")[ 1 ],
+  ssl: process.env.USE_SSL,
+  max: 50, //set pool max size to 50
+  min: 4, //set min pool size to 4
+  idleTimeoutMillis: 2000 //close idle clients after 2 seconds
+};
+
+var pool = new pg.Pool(config);
+
+var debug = require("debug")("sprintrunner:dbhelper");
+
+pool.on('error', function (e, client) {
+  client.end();
+  debug("DB Pool error: %s", e);
+});
 
 var DBHelper = function () {
 };
 
-DBHelper.connect = function ( done ) {
-  if (process.env.USE_SSL && process.env.USE_SSL.toLowerCase() !== 'false') {
+DBHelper.connect = function (done) {
+  if (process.env.USE_SSL && process.env.USE_SSL.toLowerCase() !== "false") {
     pg.defaults.ssl = true;
   }
 
   pg.defaults.poolSize = 50;
 
+  debug("Connecting");
   pg.connect(process.env.DATABASE_URL, function (err, client) {
 
     // Handle connection errors
     if (err) {
+      debug("Error Connecting: %s", err);
       if (client) {
         client.end();
       }
-      done( null , err );
+      done(null, err);
     }
-    done( client  , null );
+    debug("Connected");
+    done(client, null);
   });
-}
+};
 
 /**
  * Perform a select query operation
@@ -37,23 +65,25 @@ DBHelper.connect = function ( done ) {
  */
 DBHelper.query = function (sql, parameters, done, error) {
 
-  DBHelper.connect(function (client , err) {
+  debug("Query: %s", sql);
+  pool.connect(function (err, client, release) {
     if (client == null) {
+      debug("Client error");
+      release();
       error(err);
     } else {
-      var results = [];
+      debug("Connection OK");
 
-      var query = client.query(sql, parameters);
-
-      query.on("row", function (row) {
-        results.push(row);
-      });
-
-      // After all data is returned, close connection and return results
-      query.on("end", function () {
-        client.end();
-        done(results);
-      });
+      try {
+        client.query(sql, parameters, function (err, result) {
+          debug("Query OK: %s rows" , result.rows.length);
+          release();
+          done(result.rows);
+        });
+      } catch (e) {
+        debug("Exception thrown : " + e);
+        release(true);
+      }
     }
   });
 };
@@ -66,29 +96,36 @@ DBHelper.query = function (sql, parameters, done, error) {
  * @param error Error function to call on error
  */
 DBHelper.insert = function (sql, parameters, done, error) {
-  if (process.env.USE_SSL && process.env.USE_SSL.toLowerCase() !== 'false') {
-    pg.defaults.ssl = true;
-  }
+  // if (process.env.USE_SSL && process.env.USE_SSL.toLowerCase() !== 'false') {
+  //   pg.defaults.ssl = true;
+  // }
 
-  pg.connect(process.env.DATABASE_URL, function (err, client) {
+  debug("Inserting: %s" , sql);
+  pool.connect(function (err, client, release) {
+    // pg.connect(process.env.DATABASE_URL, function (err, client) {
     // Handle connection errors
     if (err) {
+      debug("Client error");
       if (client) {
-        client.end();
+        release();
       }
       error(err);
       return;
     }
 
-    client.query(sql, parameters,
-      function (err, result) {
+    try {
+      client.query(sql, parameters, function (err, result) {
+        release();
         if (err) {
           error(err);
         } else {
-          client.end();
           done(result);
         }
       });
+    } catch (e) {
+      debug("Exception thrown : " + e);
+      release(true);
+    }
   });
 };
 

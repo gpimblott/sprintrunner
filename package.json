@@ -37,7 +37,7 @@
     "oauth": "0.9.15",
     "passport": "latest",
     "passport-google-oauth2": "^0.1.6",
-    "pg": "6.1.0",
+    "pg": "latest",
     "request": "2.76.0",
     "sanitize-html": "latest",
     "serve-favicon": "~2.3.0",

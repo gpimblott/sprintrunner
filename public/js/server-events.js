@@ -9,7 +9,7 @@ function listenForSSE () {
       $("#notification-count").attr("data-count" , 0 );
     });
 
-    source.addEventListener('message', function (e) {
+    source.addEventListener("message", function (e) {
       var data = JSON.parse(e.data);
 
       // Skip ping messages
@@ -45,7 +45,7 @@ function listenForSSE () {
           <strong class="notification-title">' + data.title + '</a></strong> \
           <p class="notification-desc">' + data.message + '</p> \
         <div class="notification-meta"> \
-          <small class="timestamp">27. 11. 2015, 15:00</small> \
+          <small class="timestamp">' + data.time + '</small> \
         </div> \
       </div> \
       </div> \
