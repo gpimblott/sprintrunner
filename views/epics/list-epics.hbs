@@ -5,7 +5,7 @@
 </div>
 <div class="row">
     <div class="col-md-10 col-md-offset-1">
-        <table id="epicTable" class="table display">
+        <table id="epicTable" class="table table-striped" cellspacing="0" width="100%">
         </table>
     </div>
 
@@ -13,6 +13,7 @@
 
 
 <script>
+
 
     $(document).ready(function () {
 
@@ -23,13 +24,16 @@
             scrollY: 500,
             paging: false,
             ajax: {
-                "url": "/epics/json",
+                "url": "/api/epics",
                 "type": "GET",
                 "dataSrc": ""
             },
             columns: [ {
                 data: 'theorder',
                 title: 'Id'
+            }, {
+                data: 'id',
+                title: 'Real ID'
             }, {
                 data: 'title',
                 title: 'Title'
@@ -48,8 +52,10 @@
             for (var i = 0, ien = diff.length; i < ien; i++) {
                 var rowData = table.row(diff[ i ].node).data();
 
-                if (rowData.theorder == from) {
-                    to = table.row(diff[ i ].newPosition).data().theorder;
+                if (diff[ i ].oldData == from) {
+                    console.log(diff[ i ]);
+                    console.log(table.row(diff[ i ].newPosition));
+                    to = diff[ i ].newData;
                 }
             }
 

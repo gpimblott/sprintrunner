@@ -17,7 +17,7 @@
     "npm": "3.10.8"
   },
   "dependencies": {
-    "async": "2.1.2",
+    "async": "latest",
     "body-parser": "latest",
     "cfenv": "1.0.3",
     "cookie-parser": "~1.4.3",

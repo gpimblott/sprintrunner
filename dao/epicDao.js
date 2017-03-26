@@ -1,197 +1,228 @@
 "use strict";
 
-var pg = require("pg");
-var dbhelper = require("../utils/dbhelper.js");
-var debug = require("debug")("sprintrunner:epics-dao");
+const pg = require("pg");
+const dbhelper = require("../utils/dbhelper.js");
+const debug = require("debug")("sprintrunner:epics-dao");
+const async = require("async");
 
-var Epic = function () {
-};
+var Epic = function () {};
 
 Epic.add = function (title, persona, description, reason, acceptance_criteria, done) {
 
-  var sql = "INSERT INTO epics ( title, persona , description,reason,acceptance_criteria, theorder )"
-    + " values ( $1 , $2 , $3, $4, $5 , (select max(theorder)+1 FROM epics)) returning id";
-  var params = [ title, persona, description, reason, acceptance_criteria ];
+    var sql = "INSERT INTO epics ( title, persona , description,reason,acceptance_criteria, theorder )"
+        + " values ( $1 , $2 , $3, $4, $5 , (select max(theorder)+1 FROM epics)) returning id";
+    var params = [ title, persona, description, reason, acceptance_criteria ];
 
-  dbhelper.insert(sql, params,
-    function (result) {
-      done(result.rows[ 0 ].id, null);
-    },
-    function (error) {
-      console.error(error);
-      done(null, error);
-    });
+    dbhelper.insert(sql, params,
+        function (result) {
+            done(result.rows[ 0 ].id, null);
+        },
+        function (error) {
+            console.error(error);
+            done(null, error);
+        });
 };
 
 Epic.linkStoryToEpic = function (epicId, storyId, done) {
 
-  var sql = "INSERT INTO epic_story_link ( epic_id , story_id )"
-    + " values ( $1 , $2 ) returning id";
-  var params = [ epicId, storyId ];
+    var sql = "INSERT INTO epic_story_link ( epic_id , story_id )"
+        + " values ( $1 , $2 ) returning id";
+    var params = [ epicId, storyId ];
 
-  dbhelper.insert(sql, params,
-    function (result) {
-      done(result.rows[ 0 ].id, null);
-    },
-    function (error) {
-      console.error(error);
-      done(null, error);
-    });
+    dbhelper.insert(sql, params,
+        function (result) {
+            done(result.rows[ 0 ].id, null);
+        },
+        function (error) {
+            console.error(error);
+            done(null, error);
+        });
 };
 
 Epic.update = function (id, title, persona, description, reason, acceptance_criteria, done) {
 
-  var sql = "UPDATE epics SET title=$1, persona=$2, description=$3,reason=$4,acceptance_criteria=$5"
-    + " WHERE id=$6";
-  var params = [ title, persona, description, reason, acceptance_criteria, id ];
+    var sql = "UPDATE epics SET title=$1, persona=$2, description=$3,reason=$4,acceptance_criteria=$5"
+        + " WHERE id=$6";
+    var params = [ title, persona, description, reason, acceptance_criteria, id ];
 
-  dbhelper.insert(sql, params,
-    function (result) {
-      done(true, null);
-    },
-    function (error) {
-      console.error(error);
-      done(false, error);
-    });
+    dbhelper.insert(sql, params,
+        function (result) {
+            done(true, null);
+        },
+        function (error) {
+            console.error(error);
+            done(false, error);
+        });
 };
 
+/**
+ * This has to use a transaction around a number of SQL updates to ensure that the correct record is updated
+ * and all or none of the operation occur
+ * @param from
+ * @param fromId
+ * @param to
+ * @param done
+ */
 Epic.moveEpic = function (from, fromId, to, done) {
 
-  from = parseInt(from, 10);
-  fromId = parseInt(fromId, 10);
-  to = parseInt(to, 10);
+    from = parseInt(from, 10);
+    fromId = parseInt(fromId, 10);
+    to = parseInt(to, 10);
 
-  var pool = dbhelper.getPool();
-
-  pool.connect(function (error, client, release) {
-    // dbhelper.connect(function (client, error) {
-
-    if (client === null) {
-      debug("Error with DB client");
-      release();
-      done(null, error);
-      return;
-    }
-
-    var rollback = function (client) {
-      //terminating a client connection will
-      //automatically rollback any uncommitted transactions
-      //so while it's not technically mandatory to call
-      //ROLLBACK it is cleaner and more correct
-      client.query("ROLLBACK", function () {
-        debug("Rolling back transaction");
-        return;
-      });
+    const rollback = function (client, error, cbk) {
+        client.query("ROLLBACK", cbk);
     };
 
-    client.query("BEGIN", function (err, result) {
-      if (err) {
-        debug("Error starting transaction");
-        rollback(client);
-        release(true);
-        done(null, err);
-        return;
-      }
+    const connectToDBFunction = function (cbk) {
+        debug("connectionToDBFunction");
+        dbhelper.setDefaults(pg);
+        // pool.connect(function (error, client, release) {
+        pg.connect(process.env.DATABASE_URL, function (error, client) {
 
-      debug("Updating from:%s id:%s", from, fromId);
-      client.query("UPDATE epics set theorder=null where theorder=$1 and id=$2", [ from, fromId ], function (err, result) {
-        debug("Update count: %s", result.rowCount);
-        if (err) {
-          debug("Error updating Epic");
-          rollback(client);
-          release(true);
-          done(null, err);
-          return;
-        }
+            if (client === null) {
+                debug("Error with DB client");
+                rollback(client, error, cbk);
+                cbk(error);
+                return;
+            }
+            cbk(null, client);
+        });
+    };
 
-        if (result.rowCount == 0) {
-          debug("Epic order NOT updated");
-          rollback(client);
-          release(true);
-          done(null, "Epic order incorrect");
-          return;
-        }
+    const beginTransactionFunction = function (client, cbk) {
+        debug("beginTransactionFunction");
+        client.query("BEGIN", function (error) {
+            if (error) {
+                debug("Error starting transaction");
+                rollback(client, error, cbk);
+                cbk(error);
+                return;
+            }
 
+            cbk(null, client);
+        });
+    };
+
+    const nullOriginalRecordFunction = function (client, cbk) {
+        debug("nullOriginalRecord");
+        client.query("UPDATE epics set theorder=null where theorder=$1 and id=$2", [ from, fromId ], function (error, result) {
+            debug("Update count: %s", result.rowCount);
+            if (error) {
+                debug("Error updating Epic");
+                rollback(client, error, cbk);
+                cbk(error);
+                return;
+            }
+
+            if (result.rowCount === 0) {
+                debug("Original record not found");
+                rollback(client, "Record not found", cbk);
+                cbk("Row not found");
+                return;
+            }
+
+            cbk(null, client);
+        });
+    };
+
+    const moveOtherRecords = function (client, cbk) {
         var sql;
         if (from > to) {
-          sql = "UPDATE epics set theorder = theorder+1 where theorder >= $2 and theorder < $1";
+            sql = "UPDATE epics set theorder = theorder+1 where theorder >= $2 and theorder < $1";
         }
         else {
-          sql = "UPDATE epics set theorder = theorder-1 where theorder > $1 and theorder <= $2";
+            sql = "UPDATE epics set theorder = theorder-1 where theorder > $1 and theorder <= $2";
         }
 
-        client.query(sql, [ from, to ], function (err, result) {
-          if (err) {
-            debug("Other Epics not reordered");
-            rollback(client);
-            release(true);
-            done(null, err);
-            return;
-          }
-          client.query("UPDATE epics set theorder=$1 where theorder is null", [ to ], function (err, result) {
-            if (err) {
-              debug("Error moving original Epic");
-              rollback(client);
-              release(true);
-              done(null, err);
-              return;
+        client.query(sql, [ from, to ], function (error, result) {
+            debug("%s rows updated", result.rowCount);
+            if (error) {
+                debug("Error reordering rows");
+                rollback(client, error, cbk);
+                cbk(error);
+                return;
             }
-            //disconnect after successful commit
-            client.query("COMMIT", client.end.bind(client));
-            release();
-            done(true, null);
-          });
+            cbk(null, client);
         });
-      });
-    });
-  });
+    };
+
+    const setRecordPositionFunction = function (client, cbk) {
+        client.query("UPDATE epics set theorder=$1 where theorder is null", [ to ], function (error, result) {
+            if (error) {
+                debug("Error moving original Epic");
+                rollback(client, error, cbk);
+                cbk(error);
+                return;
+            }
+            cbk(null, client);
+        });
+    };
+
+    const commitTransaction = function (client, cbk) {
+        client.query("COMMIT", cbk);
+    };
+
+    async.waterfall(
+        [ connectToDBFunction,
+            beginTransactionFunction,
+            nullOriginalRecordFunction,
+            moveOtherRecords,
+            setRecordPositionFunction,
+            commitTransaction ],
+        function (error, result) {
+            debug("Result : %s", result);
+            if (error) {
+                debug("Error moving record ");
+            }
+            done(error, result);
+        });
 };
 
 Epic.getEpic = function (storyId, done) {
-  var sql = "SELECT epic.*, personas.name as persona_name"
-    + " FROM epics epic"
-    + " JOIN personas"
-    + " ON epic.persona=personas.id"
-    + " WHERE epic.id=$1;"
+    var sql = "SELECT epic.*, personas.name as persona_name"
+        + " FROM epics epic"
+        + " JOIN personas"
+        + " ON epic.persona=personas.id"
+        + " WHERE epic.id=$1;"
 
-  var params = [ storyId ];
-  dbhelper.query(sql, params,
-    function (results) {
-      done(results[ 0 ], null);
-    },
-    function (error) {
-      console.error(error);
-      done(null, error);
-    });
+    var params = [ storyId ];
+    dbhelper.query(sql, params,
+        function (results) {
+            done(results[ 0 ], null);
+        },
+        function (error) {
+            console.error(error);
+            done(null, error);
+        });
 }
 
 Epic.getAllEpics = function (done) {
-  var sql = "SELECT * FROM epics order by theorder asc";
+    var sql = "SELECT * FROM epics order by theorder asc";
 
-  var params = [];
-  dbhelper.query(sql, params,
-    function (results) {
-      done(results, null);
-    },
-    function (error) {
-      console.error(error);
-      done(null, error);
-    });
+    var params = [];
+    dbhelper.query(sql, params,
+        function (results) {
+            done(results, null);
+        },
+        function (error) {
+            console.error(error);
+            done(null, error);
+        });
 }
 
 Epic.delete = function (id, done) {
-  var params = [ id ];
+    var params = [ id ];
 
-  var sql = "DELETE FROM epics WHERE id = $1";
+    var sql = "DELETE FROM epics WHERE id = $1";
 
-  dbhelper.query(sql, params,
-    function (result) {
-      done(true);
-    },
-    function (error) {
-      console.error(error);
-      done(false, error);
-    });
+    dbhelper.query(sql, params,
+        function (result) {
+            done(true);
+        },
+        function (error) {
+            console.error(error);
+            done(false, error);
+        });
 }
 
 module.exports = Epic;
