@@ -3,7 +3,6 @@
 var express = require("express");
 var debug = require("debug")("sprintrunner:epics-route");
 var router = express.Router();
-var utils = require("../utils/storyHelper");
 var epicDao = require("../dao/epicDao");
 var storyDao = require("../dao/storyDao");
 var personaDao = require("../dao/personaDao");
@@ -26,7 +25,7 @@ router.get("/add", function (req, res, next) {
 router.get("/:epicId", function (req, res, next) {
     var epicId = req.params[ "epicId" ];
 
-    epicDao.getEpic(epicId, function (epic, error) {
+    epicDao.getEpic(epicId, function (error, epic) {
         personaDao.getNames(function (error, names) {
             storyDao.getStoriesForEpic(epicId, function (error, stories) {
 
@@ -44,16 +43,15 @@ router.get("/:epicId", function (req, res, next) {
                         stories: stories
                     });
                 }
-            })
-        })
-    })
-
+            });
+        });
+    });
 });
 
-router.get('/delete/:epicId', function (req, res, next) {
+router.get("/delete/:epicId", function (req, res, next) {
     var epicId = req.params[ "epicId" ];
 
-    epicDao.delete(epicId, function (result, error) {
+    epicDao.delete(epicId, function (error, result) {
         res.redirect("/epics");
     });
 });
@@ -82,14 +80,15 @@ router.post("/", function (req, res, next) {
     var reason = sanitizer(req.body.reason);
     var acceptance_criteria = sanitizer(req.body.acceptance_criteria);
 
-    epicDao.add(title, persona, description, reason, acceptance_criteria, function (result, error) {
+    epicDao.add(title, persona, description, reason, acceptance_criteria, function (error, result) {
         var data = {};
         data.type = "epic-add";
         data.icon = req.user.picture;
         data.title = req.user.firstname + " " + req.user.surname;
+        data.userid = req.user.googleid;
         data.message = "New epic added : " + title;
 
-        sse.sendMsgToClients(req.user.googleid, data);
+        sse.sendMsgToClients(data);
 
         res.redirect("/epics");
     });
@@ -121,10 +120,11 @@ router.patch("/:from/:fromId/:to", function (req, res, next) {
             data.title = req.user.firstname + " " + req.user.surname;
             data.from = from;
             data.to = to;
+            data.userid = req.user.googleid;
             data.message = "Epics re-ordered please refresh lists";
             data.time = new Date().toISOString().replace(/T/, " ").replace(/\..+/, "");
 
-            sse.sendMsgToClients(req.user.googleid, data);
+            sse.sendMsgToClients(data);
 
             debug("PATCH successful");
             res.sendStatus(200);

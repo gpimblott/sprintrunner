@@ -15,11 +15,11 @@ Epic.add = function (title, persona, description, reason, acceptance_criteria, d
 
     dbhelper.insert(sql, params,
         function (result) {
-            done(result.rows[ 0 ].id, null);
+            done(null, result.rows[ 0 ].id);
         },
         function (error) {
             console.error(error);
-            done(null, error);
+            done(error, null);
         });
 };
 
@@ -31,11 +31,11 @@ Epic.linkStoryToEpic = function (epicId, storyId, done) {
 
     dbhelper.insert(sql, params,
         function (result) {
-            done(result.rows[ 0 ].id, null);
+            done(null, result.rows[ 0 ].id );
         },
         function (error) {
             console.error(error);
-            done(null, error);
+            done(error, null);
         });
 };
 
@@ -183,18 +183,18 @@ Epic.getEpic = function (storyId, done) {
         + " FROM epics epic"
         + " JOIN personas"
         + " ON epic.persona=personas.id"
-        + " WHERE epic.id=$1;"
+        + " WHERE epic.id=$1;";
 
     var params = [ storyId ];
     dbhelper.query(sql, params,
         function (results) {
-            done(results[ 0 ], null);
+            done(null, results[ 0 ]);
         },
         function (error) {
             console.error(error);
-            done(null, error);
+            done(error, null);
         });
-}
+};
 
 Epic.getAllEpics = function (done) {
     var sql = "SELECT * FROM epics order by theorder asc";
@@ -208,7 +208,7 @@ Epic.getAllEpics = function (done) {
             console.error(error);
             done(null, error);
         });
-}
+};
 
 Epic.delete = function (id, done) {
     var params = [ id ];
@@ -217,12 +217,12 @@ Epic.delete = function (id, done) {
 
     dbhelper.query(sql, params,
         function (result) {
-            done(true);
+            done(null, true);
         },
         function (error) {
             console.error(error);
-            done(false, error);
+            done(error, null);
         });
-}
+};
 
 module.exports = Epic;

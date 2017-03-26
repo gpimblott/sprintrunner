@@ -64,7 +64,7 @@ var SprintRunner = function () {
    */
   self.setupTerminationHandlers = function () {
     //  Process on exit and signals.
-    process.on('exit', function () {
+    process.on("exit", function () {
       self.terminator();
     });
 
@@ -90,31 +90,31 @@ var SprintRunner = function () {
 
     // Setup Express
     self.app = express();
-    self.app.use(morgan('tiny'));
+    self.app.use(morgan("tiny"));
     self.app.use(helmet());
 
-    self.app.engine('hbs',
+    self.app.engine("hbs",
       exphbs({
         helpers: {
           dateFormat: hdf
         },
-        defaultLayout: 'main',
-        extname: '.hbs'
+        defaultLayout: "main",
+        extname: ".hbs"
       }));
 
-    self.app.set('view engine', 'hbs');
+    self.app.set("view engine", "hbs");
 
     // Setup the Google Analytics ID if defined
     self.app.locals.google_id = process.env.GOOGLE_ID || undefined;
     debug("GA ID: %s", self.app.locals.google_id);
 
     var defaultLabels = process.env.DEFAULT_LABELS || "";
-    self.app.set('defaultLabels', defaultLabels.split(','));
-    debug('Default labels : %s' , defaultLabels);
+    self.app.set("defaultLabels", defaultLabels.split(','));
+    debug("Default labels : %s", defaultLabels);
 
     var milestoneLabels = process.env.MILESTONE_LABELS || "";
-    self.app.set('milestoneLabels', milestoneLabels.split(','));
-    debug('Milestone labels : %s' , milestoneLabels);
+    self.app.set("milestoneLabels", milestoneLabels.split(','));
+    debug("Milestone labels : %s" , milestoneLabels);
 
     var cookie_key = process.env.COOKIE_KEY || 'aninsecurecookiekey';
     var sess = {

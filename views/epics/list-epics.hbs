@@ -19,7 +19,7 @@
 
         var table = $('#epicTable').DataTable({
             rowReorder: {
-                dataSrc: 'theorder'
+                dataSrc: "theorder"
             },
             scrollY: 500,
             paging: false,
@@ -50,8 +50,6 @@
             console.log("from: " + from + " id: " + fromId);
 
             for (var i = 0, ien = diff.length; i < ien; i++) {
-                var rowData = table.row(diff[ i ].node).data();
-
                 if (diff[ i ].oldData == from) {
                     console.log(diff[ i ]);
                     console.log(table.row(diff[ i ].newPosition));

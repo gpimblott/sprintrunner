@@ -12,123 +12,121 @@ var sanitizer = require("sanitize-html");
 
 router.get("/", function (req, res, next) {
 
-  storyDao.getAllStories(function (error, stories) {
-    if (error) {
-      res.render("damm", {
-        message: "Something went wrong)",
-        status: error,
-        reason: "Don't know what :("
-      });
+    storyDao.getAllStories(function (error, stories) {
+        if (error) {
+            res.render("damm", {
+                message: "Something went wrong)",
+                status: error,
+                reason: "Don't know what :("
+            });
 
-    } else {
-      utils.renderStories(res, stories, "All Stories");
-    }
-  });
+        } else {
+            utils.renderStories(res, stories, "All Stories");
+        }
+    });
 });
 
+router.get("/status/:status", function (req, res, next) {
+    var status = decodeURIComponent(req.params[ "status" ]);
 
-router.get("/status/:status" , function (req, res, next) {
-  var status = decodeURIComponent(req.params[ "status" ]);
+    storyDao.getStoriesWithStatus(status, function (error, stories) {
+        if (error) {
+            res.render("damn", {
+                message: "Something went wrong",
+                status: error,
+                reason: "Don't know"
+            });
 
-  storyDao.getStoriesWithStatus(status, function (error, stories) {
-    if (error) {
-      res.render("damn", {
-        message: "Something went wrong",
-        status: error,
-        reason: "Don't know"
-      });
-
-    } else {
-      utils.renderStories(res, stories, "Stories with status '" + status + "'");
-    }
-  });
+        } else {
+            utils.renderStories(res, stories, "Stories with status '" + status + "'");
+        }
+    });
 });
 
 router.get("/team/:teamName", function (req, res, next) {
-  var teamName = decodeURIComponent(req.params[ "teamName" ]);
+    var teamName = decodeURIComponent(req.params[ "teamName" ]);
 
-  storyDao.getStoriesForTeam(teamName, function (error, stories) {
-    if (error) {
-      res.render("damn", {
-        message: "Something went wrong",
-        status: error,
-        reason: "Don't know"
-      });
+    storyDao.getStoriesForTeam(teamName, function (error, stories) {
+        if (error) {
+            res.render("damn", {
+                message: "Something went wrong",
+                status: error,
+                reason: "Don't know"
+            });
 
-    } else {
-      utils.renderStories(res, stories, "Stories for Team");
-    }
-  });
+        } else {
+            utils.renderStories(res, stories, "Stories for Team");
+        }
+    });
 });
 
-
 router.get("/add/:epicId", function (req, res, next) {
-  var epicId = req.params[ "epicId" ];
-  personaDao.getNames(function (error, names) {
+    var epicId = req.params[ "epicId" ];
+    personaDao.getNames(function (error, names) {
 
-    res.render("stories/add-story", {
-      personas: names,
-      epic: epicId
+        res.render("stories/add-story", {
+            personas: names,
+            epic: epicId
+        });
     });
-  });
 
 });
 
 router.get("/add", function (req, res, next) {
-  personaDao.getNames(function (error, names) {
+    personaDao.getNames(function (error, names) {
 
-    res.render("stories/add-story", {
-      personas: names,
-    });
-  })
+        res.render("stories/add-story", {
+            personas: names,
+        });
+    })
 
 });
 
 router.get("/edit/:storyId", function (req, res, next) {
-  var storyId = req.params[ "storyId" ];
+    var storyId = req.params[ "storyId" ];
 
-  storyDao.getStory(storyId, function (error, story) {
-    personaDao.getNames(function (error, names) {
+    storyDao.getStory(storyId, function (error, story) {
+        personaDao.getNames(function (error, names) {
 
-      if (error) {
-        res.render("damn", {
-          message: "Something went wrong",
-          status: error,
-          reason: "Don't know"
+            if (error) {
+                res.render("damn", {
+                    message: "Something went wrong",
+                    status: error,
+                    reason: "Don't know"
+                });
+
+            } else {
+                res.render("stories/edit-story", {
+                    story: story,
+                    personas: names
+                });
+            }
         });
-
-      } else {
-        res.render("stories/edit-story", {
-          story: story,
-          personas: names
-        });
-      }
     });
-  });
 
 });
 
 router.get("/show/:storyId", function (req, res, next) {
-  var storyId = req.params[ "storyId" ];
+    var storyId = req.params[ "storyId" ];
 
-  storyDao.getStory(storyId, function (error, story) {
-    personaDao.getNames(function (error, names) {
-      if (error) {
-        res.render("damn", {
-          message: "Something went wrong",
-          status: error,
-          reason: "Don't know"
-        });
+    storyDao.getStory(storyId, function (error, story) {
+        personaDao.getNames(function (error, names) {
+            if (error) {
+                res.render("damn", {
+                    message: "Something went wrong",
+                    status: error,
+                    reason: "Don't know"
+                });
 
-      } else {
-        res.render("stories/show-story", {
-          story: story,
-          personas: names,
-          teams: teamDao.getAllTeams()
-        });
-      }
+            } else {
+                res.render("stories/show-story", {
+                    story: story,
+                    personas: names,
+                    teams: teamDao.getAllTeams()
+                });
+            }
+        })
     })
-  })
 });
 
 /**
@@ -137,54 +135,53 @@ router.get("/show/:storyId", function (req, res, next) {
 
 
 router.post("/:storyId", function (req, res, next) {
-  var storyId = req.params[ "storyId" ];
+    var storyId = req.params[ "storyId" ];
 
-  debug("Received update POST for %s", storyId);
-  var title = sanitizer(req.body.title);
-  var status = sanitizer(req.body.status);
-  var estimate = sanitizer(req.body.estimate);
-  var persona = sanitizer(req.body.persona);
-  var description = sanitizer(req.body.description);
-  var reason = sanitizer(req.body.reason);
-  var team = sanitizer(req.body.team);
-  var acceptance_criteria = sanitizer(req.body.acceptance_criteria);
+    debug("Received update POST for %s", storyId);
+    var title = sanitizer(req.body.title);
+    var status = sanitizer(req.body.status);
+    var estimate = sanitizer(req.body.estimate);
+    var persona = sanitizer(req.body.persona);
+    var description = sanitizer(req.body.description);
+    var reason = sanitizer(req.body.reason);
+    var team = sanitizer(req.body.team);
+    var acceptance_criteria = sanitizer(req.body.acceptance_criteria);
 
-  storyDao.update(storyId, title, persona, status, description, reason, acceptance_criteria, estimate, team, function (result, error) {
-    res.redirect("/stories/show/" + storyId);
-  });
+    storyDao.update(storyId, title, persona, status, description, reason, acceptance_criteria, estimate, team, function (result, error) {
+        res.redirect("/stories/show/" + storyId);
+    });
 
 });
-
 
 router.post("/", function (req, res, next) {
-  var title = sanitizer(req.body.title);
-  var status = sanitizer(req.body.status);
-  var estimate = sanitizer(req.body.estimate);
-  var persona = sanitizer(req.body.persona);
-  var description = sanitizer(req.body.description);
-  var reason = sanitizer(req.body.reason);
-  var team = sanitizer(req.body.team);
-  var acceptance_criteria = sanitizer(req.body.acceptance_criteria);
+    var title = sanitizer(req.body.title);
+    var status = sanitizer(req.body.status);
+    var estimate = sanitizer(req.body.estimate);
+    var persona = sanitizer(req.body.persona);
+    var description = sanitizer(req.body.description);
+    var reason = sanitizer(req.body.reason);
+    var team = sanitizer(req.body.team);
+    var acceptance_criteria = sanitizer(req.body.acceptance_criteria);
 
-  var epicId = sanitizer(req.body.epicid);
+    var epicId = sanitizer(req.body.epicid);
 
-  storyDao.add(title, persona, status, description, reason, acceptance_criteria, estimate, team, function (result, error) {
-    if( result && epicId ) {
-      epicDao.linkStoryToEpic( epicId , result , function( result , error) {
-        // Do nothing for now :(
-      } );
-    }
+    storyDao.add(title, persona, status, description, reason, acceptance_criteria, estimate, team, function (result, error) {
+        if (result && epicId) {
+            epicDao.linkStoryToEpic(epicId, result, function (error, result) {
+                // Do nothing for now :(
+            });
+        }
 
-    res.redirect("/stories");
-  });
+        res.redirect("/stories");
+    });
 });
 
-router.delete("/:storyId" , function (req, res, next) {
-  var storyId = req.params[ "storyId" ];
+router.delete("/:storyId", function (req, res, next) {
+    var storyId = req.params[ "storyId" ];
 
-  storyDao.delete(storyId, function (result, error) {
-    res.redirect("/stories");
-  })
+    storyDao.delete(storyId, function (error, result) {
+        res.redirect("/stories");
+    })
 });
 
 module.exports = router;

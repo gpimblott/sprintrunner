@@ -179,11 +179,11 @@ Story.delete = function (id, done) {
 
   dbhelper.query(sql, params,
     function (result) {
-      done(true);
+      done(null , true);
     },
     function (error) {
       console.error(error);
-      done(false, error);
+      done(error, false);
     });
 }
 

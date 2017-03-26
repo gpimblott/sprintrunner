@@ -16,28 +16,28 @@
 
                 <li class="dropdown dropdown-notifications">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">
-                       <i data-count="{{eventQueue.length}}" class="glyphicon glyphicon-bell {{#ifCond eventQueue.length  ">" 0 }}notification-icon{{/ifCond}}" id="notification-count"></i>
+                       <i data-count="0" class="glyphicon glyphicon-bell" id="notification-count"></i>
                     </a>
                     <ul class="dropdown-menu notifications" id="notification-list">
-                        {{#each eventQueue }}
-                        <li class="notification">
-                            <div class="media">
-                                <div class="media-left">
-                                    <div class="media-object">
-                                        <img data-src="{{this.icon}}" src="{{this.icon}}" class="img-circle" alt="Name">
-                                    </div>
-                                </div>
-                                <div class="media-body">
-                                    <strong class="notification-title">{{this.title}}</a></strong>
-                                    <p class="notification-desc">{{this.message}}</p>
+                        <!--{{#each eventQueue }}-->
+                        <!--<li class="notification">-->
+                            <!--<div class="media">-->
+                                <!--<div class="media-left">-->
+                                    <!--<div class="media-object">-->
+                                        <!--<img data-src="{{this.icon}}" src="{{this.icon}}" class="img-circle" alt="Name">-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                                <!--<div class="media-body">-->
+                                    <!--<strong class="notification-title">{{this.title}}</a></strong>-->
+                                    <!--<p class="notification-desc">{{this.message}}</p>-->
 
-                                    <div class="notification-meta">
-                                        <small class="timestamp">{{this.time}}</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                        {{/each}}
+                                    <!--<div class="notification-meta">-->
+                                        <!--<small class="timestamp">{{this.time}}</small>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</li>-->
+                        <!--{{/each}}-->
 
                     </ul>
 
@@ -115,3 +115,4 @@
         </div><!--/.nav-collapse -->
     </div>
 </nav>
+
