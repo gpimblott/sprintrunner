@@ -1,13 +1,15 @@
 "use strict";
 
-var express = require("express");
+var express = require('express');
 var debug = require("debug")("sprintrunner:epics-route");
 var router = express.Router();
-var epicDao = require("../dao/epicDao");
-var storyDao = require("../dao/storyDao");
-var personaDao = require("../dao/personaDao");
-var sanitizer = require("sanitize-html");
-var sse = require("../routes/sse");
+var epicDao = require('../dao/epicDao');
+var storyDao = require('../dao/storyDao');
+var personaDao = require('../dao/personaDao');
+var sanitizer = require('sanitize-html');
+var sse = require('../routes/sse');
+var async = require('async');
+var storyHelper = require('../utils/storyHelper');
 
 router.get("/", function (req, res, next) {
     res.render("epics/list-epics", {});
@@ -25,27 +27,39 @@ router.get("/add", function (req, res, next) {
 router.get("/:epicId", function (req, res, next) {
     var epicId = req.params[ "epicId" ];
 
-    epicDao.getEpic(epicId, function (error, epic) {
-        personaDao.getNames(function (error, names) {
-            storyDao.getStoriesForEpic(epicId, function (error, stories) {
-
-                if (error) {
-                    res.render("damn", {
-                        message: "Something went wrong",
-                        status: error,
-                        reason: "Don't know why"
-                    });
-
-                } else {
-                    res.render("epics/show-epic", {
-                        epic: epic,
-                        personas: names,
-                        stories: stories
-                    });
-                }
+    async.parallel({
+        epic: function (callback) {
+            epicDao.getEpic(epicId,  callback);
+        },
+        stories: function (callback) {
+            storyDao.getStoriesForEpic(epicId, callback);
+        },
+        names: function (callback) {
+            personaDao.getNames(callback);
+        }
+    }, function (error, results) {
+        if (error) {
+            res.render("damn", {
+                message: "Something went wrong",
+                status: error,
+                reason: "Don't know"
             });
-        });
+
+        } else {
+
+            var stats = storyHelper.generateStoryStateMap( results.stories );
+
+            res.render("epics/show-epic", {
+                stories: results.stories,
+                personas: results.names,
+                epic: results.epic,
+                totalPoints: stats.total,
+                notEstimated: stats.notEstimated,
+                stateMap: stats.stateMap
+            });
+        }
     });
+
 });
 
 router.get("/delete/:epicId", function (req, res, next) {

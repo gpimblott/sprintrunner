@@ -19,7 +19,7 @@ Status.rebuildCache = function () {
   Status.getAll(function (error, results) {
     statusCache = results;
   });
-}
+};
 
 Status.getAll = function (done) {
   var sql = "SELECT * FROM story_status";
@@ -33,6 +33,6 @@ Status.getAll = function (done) {
       console.error(error);
       done(error, null);
     });
-}
+};
 
 module.exports = Status;

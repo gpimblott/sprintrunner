@@ -31,7 +31,7 @@
     "express-session": "latest",
     "handlebars": "latest",
     "handlebars-dateformat": "latest",
-    "helmet":"latest",
+    "helmet": "latest",
     "morgan": "~1.7.0",
     "multer": "latest",
     "oauth": "0.9.15",
@@ -41,7 +41,11 @@
     "request": "2.76.0",
     "sanitize-html": "latest",
     "serve-favicon": "~2.3.0",
-    "cron":"latest"
+    "cron": "latest"
   },
-  "main": "./server"
+  "main": "./server",
+  "devDependencies": {
+    "eslint": "^3.19.0",
+    "eslint-config-node": "^1.6.0"
+  }
 }

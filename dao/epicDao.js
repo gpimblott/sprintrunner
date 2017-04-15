@@ -178,14 +178,14 @@ Epic.moveEpic = function (from, fromId, to, done) {
         });
 };
 
-Epic.getEpic = function (storyId, done) {
+Epic.getEpic = function (epicId, done) {
     var sql = "SELECT epic.*, personas.name as persona_name"
         + " FROM epics epic"
         + " JOIN personas"
         + " ON epic.persona=personas.id"
         + " WHERE epic.id=$1;";
 
-    var params = [ storyId ];
+    var params = [ epicId ];
     dbhelper.query(sql, params,
         function (results) {
             done(null, results[ 0 ]);
@@ -197,7 +197,8 @@ Epic.getEpic = function (storyId, done) {
 };
 
 Epic.getAllEpics = function (done) {
-    var sql = "SELECT * FROM epics order by theorder asc";
+    var sql = "SELECT *, (SELECT COUNT(*) FROM epic_story_link esl WHERE epics.id = esl.epic_id) AS num_stories"
+        + " FROM epics order by theorder asc";
 
     var params = [];
     dbhelper.query(sql, params,

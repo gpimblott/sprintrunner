@@ -4,11 +4,13 @@ var express = require("express");
 var utils = require("../utils/storyHelper");
 var router = express.Router();
 var debug = require("debug")("sprintrunner:stories");
-var storyDao = require("../dao/storyDao");
-var epicDao = require("../dao/epicDao");
-var teamDao = require("../dao/teamDao");
-var personaDao = require("../dao/personaDao");
-var sanitizer = require("sanitize-html");
+
+var storyDao = require('../dao/storyDao');
+var epicDao = require('../dao/epicDao');
+var teamDao = require('../dao/teamDao');
+var personaDao = require('../dao/personaDao');
+var sanitizer = require('sanitize-html');
+var async = require('async');
 
 router.get("/", function (req, res, next) {
 
@@ -73,8 +75,8 @@ router.get("/add/:epicId", function (req, res, next) {
 });
 
 router.get("/add", function (req, res, next) {
-    personaDao.getNames(function (error, names) {
 
+    personaDao.getNames(function (error, names) {
         res.render("stories/add-story", {
             personas: names,
         });
@@ -82,51 +84,39 @@ router.get("/add", function (req, res, next) {
 
 });
 
-router.get("/edit/:storyId", function (req, res, next) {
-    var storyId = req.params[ "storyId" ];
-
-    storyDao.getStory(storyId, function (error, story) {
-        personaDao.getNames(function (error, names) {
-
-            if (error) {
-                res.render("damn", {
-                    message: "Something went wrong",
-                    status: error,
-                    reason: "Don't know"
-                });
-
-            } else {
-                res.render("stories/edit-story", {
-                    story: story,
-                    personas: names
-                });
-            }
-        });
-    });
-
-});
 
 router.get("/show/:storyId", function (req, res, next) {
     var storyId = req.params[ "storyId" ];
 
-    storyDao.getStory(storyId, function (error, story) {
-        personaDao.getNames(function (error, names) {
-            if (error) {
-                res.render("damn", {
-                    message: "Something went wrong",
-                    status: error,
-                    reason: "Don't know"
-                });
+    debug('Showing story %d', storyId);
 
-            } else {
-                res.render("stories/show-story", {
-                    story: story,
-                    personas: names,
-                    teams: teamDao.getAllTeams()
-                });
-            }
-        })
-    })
+    async.parallel({
+        story: function (callback) {
+            storyDao.getStory(storyId, callback);
+        },
+        epic: function (callback) {
+            storyDao.getEpicForStory(storyId, callback);
+        },
+        names: function (callback) {
+            personaDao.getNames(callback);
+        }
+    }, function (error, results) {
+        if (error) {
+            res.render("damn", {
+                message: "Something went wrong",
+                status: error,
+                reason: "Don't know"
+            });
+
+        } else {
+            res.render("stories/show-story", {
+                story: results.story,
+                personas: results.names,
+                epic: results.epic[0]
+            });
+        }
+    });
+
 });
 
 /**
@@ -146,6 +136,10 @@ router.post("/:storyId", function (req, res, next) {
     var reason = sanitizer(req.body.reason);
     var team = sanitizer(req.body.team);
     var acceptance_criteria = sanitizer(req.body.acceptance_criteria);
+
+    if( team === 0) {
+        team = null;
+    }
 
     storyDao.update(storyId, title, persona, status, description, reason, acceptance_criteria, estimate, team, function (result, error) {
         res.redirect("/stories/show/" + storyId);

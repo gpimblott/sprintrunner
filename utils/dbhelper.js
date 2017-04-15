@@ -29,39 +29,17 @@ pool.on("error", function (e, client) {
     debug("DB Pool error: %s", e);
 });
 
-var DBHelper = function (){
+var DBHelper = function () {
 };
 
-DBHelper.setDefaults = function( pg ){
+DBHelper.setDefaults = function (pg) {
     if (process.env.USE_SSL && process.env.USE_SSL.toLowerCase() !== "false") {
         pg.defaults.ssl = true;
     }
 
     pg.defaults.poolSize = 20;
 };
-//
-// DBHelper.connect = function (done) {
-//     if (process.env.USE_SSL && process.env.USE_SSL.toLowerCase() !== "false") {
-//         pg.defaults.ssl = true;
-//     }
-//
-//     pg.defaults.poolSize = 20;
-//
-//     debug("Connecting");
-//     pg.connect(process.env.DATABASE_URL, function (err, client, cdone) {
-//
-//         // Handle connection errors
-//         if (err) {
-//             debug("Error Connecting: %s", err);
-//             if (client) {
-//                 client.end();
-//             }
-//             done(null, err);
-//         }
-//         debug("Connected");
-//         done(client, null);
-//     });
-// };
+
 
 /**
  * Return the current DB connection pool to the caller
@@ -91,9 +69,9 @@ DBHelper.query = function (sql, parameters, done, error) {
 
             try {
                 client.query(sql, parameters, function (err, result) {
-                    debug("Query OK: %s rows", result.rows.length);
+                    debug("Query OK: %s rows", (result != undefined ? result.rows.length : 0));
                     release();
-                    done(result.rows);
+                    done((result != undefined ? result.rows : null));
                 });
             } catch (e) {
                 debug("Exception thrown : " + e);

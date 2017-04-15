@@ -32,14 +32,20 @@
                 data: 'theorder',
                 title: 'Id'
             }, {
-                data: 'id',
-                title: 'Real ID'
-            }, {
                 data: 'title',
-                title: 'Title'
+                title: 'Title',
+                render: function ( data, type, row ) {
+                    return  "<a href='/epics/" + row['id']+ "'>" + data + "</a>";
+                }
             }, {
                 data: 'description',
                 title: 'Description'
+            }, {
+                data: 'num_stories',
+                title: 'Stories',
+                render: function ( data, type, row ) {
+                    return  data + ' stories';
+                }
             } ]
         });
 
