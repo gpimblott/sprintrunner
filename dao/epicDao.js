@@ -181,7 +181,7 @@ Epic.moveEpic = function (from, fromId, to, done) {
 Epic.getEpic = function (epicId, done) {
     var sql = "SELECT epic.*, personas.name as persona_name"
         + " FROM epics epic"
-        + " JOIN personas"
+        + " LEFT JOIN personas"
         + " ON epic.persona=personas.id"
         + " WHERE epic.id=$1;";
 

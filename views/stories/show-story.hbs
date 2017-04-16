@@ -9,8 +9,11 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">{{story.title}}
-                    <a type="button" class=" pull-right" id="editButton"
-                       href="javascript:unlockForm();">Edit</a>
+                    <div class="pull-right">
+                    <a type="button"  id="editButton" class="h6"
+                       href="javascript:unlockForm();">Edit</a> |
+                        <a href="#" class="h6" data-toggle="modal" data-target="#confirm-delete">Delete</a>
+                    </div>
                 </h3>
             </div>
 
@@ -26,14 +29,14 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="inputStatus" class="control-label col-sm-3">Epic</label>
+                                <label for="inputStatus" class="control-label col-sm-3">{{#if epic}}<a href="/epics/{{epic.epic_id}}">Epic</a>{{else}}Epic{{/if}}</label>
                                 <div class="controls col-sm-9">
                                     <input type="text" class="form-control" id="epic" name="epic" placeholder="Epic"
                                            value="{{epic.title}}">
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="inputStatus" class="control-label col-sm-3">Status</label>
+                                <label for="inputStatus" class="control-label col-sm-3"><a href="/stories/status/{{encode story.current_state}}">Status</a></label>
                                 <div class="controls col-sm-9">
                                     <select name="status" class="form-control">
                                         {{#each status}}
@@ -51,10 +54,9 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="inputTeam" class="control-label col-sm-3">Assigned to</label>
+                                <label for="inputTeam" class="control-label col-sm-3"><a href="/stories/team/{{encode story.team_name}}">Assigned to</a></label>
                                 <div class="controls col-sm-9">
                                     <select name="team" class="form-control">
-                                        <option value="0"{{#unless../story.team_id}}selected{{/unless}}>Not assigned</option>
                                         {{#each teams}}
                                             <option value="{{this.id}}"{{#ifCond this.id "=="
                                                                                  ../story.team_id}}selected{{/ifCond}}>{{this.name}}</option>
@@ -71,7 +73,7 @@
                             </div>
                             <hr>
                             <div class="form-group">
-                                <label for="inputPersona" class="control-label col-sm-3">As... </label>
+                                <label for="inputPersona" class="control-label col-sm-3"><a href="/personas/{{story.persona}}">As... </a></label>
                                 <div class="controls col-sm-9">
                                     <select name="persona" class="form-control" id="persona">
                                         {{#each this.personas}}
@@ -114,11 +116,46 @@
                     </form>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
 
+
+<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Delete Story ?</h4>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete Story '{{story.title}}' ?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <a class="btn btn-danger btn-ok" onclick="deleteStory()">Delete</a>
+            </div>
         </div>
     </div>
 </div>
 
 <script src="/js/utils.js"></script>
+<script language="JavaScript">
 
+    function deleteStory() {
+        $.ajax({
+            url: '/stories/{{story.id}}',
+            type: 'DELETE',
+            success: callback || $.noop,
+            error: errorCallback || $.noop
+        });
+    }
 
+    function callback(){
+        window.location.href = "/epics";
+    }
+
+    function errorCallback() {
+        alert('Error deleting story');
+    }
+
+</script>

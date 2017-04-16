@@ -14,6 +14,8 @@ CREATE TABLE teams(
                 name char varying(150),
                 description TEXT );
 
+INSERT INTO teams( id, name, description) values (0 , 'Not assigned' , 'This story has not been assigned to a team');
+
 CREATE TABLE labels(
                 id SERIAL PRIMARY KEY,
                 name char varying(150));

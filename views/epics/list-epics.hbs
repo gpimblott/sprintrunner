@@ -34,8 +34,8 @@
             }, {
                 data: 'title',
                 title: 'Title',
-                render: function ( data, type, row ) {
-                    return  "<a href='/epics/" + row['id']+ "'>" + data + "</a>";
+                render: function (data, type, row) {
+                    return "<a href='/epics/" + row[ 'id' ] + "'>" + data + "</a>";
                 }
             }, {
                 data: 'description',
@@ -43,8 +43,8 @@
             }, {
                 data: 'num_stories',
                 title: 'Stories',
-                render: function ( data, type, row ) {
-                    return  data + ' stories';
+                render: function (data, type, row) {
+                    return data + (data == 1 ? ' story' : ' stories');
                 }
             } ]
         });

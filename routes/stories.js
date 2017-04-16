@@ -174,7 +174,8 @@ router.delete("/:storyId", function (req, res, next) {
     var storyId = req.params[ "storyId" ];
 
     storyDao.delete(storyId, function (error, result) {
-        res.redirect("/stories");
+        res.sendStatus(200);
+        return;
     })
 });
 

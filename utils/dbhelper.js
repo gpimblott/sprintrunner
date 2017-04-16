@@ -167,4 +167,5 @@ DBHelper.getAllFromTable = function (tableName, done, order) {
         });
 }
 
+
 module.exports = DBHelper;

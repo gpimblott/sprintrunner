@@ -1,124 +1,162 @@
 <div class="row">
     <div class="col-md-10 col-md-offset-1">
-            <ul class="nav nav-tabs">
-                <li class="active"><a href="#epic" data-toggle="tab">Epic</a></li>
-                <li class=""><a href="#stories" data-toggle="tab">Stories</a></li>
-            </ul>
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#epic" data-toggle="tab">Epic</a></li>
+            <li class=""><a href="#stories" data-toggle="tab">Stories</a></li>
+        </ul>
 
-            <div class="tab-content clearfix">
-                <div class="tab-pane active" id="epic">
+        <div class="tab-content clearfix">
+            <div class="tab-pane active" id="epic">
 
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">{{epic.title}}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">{{epic.title}}
                             <div class="pull-right">
-                                <a type="button"  id="addStoryButton"
-                                   href="/stories/add/{{epic.id}}">Add Story</a> |
-                                <a type="button"  id="editButton"
-                                   href="javascript:unlockForm();">Edit</a>
+                                <a type="button" id="addStoryButton" class="h6"
+                                   href="/stories/add/{{epic.id}}">Add New Story</a> |
+                                <a type="button" id="editButton" class="h6"
+                                   href="javascript:unlockForm();">Edit</a> |
+                                <a href="#"  class="h6" data-toggle="modal" data-target="#confirm-delete">Delete</a>
                             </div>
 
-                            </h3>
-                        </div>
+                        </h3>
+                    </div>
 
-                        <div class="panel-body">
-                            <form action="/epics/{{epic.id}}" method="post" class="form-horizontal">
-                                <fieldset disabled id="formFieldSet">
-                                    <div class="form-group">
-                                        <label for="inputEmail" class="control-label col-sm-3">Title</label>
-                                        <div class="controls col-sm-9">
-                                            <input type="text" class="form-control" id="title" name="title"
-                                                   placeholder="Title"
-                                                   value="{{epic.title}}">
-                                        </div>
+                    <div class="panel-body">
+                        <form action="/epics/{{epic.id}}" method="post" class="form-horizontal">
+                            <fieldset disabled id="formFieldSet">
+                                <div class="form-group">
+                                    <label for="inputEmail" class="control-label col-sm-3">Title</label>
+                                    <div class="controls col-sm-9">
+                                        <input type="text" class="form-control" id="title" name="title"
+                                               placeholder="Title"
+                                               value="{{epic.title}}">
                                     </div>
-                                    <hr>
-                                    <div class="form-group">
-                                        <label for="inputPersona"
-                                               class="control-label col-sm-3">As... </label>
-                                        <div class="controls col-sm-9">
-                                            <select name="persona" class="form-control" id="persona">
-                                                {{#each personas}}
-                                                    <option value="{{this.id}}" {{#ifCond this.id "=="
-                                                                                          ../epic.persona}}selected{{/ifCond}}>{{this.name}}</option>
-                                                {{/each}}
-                                            </select>
-                                        </div>
+                                </div>
+                                <hr>
+                                <div class="form-group">
+                                    <label for="inputPersona"
+                                           class="control-label col-sm-3">As... </label>
+                                    <div class="controls col-sm-9">
+                                        <select name="persona" class="form-control" id="persona">
+                                            {{#each personas}}
+                                                <option value="{{this.id}}" {{#ifCond this.id "=="
+                                                                                      ../epic.persona}}selected{{/ifCond}}>{{this.name}}</option>
+                                            {{/each}}
+                                        </select>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="inputWhat" class="control-label col-sm-3">I
-                                            want... </label>
-                                        <div class="controls col-sm-9">
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputWhat" class="control-label col-sm-3">I
+                                        want... </label>
+                                    <div class="controls col-sm-9">
                                             <textarea name="description"
                                                       class="form-control">{{epic.description}}</textarea>
-                                        </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="inputWhy" class="control-label col-sm-3">So
-                                            that... </label>
-                                        <div class="controls col-sm-9">
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputWhy" class="control-label col-sm-3">So
+                                        that... </label>
+                                    <div class="controls col-sm-9">
                                                         <textarea name="reason"
                                                                   class="form-control">{{epic.reason}}</textarea>
-                                        </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="inputAcceptance" class="control-label col-sm-3">Acceptance
-                                            Criteria </label>
-                                        <div class="controls col-sm-9">
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputAcceptance" class="control-label col-sm-3">Acceptance
+                                        Criteria </label>
+                                    <div class="controls col-sm-9">
                                     <textarea name="acceptance_criteria"
                                               class="form-control">{{epic.acceptance_criteria}}</textarea>
-                                        </div>
                                     </div>
-
-                                    <div class="form-group">
-                                        <div class="col-sm-3"></div>
-                                        <div class="col-sm-9">
-                                            <button type="submit" class="btn btn-primary" id="updateButton"
-                                                    style="display:none">Update
-                                            </button>
-                                        </div>
-                                    </div>
-                                </fieldset>
-                            </form>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-10 col-md-offset-1">
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">
-                                        <h3 class="panel-title">Story Summary</h3>
-                                    </div>
-                                    <table class="table">
-                                        <tr>
-                                            <th>Status</th>
-                                            <th>Stories</th>
-                                            <th>Points</th>
-                                        </tr>
-                                        {{#each stateMap}}
-                                            <tr>
-                                                <td><a href="/stories/status/{{@key}}">{{@key}}</a></td>
-                                                <td>{{this.count}}</td>
-                                                <td>{{this.points}}</td>
-                                            </tr>
-                                        {{/each}}
-                                    </table>
-                                    <div class="panel-footer"> Number of Stories : {{stories.length}} &nbsp; Total points : {{totalPoints}}
-                                        Not Estimated : {{notEstimated}}</div>
                                 </div>
+
+                                <div class="form-group">
+                                    <div class="col-sm-3"></div>
+                                    <div class="col-sm-9">
+                                        <button type="submit" class="btn btn-primary" id="updateButton"
+                                                style="display:none">Update
+                                        </button>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-10 col-md-offset-1">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">Story Summary</h3>
+                                </div>
+                                <table class="table">
+                                    <tr>
+                                        <th>Status</th>
+                                        <th>Stories</th>
+                                        <th>Points</th>
+                                    </tr>
+                                    {{#each stateMap}}
+                                        <tr>
+                                            <td><a href="/stories/status/{{@key}}">{{@key}}</a></td>
+                                            <td>{{this.count}}</td>
+                                            <td>{{this.points}}</td>
+                                        </tr>
+                                    {{/each}}
+                                </table>
+                                <div class="panel-footer"> Number of Stories : {{stories.length}} &nbsp; Total points
+                                    : {{totalPoints}}
+                                    Not Estimated : {{notEstimated}}</div>
                             </div>
                         </div>
-
                     </div>
 
                 </div>
 
-                <div class="tab-pane" id="stories" >
-                    <br>
-                    {{>story-list}}
-                </div>
             </div>
 
+            <div class="tab-pane" id="stories">
+                <br>
+                {{>story-list}}
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Delete Story ?</h4>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete Epic '{{epic.title}}' ?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <a class="btn btn-danger btn-ok" onclick="deleteEpic()">Delete</a>
+            </div>
         </div>
     </div>
+</div>
 
 <script src="/js/utils.js"></script>
+<script language="JavaScript">
 
+    function deleteEpic() {
+        $.ajax({
+            url: '/epics/{{epic.id}}',
+            type: 'DELETE',
+            success: callback || $.noop,
+            error: errorCallback || $.noop
+        });
+    }
+
+    function callback(){
+        window.location.href = "/stories";
+    }
+
+    function errorCallback() {
+        alert('Error deleting epic');
+    }
+
+</script>

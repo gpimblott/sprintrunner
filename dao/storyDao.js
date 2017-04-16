@@ -2,18 +2,35 @@
 
 var debug = require('debug')('sprintrunner:storydao');
 var pg = require('pg');
-var dbhelper = require('../utils/dbhelper.js');
+var dbHelper = require('../utils/dbhelper.js');
+var dbQuery = require('../utils/dbquery');
 
 var Story = function () {
 };
 
 Story.add = function (title, persona, status, description, reason, acceptance_criteria, estimate, team, done) {
 
-    var sql = "INSERT INTO stories ( title, persona, status_id , description,reason,acceptance_criteria,estimate,team_id )"
-        + " values ( $1 , $2 , $3, $4, $5, $6, $7 ,$8) returning id";
-    var params = [ title, persona, status, description, reason, acceptance_criteria, estimate, team ];
+    var query = new dbQuery();
+    query.setTableName('stories');
+    query.pushParam('title', title);
+    query.pushParam('persona', persona);
+    query.pushParam('status_id', status);
+    query.pushParam('description', description);
+    query.pushParam('reason', reason);
+    query.pushParam('acceptance_criteria', acceptance_criteria);
 
-    dbhelper.insert(sql, params,
+    if (estimate != null && estimate !="") {
+        query.pushParam('estimate', parseInt(estimate, 10));
+    }
+
+    if (team != null && team != undefined) {
+        query.pushParam('team_id', parseInt(team, 10));
+    }
+
+    var sql = query.getInsertStatement();
+    var params = query.getParams();
+
+    dbHelper.insert(sql, params,
         function (result) {
             done(result.rows[ 0 ].id, null);
         },
@@ -25,19 +42,41 @@ Story.add = function (title, persona, status, description, reason, acceptance_cr
 
 Story.update = function (id, title, persona, status, description, reason, acceptance_criteria, estimate, team, done) {
 
-    estimate = parseInt(estimate, 10);
+    var query = new dbQuery();
+    query.setTableName('stories');
+    query.pushParam('title', title);
+    query.pushParam('persona', persona);
+    query.pushParam('status_id', status);
+    query.pushParam('description', description);
+    query.pushParam('reason', reason);
+    query.pushParam('acceptance_criteria', acceptance_criteria);
 
-    var sql = "UPDATE stories SET title=$1, persona=$2, status_id=$3 , description=$4,reason=$5,acceptance_criteria=$6,estimate=$7";
-    var params = [ title, persona, status, description, reason, acceptance_criteria, estimate, id ];
-
-    if( team != null) {
-        sql+= ",team_id=$9";
-        params.push(team);
+    if (estimate != null && estimate !="") {
+        query.pushParam('estimate', parseInt(estimate, 10));
     }
 
-    sql += " WHERE id=$8";
+    if (team != null && team != undefined) {
+        query.pushParam('team_id', parseInt(team, 10));
+    }
 
-    dbhelper.insert(sql, params,
+    // estimate = parseInt(estimate, 10);
+    //
+    // var sql = "UPDATE stories SET title=$1, persona=$2, status_id=$3 , description=$4,reason=$5,acceptance_criteria=$6,estimate=$7";
+    // var params = [ title, persona, status, description, reason, acceptance_criteria, estimate, id ];
+
+    var sql = query.getUpdateStatement( 'id' , id );
+    var params = query.getParams();
+
+    debug( sql );
+
+    // if (team != null) {
+    //     sql += ",team_id=$9";
+    //     params.push(team);
+    // }
+    //
+    // sql += " WHERE id=$8";
+
+    dbHelper.insert(sql, params,
         function (result) {
             done(true, null);
         },
@@ -61,7 +100,7 @@ Story.getStory = function (storyId, done) {
         + " WHERE story.id=$1;"
 
     var params = [ storyId ];
-    dbhelper.query(sql, params,
+    dbHelper.query(sql, params,
         function (results) {
             done(null, results[ 0 ]);
         },
@@ -84,7 +123,7 @@ Story.getAllStories = function (done) {
         + " LEFT JOIN teams ON story.team_id=teams.id";
 
     var params = [];
-    dbhelper.query(sql, params,
+    dbHelper.query(sql, params,
         function (results) {
             done(null, results);
         },
@@ -106,7 +145,7 @@ Story.getStoriesForTeam = function (teamName, done) {
         + " WHERE teams.name = $1;"
 
     var params = [ teamName ];
-    dbhelper.query(sql, params,
+    dbHelper.query(sql, params,
         function (results) {
             done(null, results);
         },
@@ -122,7 +161,7 @@ Story.getEpicForStory = function (storyId, done) {
         + " where esl.story_id = $1 limit 1;"
 
     var params = [ storyId ];
-    dbhelper.query(sql, params,
+    dbHelper.query(sql, params,
         function (results) {
             done(null, results);
         },
@@ -144,7 +183,7 @@ Story.getStoriesForEpic = function (epicId, done) {
         + " WHERE esl.epic_id = $1;"
 
     var params = [ epicId ];
-    dbhelper.query(sql, params,
+    dbHelper.query(sql, params,
         function (results) {
             done(null, results);
         },
@@ -166,7 +205,7 @@ Story.getStoriesWithStatus = function (statusName, done) {
         + " WHERE status.name = $1;"
 
     var params = [ statusName ];
-    dbhelper.query(sql, params,
+    dbHelper.query(sql, params,
         function (results) {
             done(null, results);
         },
@@ -187,7 +226,7 @@ Story.getStoriesWithLabel = function (labelName, done) {
         + " WHERE l.name=$1";
 
     var params = [ labelName ];
-    dbhelper.query(sql, params,
+    dbHelper.query(sql, params,
         function (results) {
             done(null, results);
         },
@@ -202,7 +241,7 @@ Story.delete = function (id, done) {
 
     var sql = "DELETE FROM stories WHERE id = $1";
 
-    dbhelper.query(sql, params,
+    dbHelper.query(sql, params,
         function (result) {
             done(null, true);
         },

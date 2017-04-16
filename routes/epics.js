@@ -62,12 +62,15 @@ router.get("/:epicId", function (req, res, next) {
 
 });
 
-router.get("/delete/:epicId", function (req, res, next) {
+
+
+router.delete("/:epicId", function (req, res, next) {
     var epicId = req.params[ "epicId" ];
 
     epicDao.delete(epicId, function (error, result) {
-        res.redirect("/epics");
-    });
+        res.sendStatus(200);
+        return;
+    })
 });
 
 /**
