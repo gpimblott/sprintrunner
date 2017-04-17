@@ -10,8 +10,8 @@
             <div class="panel-heading">
                 <h3 class="panel-title">{{story.title}}
                     <div class="pull-right">
-                    <a type="button"  id="editButton" class="h6"
-                       href="javascript:unlockForm();">Edit</a> |
+                        <a type="button" id="editButton" class="h6"
+                           href="javascript:unlockForm();">Edit</a> |
                         <a href="#" class="h6" data-toggle="modal" data-target="#confirm-delete">Delete</a>
                     </div>
                 </h3>
@@ -29,14 +29,27 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="inputStatus" class="control-label col-sm-3">{{#if epic}}<a href="/epics/{{epic.epic_id}}">Epic</a>{{else}}Epic{{/if}}</label>
+                                <label for="inputStatus" class="control-label col-sm-3">{{#if epic}}
+                                    <a href="/epics/{{epic.epic_id}}">Epic</a>{{else}}Epic{{/if}}</label>
                                 <div class="controls col-sm-9">
                                     <input type="text" class="form-control" id="epic" name="epic" placeholder="Epic"
                                            value="{{epic.title}}">
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="inputStatus" class="control-label col-sm-3"><a href="/stories/status/{{encode story.current_state}}">Status</a></label>
+                                <label for="inputStatus" class="control-label col-sm-3">Test</label>
+                                <div class="controls col-sm-9">
+                                    <select class="selectpicker" data-live-search="true" value="{{epic.title}}">
+                                        <option data-tokens="ketchup mustard">Hot Dog, Fries and a Soda</option>
+                                        <option data-tokens="mustard">Burger, Shake and a Smile</option>
+                                        <option data-tokens="frosting">Sugar, Spice and all things nice</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="inputStatus" class="control-label col-sm-3"><a
+                                        href="/stories/status/{{encode story.current_state}}">Status</a></label>
                                 <div class="controls col-sm-9">
                                     <select name="status" class="form-control">
                                         {{#each status}}
@@ -54,7 +67,8 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="inputTeam" class="control-label col-sm-3"><a href="/stories/team/{{encode story.team_name}}">Assigned to</a></label>
+                                <label for="inputTeam" class="control-label col-sm-3"><a
+                                        href="/stories/team/{{encode story.team_name}}">Assigned to</a></label>
                                 <div class="controls col-sm-9">
                                     <select name="team" class="form-control">
                                         {{#each teams}}
@@ -73,7 +87,8 @@
                             </div>
                             <hr>
                             <div class="form-group">
-                                <label for="inputPersona" class="control-label col-sm-3"><a href="/personas/{{story.persona}}">As... </a></label>
+                                <label for="inputPersona" class="control-label col-sm-3"><a
+                                        href="/stories/persona/{{story.persona_name}}">As... </a></label>
                                 <div class="controls col-sm-9">
                                     <select name="persona" class="form-control" id="persona">
                                         {{#each this.personas}}
@@ -121,7 +136,8 @@
 </div>
 
 
-<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -141,7 +157,7 @@
 <script src="/js/utils.js"></script>
 <script language="JavaScript">
 
-    function deleteStory() {
+    function deleteStory () {
         $.ajax({
             url: '/stories/{{story.id}}',
             type: 'DELETE',
@@ -150,11 +166,11 @@
         });
     }
 
-    function callback(){
+    function callback () {
         window.location.href = "/epics";
     }
 
-    function errorCallback() {
+    function errorCallback () {
         alert('Error deleting story');
     }
 

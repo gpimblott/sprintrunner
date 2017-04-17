@@ -28,6 +28,23 @@ router.get("/", function (req, res, next) {
     });
 });
 
+
+router.get("/noepic", function (req, res, next) {
+
+    storyDao.getStoriesWithoutEpic(function (error, stories) {
+        if (error) {
+            res.render("damm", {
+                message: "Something went wrong)",
+                status: error,
+                reason: "Don't know what :("
+            });
+
+        } else {
+            utils.renderStories(res, stories, "Stories not assign to Epics");
+        }
+    });
+});
+
 router.get("/status/:status", function (req, res, next) {
     var status = decodeURIComponent(req.params[ "status" ]);
 
@@ -41,6 +58,23 @@ router.get("/status/:status", function (req, res, next) {
 
         } else {
             utils.renderStories(res, stories, "Stories with status '" + status + "'");
+        }
+    });
+});
+
+router.get("/persona/:persona", function (req, res, next) {
+    var persona = decodeURIComponent(req.params[ "persona" ]);
+
+    storyDao.getStoriesWithPersona(persona, function (error, stories) {
+        if (error) {
+            res.render("damn", {
+                message: "Something went wrong",
+                status: error,
+                reason: "Don't know"
+            });
+
+        } else {
+            utils.renderStories(res, stories, "Stories for persona '" + persona + "'");
         }
     });
 });

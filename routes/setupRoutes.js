@@ -40,7 +40,9 @@ SetupRoutes.setup = function (self) {
             if (req.path.startsWith("/api/")) {
                 res.sendStatus(401);
                 return;
-            };
+            }
+
+            req.session.redirect_to = req.url;
             res.redirect("/login");
         } else {
             debug("authenticated request : %s", req.path);

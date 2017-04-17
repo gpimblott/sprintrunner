@@ -19,7 +19,7 @@ Story.add = function (title, persona, status, description, reason, acceptance_cr
     query.pushParam('reason', reason);
     query.pushParam('acceptance_criteria', acceptance_criteria);
 
-    if (estimate != null && estimate !="") {
+    if (estimate != null && estimate != "") {
         query.pushParam('estimate', parseInt(estimate, 10));
     }
 
@@ -51,7 +51,7 @@ Story.update = function (id, title, persona, status, description, reason, accept
     query.pushParam('reason', reason);
     query.pushParam('acceptance_criteria', acceptance_criteria);
 
-    if (estimate != null && estimate !="") {
+    if (estimate != null && estimate != "") {
         query.pushParam('estimate', parseInt(estimate, 10));
     }
 
@@ -59,22 +59,10 @@ Story.update = function (id, title, persona, status, description, reason, accept
         query.pushParam('team_id', parseInt(team, 10));
     }
 
-    // estimate = parseInt(estimate, 10);
-    //
-    // var sql = "UPDATE stories SET title=$1, persona=$2, status_id=$3 , description=$4,reason=$5,acceptance_criteria=$6,estimate=$7";
-    // var params = [ title, persona, status, description, reason, acceptance_criteria, estimate, id ];
-
-    var sql = query.getUpdateStatement( 'id' , id );
+    var sql = query.getUpdateStatement('id', id);
     var params = query.getParams();
 
-    debug( sql );
-
-    // if (team != null) {
-    //     sql += ",team_id=$9";
-    //     params.push(team);
-    // }
-    //
-    // sql += " WHERE id=$8";
+    debug(sql);
 
     dbHelper.insert(sql, params,
         function (result) {
@@ -113,14 +101,33 @@ Story.getStory = function (storyId, done) {
 Story.getAllStories = function (done) {
     var sql = "SELECT story.*, status.name as current_state, p.name as persona_name, "
         + " COALESCE( teams.name,'') as team_name"
-        // + " ( SELECT string_agg( l.name, ',') FROM story_label_link sll "
-        // + "   JOIN labels l on l.id=sll.label_id WHERE sll.story_id=story.id) as labels"
         + " FROM stories story"
         + " JOIN story_status status"
         + " ON story.status_id=status.id"
         + " JOIN personas p"
         + " ON story.persona=p.id"
         + " LEFT JOIN teams ON story.team_id=teams.id";
+
+    var params = [];
+    dbHelper.query(sql, params,
+        function (results) {
+            done(null, results);
+        },
+        function (error) {
+            debug(error);
+            done(error, null);
+        });
+};
+
+Story.getStoriesWithoutEpic = function (done) {
+    var sql = "SELECT story.*, status.name as current_state, p.name as persona_name, "
+        + " COALESCE( teams.name,'') as team_name"
+        + " FROM stories story"
+        + " JOIN story_status status ON story.status_id=status.id"
+        + " JOIN personas p ON story.persona=p.id"
+        + " LEFT JOIN teams ON story.team_id=teams.id"
+        + " LEFT JOIN epic_story_link esl on esl.story_id=story.id"
+        + " WHERE esl.id is null";
 
     var params = [];
     dbHelper.query(sql, params,
@@ -205,6 +212,28 @@ Story.getStoriesWithStatus = function (statusName, done) {
         + " WHERE status.name = $1;"
 
     var params = [ statusName ];
+    dbHelper.query(sql, params,
+        function (results) {
+            done(null, results);
+        },
+        function (error) {
+            debug(error);
+            done(error, null);
+        });
+}
+
+Story.getStoriesWithPersona = function (personaName, done) {
+    var sql = "SELECT story.*, status.name as current_state, p.name as persona_name,"
+        + " COALESCE( teams.name,'') as team_name"
+        + " FROM stories story"
+        + " JOIN story_status status"
+        + " ON story.status_id=status.id"
+        + " JOIN personas p"
+        + " ON story.persona=p.id"
+        + " LEFT JOIN teams ON story.team_id=teams.id"
+        + " WHERE p.name = $1;"
+
+    var params = [ personaName ];
     dbHelper.query(sql, params,
         function (results) {
             done(null, results);

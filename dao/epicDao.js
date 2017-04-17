@@ -7,6 +7,47 @@ const async = require("async");
 
 var Epic = function () {};
 
+/*
+ * Reusable functions for use in transactions
+ */
+const rollback = function (client, error, cbk) {
+    client.query("ROLLBACK", cbk);
+};
+
+const connectToDBFunction = function (cbk) {
+    debug("connectionToDBFunction");
+    dbhelper.setDefaults(pg);
+    // pool.connect(function (error, client, release) {
+    pg.connect(process.env.DATABASE_URL, function (error, client) {
+
+        if (client === null) {
+            debug("Error with DB client");
+            rollback(client, error, cbk);
+            cbk(error);
+            return;
+        }
+        cbk(null, client);
+    });
+};
+
+const beginTransactionFunction = function (client, cbk) {
+    debug("beginTransactionFunction");
+    client.query("BEGIN", function (error) {
+        if (error) {
+            debug("Error starting transaction");
+            rollback(client, error, cbk);
+            cbk(error);
+            return;
+        }
+
+        cbk(null, client);
+    });
+};
+
+const commitTransaction = function (client, cbk) {
+    client.query("COMMIT", cbk);
+};
+
 Epic.add = function (title, persona, description, reason, acceptance_criteria, done) {
 
     var sql = "INSERT INTO epics ( title, persona , description,reason,acceptance_criteria, theorder )"
@@ -31,7 +72,7 @@ Epic.linkStoryToEpic = function (epicId, storyId, done) {
 
     dbhelper.insert(sql, params,
         function (result) {
-            done(null, result.rows[ 0 ].id );
+            done(null, result.rows[ 0 ].id);
         },
         function (error) {
             console.error(error);
@@ -68,40 +109,6 @@ Epic.moveEpic = function (from, fromId, to, done) {
     from = parseInt(from, 10);
     fromId = parseInt(fromId, 10);
     to = parseInt(to, 10);
-
-    const rollback = function (client, error, cbk) {
-        client.query("ROLLBACK", cbk);
-    };
-
-    const connectToDBFunction = function (cbk) {
-        debug("connectionToDBFunction");
-        dbhelper.setDefaults(pg);
-        // pool.connect(function (error, client, release) {
-        pg.connect(process.env.DATABASE_URL, function (error, client) {
-
-            if (client === null) {
-                debug("Error with DB client");
-                rollback(client, error, cbk);
-                cbk(error);
-                return;
-            }
-            cbk(null, client);
-        });
-    };
-
-    const beginTransactionFunction = function (client, cbk) {
-        debug("beginTransactionFunction");
-        client.query("BEGIN", function (error) {
-            if (error) {
-                debug("Error starting transaction");
-                rollback(client, error, cbk);
-                cbk(error);
-                return;
-            }
-
-            cbk(null, client);
-        });
-    };
 
     const nullOriginalRecordFunction = function (client, cbk) {
         debug("nullOriginalRecord");
@@ -158,10 +165,6 @@ Epic.moveEpic = function (from, fromId, to, done) {
         });
     };
 
-    const commitTransaction = function (client, cbk) {
-        client.query("COMMIT", cbk);
-    };
-
     async.waterfall(
         [ connectToDBFunction,
             beginTransactionFunction,
@@ -211,19 +214,58 @@ Epic.getAllEpics = function (done) {
         });
 };
 
+/**
+ * Delete the specified row - first change the ordering of the epics
+ * THis is all done is a transaction to ensure consistency
+ * @param id
+ * @param done
+ */
 Epic.delete = function (id, done) {
-    var params = [ id ];
 
-    var sql = "DELETE FROM epics WHERE id = $1";
+    const deleteRecord = function (client, cbk) {
+        var sql = "DELETE FROM epics WHERE id = $1";
 
-    dbhelper.query(sql, params,
-        function (result) {
-            done(null, true);
-        },
-        function (error) {
-            console.error(error);
-            done(error, null);
+        client.query(sql, [ id ], function (error, result) {
+            debug("%s rows updated", result.rowCount);
+            if (error) {
+                debug("Error reordering rows");
+                rollback(client, error, cbk);
+                cbk(error);
+                return;
+            }
+            cbk(null, client);
         });
+    };
+
+    const moveOtherRecords = function (client, cbk) {
+        var sql = "UPDATE epics set theorder = theorder-1 where theorder > ( select theorder from epics where id=$1)";
+
+        client.query(sql, [ id ], function (error, result) {
+            debug("%s rows updated", result.rowCount);
+            if (error) {
+                debug("Error reordering rows");
+                rollback(client, error, cbk);
+                cbk(error);
+                return;
+            }
+            cbk(null, client);
+        });
+    };
+
+    async.waterfall(
+        [ connectToDBFunction,
+            beginTransactionFunction,
+            moveOtherRecords,
+            deleteRecord,
+            commitTransaction ],
+        function (error, result) {
+            debug("Result : %s", result);
+            if (error) {
+                debug("Error deleting record ");
+            }
+            done(error, result);
+        });
+
 };
 
 module.exports = Epic;
