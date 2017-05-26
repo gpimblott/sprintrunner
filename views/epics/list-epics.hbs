@@ -46,7 +46,10 @@
                 render: function (data, type, row) {
                     return data + (data == 1 ? ' story' : ' stories');
                 }
-            } ]
+            }, {
+                data: 'points',
+                title: 'Points'
+            }]
         });
 
         table.on('row-reorder', function (e, diff, edit) {

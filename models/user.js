@@ -13,7 +13,6 @@ var User = function () {
     this.googletoken = '';
 };
 
-// You need to assign a new function here
 User.findOne = function (profile, done) {
 
     debug("findOne : %s", profile.id);
@@ -22,7 +21,7 @@ User.findOne = function (profile, done) {
     dbhelper.query(sql, [ profile.id ],
         function (results) {
 
-            if (results.length == 0) {
+            if (results == null || results.length == 0) {
                 return done(null, null);
             }
 

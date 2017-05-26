@@ -200,8 +200,16 @@ Epic.getEpic = function (epicId, done) {
 };
 
 Epic.getAllEpics = function (done) {
-    var sql = "SELECT *, (SELECT COUNT(*) FROM epic_story_link esl WHERE epics.id = esl.epic_id) AS num_stories"
-        + " FROM epics order by theorder asc";
+    var sql = "SELECT * FROM epics"
+                + " LEFT OUTER JOIN"
+                + " ("
+                + " SELECT epic_id, COUNT(*) as num_stories, sum( stories.estimate) as points"
+                + " FROM epic_story_link esl"
+                + " JOIN STORIES ON stories.id=esl.story_id"
+                + " GROUP BY esl.epic_id"
+                + " ) AS sq ON  sq.epic_id = epics.id"
+                " ORDER BY epics.theorder ASC";
+
 
     var params = [];
     dbhelper.query(sql, params,
