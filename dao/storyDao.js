@@ -3,7 +3,7 @@
 var debug = require('debug')('sprintrunner:storydao');
 var pg = require('pg');
 var dbHelper = require('../utils/dbhelper.js');
-var dbQuery = require('../utils/dbquery');
+var dbQuery = require('../utils/dbquery.js');
 
 var Story = function () {
 };
