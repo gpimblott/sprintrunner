@@ -13,8 +13,7 @@
     "email": "gordon@pimblott.com"
   },
   "engines": {
-    "node": "6.11.1",
-    "npm": "3.10.8"
+    "node": "6.11.1"
   },
   "dependencies": {
     "async": "latest",
