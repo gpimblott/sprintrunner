@@ -1,16 +1,16 @@
 'use strict';
 
-var debug = require('debug')('sprintrunner:storydao');
-var pg = require('pg');
-var dbHelper = require('../utils/dbhelper.js');
-var dbQuery = require('../utils/dbquery.js');
+const debug = require('debug')('sprintrunner:storydao');
+const pg = require('pg');
+const dbHelper = require('../utils/dbhelper.js');
+const dbQuery = require('../utils/dbquery.js');
 
-var Story = function () {
+const Story = function () {
 };
 
 Story.add = function (title, persona, status, description, reason, acceptance_criteria, estimate, team, done) {
 
-    var query = new dbQuery();
+    const query = new dbQuery();
     query.setTableName('stories');
     query.pushParam('title', title);
     query.pushParam('persona', persona);
@@ -19,16 +19,16 @@ Story.add = function (title, persona, status, description, reason, acceptance_cr
     query.pushParam('reason', reason);
     query.pushParam('acceptance_criteria', acceptance_criteria);
 
-    if (estimate != null && estimate != "") {
+    if (estimate !== null && estimate !== "") {
         query.pushParam('estimate', parseInt(estimate, 10));
     }
 
-    if (team != null && team != undefined) {
+    if (team !== null && team !== undefined) {
         query.pushParam('team_id', parseInt(team, 10));
     }
 
-    var sql = query.getInsertStatement();
-    var params = query.getParams();
+    const sql = query.getInsertStatement();
+    const params = query.getParams();
 
     dbHelper.insert(sql, params,
         function (result) {
