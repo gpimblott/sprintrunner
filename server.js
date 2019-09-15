@@ -2,47 +2,52 @@
 
 require('dotenv').config({ path: 'process.env' });
 
-var passport = require('passport');
+const passport = require('passport');
 require('./config/passport');
 
-var debug = require('debug')('sprintrunner:server');
-var http = require('http');
+const logger = require('./winstonLogger')(module);
 
-var express = require('express');
-var exphbs = require('express-handlebars');
-var hdf = require('handlebars-dateformat');
+const express = require('express');
+const exphbs = require('express-handlebars');
+const hdf = require('handlebars-dateformat');
 require('./utils/handlerbarsHelpers');
 
-var path = require('path');
-var favicon = require('serve-favicon');
-var morgan = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var session = require('express-session');
+const path = require('path');
+const favicon = require('serve-favicon');
+const morgan = require('morgan');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+const session = require('express-session');
 
-var setupRoutes = require('./routes/setupRoutes');
+const setupRoutes = require('./routes/setupRoutes');
 
-var teamDao = require('./dao/teamDao');
-var statusDao = require('./dao/statusDao');
+const teamDao = require('./dao/teamDao');
+const statusDao = require('./dao/statusDao');
 
-var serverSideEvents = require('./routes/sse');
+const serverSideEvents = require('./routes/sse');
 
-var helmet = require('helmet');
+const helmet = require('helmet');
 
+logger.info("Starting SprintRunner");
+
+logger.stream = {
+  write: function(message, encoding){
+    logger.verbose(message);
+  }
+};
 
 /**
  * Set API Key based on Environment variable
  **/
-var SprintRunner = function () {
-  var self = this;
+const SprintRunner = function () {
+  const self = this;
 
   /**
    *  Set up server IP address and port # using env variables/defaults.
    */
   self.setupVariables = function () {
     //  Set the environment variables we need.
-    self.port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT  || 8090;
-    self.server_ip_address = process.env.OPENSHIFT_NODEJS_IP;
+    self.port = process.env.PORT || 8090;
   };
 
   /**
@@ -52,11 +57,11 @@ var SprintRunner = function () {
    */
   self.terminator = function (sig) {
     if (typeof sig === 'string') {
-      debug('%s: Received %s - terminating SprintRunner ...',
+      logger.info('%s: Received %s - terminating SprintRunner ...',
         Date(Date.now()), sig);
       process.exit(1);
     }
-    debug('%s: Node server stopped.', Date(Date.now()));
+    logger.info('%s: Node server stopped.', Date(Date.now()));
   };
 
   /**
@@ -83,8 +88,6 @@ var SprintRunner = function () {
    *  the handlers.
    */
   self.initialize = function () {
-
-
     self.setupVariables();
     self.setupTerminationHandlers();
 
@@ -106,25 +109,25 @@ var SprintRunner = function () {
 
     // Setup the Google Analytics ID if defined
     self.app.locals.google_id = process.env.GOOGLE_ID || undefined;
-    debug('GA ID: %s', self.app.locals.google_id);
+    logger.info('GA ID: %s', self.app.locals.google_id);
 
-    var defaultLabels = process.env.DEFAULT_LABELS || '';
+    const defaultLabels = process.env.DEFAULT_LABELS || '';
     self.app.set('defaultLabels', defaultLabels.split(','));
-    debug('Default labels : %s', defaultLabels);
+    logger.info('Default labels : %s', defaultLabels);
 
-    var milestoneLabels = process.env.MILESTONE_LABELS || '';
+    const milestoneLabels = process.env.MILESTONE_LABELS || '';
     self.app.set('milestoneLabels', milestoneLabels.split(','));
-    debug('Milestone labels : %s' , milestoneLabels);
+    logger.info('Milestone labels : %s' , milestoneLabels);
 
-    var cookie_key = process.env.COOKIE_KEY || 'aninsecurecookiekey';
-    var sess = {
+    const cookie_key = process.env.COOKIE_KEY || 'aninsecurecookiekey';
+    const sess = {
       secret: cookie_key,
       cookie: {}
     }
 
     if (self.app.get('env') == 'production') {
       self.app.enable('trust proxy', 1); // trusts first proxy - Heroku load balancer
-      console.log('In production mode');
+      logger.info('In production mode');
       sess.cookie.secure = true;
     }
 
@@ -156,7 +159,7 @@ var SprintRunner = function () {
     // development error handler
     // will print stacktrace
     if (self.app.get('env') === 'development') {
-      debug('In development mode');
+      logger.info('In development mode');
       self.app.use(function (err, req, res, next) {
         res.status(err.status || 500);
         res.render('error', {
@@ -208,6 +211,6 @@ var SprintRunner = function () {
 /**
  *  main():  Main code.
  */
-var sprintRunnerApp = new SprintRunner();
+const sprintRunnerApp = new SprintRunner();
 sprintRunnerApp.initialize();
 sprintRunnerApp.start();

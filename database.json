@@ -1,7 +1,18 @@
 {
-    "defaultEnv": "dev",
     "dev": {
         "driver": "pg",
-        "ENV": "DATABASE_URL"
+        "user": {"ENV": "DB_USERNAME"},
+        "password": {"ENV": "DB_PASSWORD"},
+        "host": {"ENV": "DB_HOST"},
+        "database": "sprint_runner"
+    },
+    "pg": {
+        "driver": "pg",
+        "user": {"ENV": "DB_USERNAME"},
+        "password": {"ENV": "DB_PASSWORD"},
+        "host": {"ENV": "DB_HOST"},
+        "database": "sprint_runner"
     }
 }
+
+

@@ -4,23 +4,24 @@
   "scripts": {
     "start": "node ./server.js"
   },
+  "engines": {
+    "node": "12.4"
+  },
   "keywords": [
     "Node.js",
     "application"
   ],
+  "license": "MIT",
   "author": {
     "name": "Gordon Pimblott",
     "email": "gordon@pimblott.com"
-  },
-  "engines": {
-    "node": "6.11.1"
   },
   "dependencies": {
     "async": "latest",
     "body-parser": "latest",
     "cfenv": "1.0.3",
     "cookie-parser": "~1.4.3",
-    "db-migrate": "0.10.0-beta.12",
+    "db-migrate": "latest",
     "db-migrate-pg": "latest",
     "debug": "~2.2.0",
     "dotenv": "latest",
@@ -31,16 +32,17 @@
     "handlebars": "latest",
     "handlebars-dateformat": "latest",
     "helmet": "latest",
-    "morgan": "~1.7.0",
+    "morgan": "latest",
     "multer": "latest",
     "oauth": "0.9.15",
     "passport": "latest",
     "passport-google-oauth2": "^0.1.6",
-    "pg": "latest",
+    "pg": "^7.12.1",
     "request": "2.76.0",
     "sanitize-html": "latest",
     "serve-favicon": "~2.3.0",
-    "cron": "latest"
+    "cron": "latest",
+    "winston": "^3.2.1"
   },
   "main": "./server",
   "devDependencies": {

@@ -3,11 +3,15 @@
 /**
  * Helper function to perform base database operations (e.g. query, insert)
  */
+const logger = require('../winstonLogger')(module);
 const pg = require("pg");
 const url = require("url");
 
 const params = url.parse(process.env.DATABASE_URL);
 const auth = params.auth.split(":");
+
+logger.info("DB URL: %s", process.env.DATABASE_URL);
+logger.info("DB Config : %s" , process.env.USE_SSL);
 
 const config = {
     user: auth[ 0 ],
@@ -15,7 +19,7 @@ const config = {
     host: params.hostname,
     port: params.port,
     database: params.pathname.split("/")[ 1 ],
-    ssl: process.env.USE_SSL,
+    ssl: false,
     max: 20, //set pool max size to 20 - Max for free Heroku instance
     min: 4, //set min pool size to 4
     idleTimeoutMillis: 3000 //close idle clients after 3 seconds
